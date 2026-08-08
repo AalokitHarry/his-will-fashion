@@ -1,23 +1,9 @@
 import { Router } from "express";
 import crypto from "crypto";
-import Razorpay from "razorpay";
 import { priceCart } from "../data/products.js";
 import { saveOrder } from "../utils/orderStore.js";
 
 const router = Router();
-
-function getRazorpayClient() {
-  const keyId = process.env.RAZORPAY_KEY_ID;
-  const keySecret = process.env.RAZORPAY_KEY_SECRET;
-  if (!keyId || !keySecret) {
-    const err = new Error(
-      "Razorpay keys are not configured. Add RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET to server/.env (see .env.example)."
-    );
-    err.status = 500;
-    throw err;
-  }
-  return { client: new Razorpay({ key_id: keyId, key_secret: keySecret }), keyId, keySecret };
-}
 
 function validateCustomer(customer) {
   if (!customer || typeof customer !== "object") return "Missing customer details";
@@ -30,7 +16,15 @@ function validateCustomer(customer) {
   return null;
 }
 
-router.post("/create", async (req, res) => {
+function generateOrderId() {
+  const stamp = Date.now().toString(36).toUpperCase();
+  const random = crypto.randomBytes(2).toString("hex").toUpperCase();
+  return `HWF-${stamp}-${random}`;
+}
+
+// Cash-on-Delivery order placement. No payment gateway is wired up yet —
+// this validates the cart, prices it server-side, and logs the order.
+router.post("/place", (req, res) => {
   try {
     const { items, customer } = req.body || {};
 
@@ -42,67 +36,24 @@ router.post("/create", async (req, res) => {
       return res.status(400).json({ error: customerError });
     }
 
-    const { total, subtotal, shipping } = priceCart(items);
-    const { client, keyId } = getRazorpayClient();
-
-    const order = await client.orders.create({
-      amount: Math.round(total * 100),
-      currency: "INR",
-      receipt: `hwf_${Date.now()}`,
-      notes: {
-        customer_name: customer.fullName,
-        customer_phone: customer.phone,
-        subtotal: String(subtotal),
-        shipping: String(shipping),
-      },
-    });
-
-    res.json({ order, keyId });
-  } catch (err) {
-    res.status(err.status || 400).json({ error: err.message || "Unable to create order." });
-  }
-});
-
-router.post("/verify", async (req, res) => {
-  try {
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, customer, items } = req.body || {};
-
-    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
-      return res.status(400).json({ error: "Missing payment verification details." });
-    }
-
-    const { keySecret } = getRazorpayClient();
-
-    const expectedSignature = crypto
-      .createHmac("sha256", keySecret)
-      .update(`${razorpay_order_id}|${razorpay_payment_id}`)
-      .digest("hex");
-
-    const isValid =
-      expectedSignature.length === razorpay_signature.length &&
-      crypto.timingSafeEqual(Buffer.from(expectedSignature), Buffer.from(razorpay_signature));
-
-    if (!isValid) {
-      return res.status(400).json({ error: "Payment verification failed. Please contact support." });
-    }
-
-    const pricing = Array.isArray(items) ? priceCart(items) : null;
+    const { lines, subtotal, shipping, total } = priceCart(items);
+    const orderId = generateOrderId();
 
     saveOrder({
-      orderId: razorpay_order_id,
-      paymentId: razorpay_payment_id,
+      orderId,
       customer,
-      items: pricing?.lines || items,
-      subtotal: pricing?.subtotal,
-      shipping: pricing?.shipping,
-      total: pricing?.total,
-      status: "paid",
+      items: lines,
+      subtotal,
+      shipping,
+      total,
+      paymentMethod: "cod",
+      status: "pending_confirmation",
       createdAt: new Date().toISOString(),
     });
 
-    res.json({ verified: true, orderId: razorpay_order_id });
+    res.json({ orderId, total });
   } catch (err) {
-    res.status(err.status || 400).json({ error: err.message || "Unable to verify payment." });
+    res.status(err.status || 400).json({ error: err.message || "Unable to place order." });
   }
 });
 

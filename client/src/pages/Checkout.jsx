@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { AlertCircle, Lock, ShoppingBag } from "lucide-react";
+import { AlertCircle, PackageCheck, ShoppingBag } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { formatINR } from "../utils/format";
 import { INDIAN_STATES } from "../data/indianStates";
-import { loadRazorpayScript } from "../utils/loadRazorpay";
-import { createRazorpayOrder, verifyRazorpayPayment } from "../api/orders";
+import { placeOrder } from "../api/orders";
 import ProductImage from "../components/ProductImage";
 
 const FREE_SHIPPING_THRESHOLD = 1999;
@@ -38,67 +37,22 @@ export default function Checkout() {
     setForm((f) => ({ ...f, [name]: value }));
   };
 
-  const handlePayment = async (e) => {
+  const handlePlaceOrder = async (e) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
     try {
-      await loadRazorpayScript();
-
-      const { order, keyId } = await createRazorpayOrder({
+      const { orderId, total: confirmedTotal } = await placeOrder({
         items: items.map((i) => ({ id: i.id, size: i.size, color: i.color, qty: i.qty })),
         customer: form,
       });
-
-      const rzp = new window.Razorpay({
-        key: keyId,
-        amount: order.amount,
-        currency: order.currency,
-        name: "His Will Fashion",
-        description: "Order Payment",
-        order_id: order.id,
-        prefill: {
-          name: form.fullName,
-          email: form.email,
-          contact: form.phone,
-        },
-        notes: {
-          address: `${form.addressLine1}, ${form.city}, ${form.state} ${form.pincode}`,
-        },
-        theme: { color: "#c9a24d" },
-        handler: async (response) => {
-          try {
-            await verifyRazorpayPayment({
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-              customer: form,
-              items: items.map((i) => ({ id: i.id, size: i.size, color: i.color, qty: i.qty })),
-            });
-            const orderId = response.razorpay_order_id;
-            clearCart();
-            navigate("/order-confirmed", { state: { orderId, total } });
-          } catch (err) {
-            setError(err.message || "Payment succeeded but verification failed. Please contact us with your payment ID.");
-          }
-        },
-        modal: {
-          ondismiss: () => setLoading(false),
-        },
-      });
-
-      rzp.on("payment.failed", (resp) => {
-        setError(resp.error?.description || "Payment failed. Please try again.");
-        setLoading(false);
-      });
-
-      rzp.open();
-      setLoading(false);
+      clearCart();
+      navigate("/order-confirmed", { state: { orderId, total: confirmedTotal } });
     } catch (err) {
       setError(
         err.message ||
-          "Unable to start checkout right now. Please make sure the store server is running and try again."
+          "Unable to place your order right now. Please make sure the store server is running and try again."
       );
       setLoading(false);
     }
@@ -122,7 +76,7 @@ export default function Checkout() {
       <div className="mx-auto max-w-6xl px-5 md:px-8">
         <h1 className="font-display text-3xl md:text-4xl mb-10">Checkout</h1>
         <div className="grid lg:grid-cols-[1.3fr_1fr] gap-12">
-          <form onSubmit={handlePayment} className="flex flex-col gap-10">
+          <form onSubmit={handlePlaceOrder} className="flex flex-col gap-10">
             <section>
               <h2 className="font-condensed tracking-[0.15em] text-sm text-gold mb-4">CONTACT</h2>
               <div className="grid sm:grid-cols-2 gap-4">
@@ -180,11 +134,11 @@ export default function Checkout() {
               disabled={loading}
               className="w-full bg-ink text-parchment font-condensed tracking-[0.15em] py-4 rounded-full hover:bg-rust transition-colors duration-300 disabled:opacity-60 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2"
             >
-              <Lock size={15} />
-              {loading ? "PROCESSING..." : `PAY ${formatINR(total)} WITH RAZORPAY`}
+              <PackageCheck size={15} />
+              {loading ? "PLACING ORDER..." : `PLACE ORDER — ${formatINR(total)} (CASH ON DELIVERY)`}
             </button>
             <p className="text-xs text-ink/45 -mt-6 text-center">
-              Payments are securely processed by Razorpay. We never see or store your card details.
+              Pay in cash when your order arrives. We'll reach out to confirm before it ships.
             </p>
           </form>
 

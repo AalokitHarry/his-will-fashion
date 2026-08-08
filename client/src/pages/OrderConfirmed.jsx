@@ -22,10 +22,10 @@ export default function OrderConfirmed() {
         >
           <CheckCircle2 size={34} strokeWidth={1.6} />
         </motion.div>
-        <h1 className="font-display text-4xl mb-3">Order Confirmed</h1>
+        <h1 className="font-display text-4xl mb-3">Order Placed</h1>
         <p className="text-ink/60 mb-8">
-          Thank you for wearing your faith with us. A confirmation has been sent to your email and your
-          order is being prepared for Pan India shipping.
+          Thank you for wearing your faith with us. We've received your order and will reach out by phone
+          or email to confirm before it ships, Pan India. Pay in cash when it arrives.
         </p>
 
         {state?.orderId && (
@@ -36,7 +36,7 @@ export default function OrderConfirmed() {
             </div>
             {state?.total != null && (
               <div className="flex justify-between text-sm">
-                <span className="text-parchment/60">Amount Paid</span>
+                <span className="text-parchment/60">Amount Due (Cash on Delivery)</span>
                 <span className="font-condensed tracking-wide">{formatINR(state.total)}</span>
               </div>
             )}

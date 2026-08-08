@@ -12,16 +12,9 @@ async function request(path, options) {
   return data;
 }
 
-export function createRazorpayOrder({ items, customer }) {
-  return request("/api/orders/create", {
+export function placeOrder({ items, customer }) {
+  return request("/api/orders/place", {
     method: "POST",
     body: JSON.stringify({ items, customer }),
-  });
-}
-
-export function verifyRazorpayPayment(payload) {
-  return request("/api/orders/verify", {
-    method: "POST",
-    body: JSON.stringify(payload),
   });
 }

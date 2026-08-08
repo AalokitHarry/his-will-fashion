@@ -11,10 +11,7 @@ app.use(cors({ origin: CLIENT_ORIGIN }));
 app.use(express.json());
 
 app.get("/api/health", (req, res) => {
-  res.json({
-    ok: true,
-    razorpayConfigured: Boolean(process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET),
-  });
+  res.json({ ok: true });
 });
 
 app.use("/api/orders", ordersRouter);

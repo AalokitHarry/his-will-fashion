@@ -12,7 +12,7 @@ const FAQS = [
   },
   {
     q: "What payment methods are accepted?",
-    a: "All major cards, UPI, netbanking, and wallets via Razorpay's secure checkout. Your payment details are never stored on our servers.",
+    a: "Cash on Delivery — pay in cash when your order arrives at your doorstep. Online payment options are coming soon.",
   },
   {
     q: "How can I track my order?",
