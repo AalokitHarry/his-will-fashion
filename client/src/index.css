@@ -2,6 +2,7 @@
 
 @theme {
   --font-display: "Fraunces", "Georgia", serif;
+  --font-editorial: "Archivo Black", "Arial Black", sans-serif;
   --font-condensed: "Bebas Neue", sans-serif;
   --font-body: "Inter", system-ui, sans-serif;
 

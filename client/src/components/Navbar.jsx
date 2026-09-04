@@ -18,6 +18,12 @@ export default function Navbar() {
 
   const isHome = pathname === "/";
   const transparent = isHome && !scrolled;
+  // The home hero sits on a light background, so the floating navbar needs
+  // dark text there; once it goes solid (scrolled, or any other page) it's
+  // back to the usual dark bar with light text.
+  const tone = transparent
+    ? { text: "text-ink", sub: "text-ink/70 hover:text-rust", active: "text-rust", icon: "text-ink hover:text-rust" }
+    : { text: "text-parchment", sub: "text-parchment/85 hover:text-gold", active: "text-gold", icon: "text-parchment hover:text-gold" };
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -41,7 +47,7 @@ export default function Navbar() {
           <span className="w-8 h-8 rounded-full border border-gold/60 flex items-center justify-center text-gold group-hover:bg-gold group-hover:text-ink transition-colors duration-300">
             <span className="font-display text-lg leading-none translate-y-[-1px]">†</span>
           </span>
-          <span className="font-condensed tracking-[0.15em] text-xl text-parchment">
+          <span className={`font-condensed tracking-[0.15em] text-xl transition-colors duration-500 ${tone.text}`}>
             HIS WILL <span className="text-gold">FASHION</span>
           </span>
         </Link>
@@ -53,7 +59,7 @@ export default function Navbar() {
               to={link.to}
               className={({ isActive }) =>
                 `font-condensed tracking-[0.1em] text-sm transition-colors relative py-1 ${
-                  isActive ? "text-gold" : "text-parchment/85 hover:text-gold"
+                  isActive ? tone.active : tone.sub
                 }`
               }
             >
@@ -66,7 +72,7 @@ export default function Navbar() {
           <button
             onClick={openCart}
             aria-label="Open cart"
-            className="relative flex items-center justify-center w-10 h-10 rounded-full text-parchment hover:text-gold transition-colors"
+            className={`relative flex items-center justify-center w-10 h-10 rounded-full transition-colors ${tone.icon}`}
           >
             <ShoppingBag size={21} strokeWidth={1.6} />
             <AnimatePresence>
@@ -83,7 +89,7 @@ export default function Navbar() {
             </AnimatePresence>
           </button>
           <button
-            className="md:hidden text-parchment"
+            className={`md:hidden transition-colors ${tone.text}`}
             onClick={() => setMenuOpen((o) => !o)}
             aria-label="Toggle menu"
           >
