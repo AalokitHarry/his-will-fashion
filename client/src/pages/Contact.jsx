@@ -12,7 +12,7 @@ const FAQS = [
   },
   {
     q: "What payment methods are accepted?",
-    a: "Cash on Delivery — pay in cash when your order arrives at your doorstep. Online payment options are coming soon.",
+    a: "Cash on Delivery only — pay in cash when your order arrives at your doorstep.",
   },
   {
     q: "How can I track my order?",

@@ -1,5 +1,5 @@
 // Server-side source of truth for pricing.
-// Keep ids/prices in sync with client/src/data/products.js — the server
+// Keep ids/prices in sync with client/src/data/products.js — the worker
 // never trusts prices sent from the browser, only ids and quantities.
 
 export const PRODUCTS = {

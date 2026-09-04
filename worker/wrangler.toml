@@ -1,0 +1,14 @@
+name = "his-will-fashion-api"
+main = "src/index.js"
+compatibility_date = "2026-09-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "his-will-fashion-orders"
+database_id = "73f32d92-20a9-4c5f-9c0c-d08803b3c573"
+
+[vars]
+CLIENT_ORIGIN = "http://localhost:5173,https://his-will-fashion.aalokitharry1995.workers.dev"
+
+[dev]
+port = 4242

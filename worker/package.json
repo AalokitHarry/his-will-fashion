@@ -1,0 +1,17 @@
+{
+  "name": "his-will-fashion-worker",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:migrate:local": "wrangler d1 execute his-will-fashion-orders --local --file=./schema.sql",
+    "db:migrate:remote": "wrangler d1 execute his-will-fashion-orders --remote --file=./schema.sql"
+  },
+  "dependencies": {
+    "hono": "^4.6.14"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}
