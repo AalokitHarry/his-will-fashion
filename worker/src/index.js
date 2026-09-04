@@ -72,4 +72,32 @@ app.post("/api/orders/place", async (c) => {
   }
 });
 
+// Admin order list — password-protected via ADMIN_TOKEN.
+app.get("/api/orders", async (c) => {
+  const auth = c.req.header("Authorization") || "";
+  const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
+
+  if (!c.env.ADMIN_TOKEN || token !== c.env.ADMIN_TOKEN) {
+    return c.json({ error: "Unauthorized" }, 401);
+  }
+
+  const { results } = await c.env.DB.prepare(
+    "SELECT order_id, customer, items, subtotal, shipping, total, payment_method, status, created_at FROM orders ORDER BY created_at DESC"
+  ).all();
+
+  const orders = results.map((row) => ({
+    orderId: row.order_id,
+    customer: JSON.parse(row.customer),
+    items: JSON.parse(row.items),
+    subtotal: row.subtotal,
+    shipping: row.shipping,
+    total: row.total,
+    paymentMethod: row.payment_method,
+    status: row.status,
+    createdAt: row.created_at,
+  }));
+
+  return c.json({ orders });
+});
+
 export default app;

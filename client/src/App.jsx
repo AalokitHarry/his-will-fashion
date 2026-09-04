@@ -7,11 +7,13 @@ import Checkout from "./pages/Checkout";
 import OrderConfirmed from "./pages/OrderConfirmed";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
+import AdminOrders from "./pages/AdminOrders";
 import NotFound from "./pages/NotFound";
 
 export default function App() {
   return (
     <Routes>
+      <Route path="/admin" element={<AdminOrders />} />
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
         <Route path="/shop" element={<Shop />} />

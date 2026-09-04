@@ -1,0 +1,171 @@
+import { useEffect, useState } from "react";
+import { AlertCircle, LogOut, RefreshCw } from "lucide-react";
+import { fetchOrders } from "../api/orders";
+import { formatINR } from "../utils/format";
+
+const TOKEN_KEY = "hwf_admin_token";
+
+export default function AdminOrders() {
+  const [token, setToken] = useState(() => localStorage.getItem(TOKEN_KEY) || "");
+  const [passwordInput, setPasswordInput] = useState("");
+  const [orders, setOrders] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const load = async (t) => {
+    setLoading(true);
+    setError("");
+    try {
+      const { orders } = await fetchOrders(t);
+      setOrders(orders);
+      localStorage.setItem(TOKEN_KEY, t);
+      setToken(t);
+    } catch {
+      setError("Incorrect password.");
+      localStorage.removeItem(TOKEN_KEY);
+      setToken("");
+      setOrders(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (token) load(token);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    load(passwordInput);
+  };
+
+  const logOut = () => {
+    localStorage.removeItem(TOKEN_KEY);
+    setToken("");
+    setOrders(null);
+    setPasswordInput("");
+  };
+
+  if (!token || !orders) {
+    return (
+      <div className="min-h-[80vh] flex items-center justify-center px-5 bg-parchment">
+        <form onSubmit={handleSubmit} className="w-full max-w-sm flex flex-col gap-4">
+          <h1 className="font-display text-2xl mb-2">Order Dashboard</h1>
+          <input
+            type="password"
+            autoFocus
+            placeholder="Admin password"
+            value={passwordInput}
+            onChange={(e) => setPasswordInput(e.target.value)}
+            className="border border-ink/20 rounded-lg px-3.5 py-3 bg-parchment focus:outline-none focus:border-gold"
+          />
+          {error && (
+            <div className="flex items-start gap-2.5 bg-rust/10 border border-rust/30 text-rust rounded-lg px-4 py-3 text-sm">
+              <AlertCircle size={18} className="shrink-0 mt-0.5" />
+              <span>{error}</span>
+            </div>
+          )}
+          <button
+            type="submit"
+            disabled={loading}
+            className="bg-ink text-parchment font-condensed tracking-[0.14em] py-3.5 rounded-full hover:bg-rust transition-colors disabled:opacity-60"
+          >
+            {loading ? "CHECKING..." : "VIEW ORDERS"}
+          </button>
+        </form>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-parchment pt-28 pb-24 min-h-screen">
+      <div className="mx-auto max-w-4xl px-5 md:px-8">
+        <div className="flex items-center justify-between mb-10">
+          <div>
+            <h1 className="font-display text-3xl md:text-4xl">Orders</h1>
+            <p className="text-ink/50 text-sm mt-1">{orders.length} total</p>
+          </div>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => load(token)}
+              disabled={loading}
+              className="flex items-center gap-1.5 text-sm border border-ink/20 rounded-full px-4 py-2 hover:border-gold transition-colors"
+            >
+              <RefreshCw size={14} className={loading ? "animate-spin" : ""} /> Refresh
+            </button>
+            <button
+              onClick={logOut}
+              className="flex items-center gap-1.5 text-sm border border-ink/20 rounded-full px-4 py-2 hover:border-rust hover:text-rust transition-colors"
+            >
+              <LogOut size={14} /> Log out
+            </button>
+          </div>
+        </div>
+
+        {orders.length === 0 ? (
+          <p className="text-ink/50 text-center py-20">No orders yet.</p>
+        ) : (
+          <div className="flex flex-col gap-5">
+            {orders.map((order) => (
+              <div key={order.orderId} className="bg-white/60 border border-ink/10 rounded-2xl p-6">
+                <div className="flex flex-wrap items-start justify-between gap-3 mb-5 pb-5 border-b border-ink/10">
+                  <div>
+                    <p className="font-condensed tracking-wide text-sm text-gold">{order.orderId}</p>
+                    <p className="text-xs text-ink/50 mt-1">
+                      {new Date(order.createdAt).toLocaleString("en-IN", {
+                        dateStyle: "medium",
+                        timeStyle: "short",
+                      })}
+                    </p>
+                  </div>
+                  <span className="text-xs font-condensed tracking-wide bg-ink/5 px-3 py-1.5 rounded-full">
+                    {order.status.replace(/_/g, " ").toUpperCase()}
+                  </span>
+                </div>
+
+                <div className="grid sm:grid-cols-2 gap-6 mb-5">
+                  <div>
+                    <p className="font-condensed tracking-[0.1em] text-xs text-ink/50 mb-2">CUSTOMER</p>
+                    <p className="font-medium">{order.customer.fullName}</p>
+                    <p className="text-sm text-ink/70">{order.customer.phone}</p>
+                    <p className="text-sm text-ink/70">{order.customer.email}</p>
+                  </div>
+                  <div>
+                    <p className="font-condensed tracking-[0.1em] text-xs text-ink/50 mb-2">SHIP TO</p>
+                    <p className="text-sm text-ink/70">
+                      {order.customer.addressLine1}
+                      {order.customer.addressLine2 ? `, ${order.customer.addressLine2}` : ""}
+                    </p>
+                    <p className="text-sm text-ink/70">
+                      {order.customer.city}, {order.customer.state} {order.customer.pincode}
+                    </p>
+                    {order.customer.notes && (
+                      <p className="text-sm text-ink/50 italic mt-1">Note: {order.customer.notes}</p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-2 mb-4">
+                  {order.items.map((item, i) => (
+                    <div key={i} className="flex justify-between text-sm">
+                      <span>
+                        {item.qty} &times; {item.name}
+                      </span>
+                      <span className="text-ink/60">{formatINR(item.lineTotal)}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex justify-between font-display text-lg pt-3 border-t border-ink/10">
+                  <span>Total ({order.paymentMethod.toUpperCase()})</span>
+                  <span>{formatINR(order.total)}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

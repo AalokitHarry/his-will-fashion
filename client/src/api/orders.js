@@ -18,3 +18,9 @@ export function placeOrder({ items, customer }) {
     body: JSON.stringify({ items, customer }),
   });
 }
+
+export function fetchOrders(token) {
+  return request("/api/orders", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}
