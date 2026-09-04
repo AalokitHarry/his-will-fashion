@@ -22,7 +22,7 @@ export default function OrderConfirmed() {
         >
           <CheckCircle2 size={34} strokeWidth={1.6} />
         </motion.div>
-        <h1 className="font-display text-4xl mb-3">Order Placed</h1>
+        <h1 className="font-editorial uppercase tracking-tight text-4xl mb-3">Order Placed</h1>
         <p className="text-ink/60 mb-8">
           Thank you for wearing your faith with us. We've received your order and will reach out by phone
           or email to confirm before it ships, Pan India. Pay in cash when it arrives.

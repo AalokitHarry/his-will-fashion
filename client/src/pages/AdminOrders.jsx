@@ -51,7 +51,7 @@ export default function AdminOrders() {
     return (
       <div className="min-h-[80vh] flex items-center justify-center px-5 bg-parchment">
         <form onSubmit={handleSubmit} className="w-full max-w-sm flex flex-col gap-4">
-          <h1 className="font-display text-2xl mb-2">Order Dashboard</h1>
+          <h1 className="font-editorial uppercase tracking-tight text-2xl mb-2">Order Dashboard</h1>
           <input
             type="password"
             autoFocus
@@ -83,7 +83,7 @@ export default function AdminOrders() {
       <div className="mx-auto max-w-4xl px-5 md:px-8">
         <div className="flex items-center justify-between mb-10">
           <div>
-            <h1 className="font-display text-3xl md:text-4xl">Orders</h1>
+            <h1 className="font-editorial uppercase tracking-tight text-3xl md:text-4xl">Orders</h1>
             <p className="text-ink/50 text-sm mt-1">{orders.length} total</p>
           </div>
           <div className="flex items-center gap-3">

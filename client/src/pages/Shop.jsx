@@ -37,8 +37,8 @@ export default function Shop() {
     <div className="bg-parchment">
       <div className="bg-ink text-parchment pt-32 pb-16 grain">
         <div className="mx-auto max-w-7xl px-5 md:px-8">
-          <p className="font-condensed tracking-[0.2em] text-gold text-xs mb-3">THE FULL COLLECTION</p>
-          <h1 className="font-display text-5xl md:text-6xl">Shop All</h1>
+          <p className="font-condensed tracking-[0.2em] text-gold text-xs mb-3">(01) THE FULL COLLECTION</p>
+          <h1 className="font-editorial uppercase tracking-tight text-5xl md:text-6xl">Shop All</h1>
         </div>
       </div>
 

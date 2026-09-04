@@ -27,7 +27,7 @@ export default function CartDrawer() {
             className="fixed top-0 right-0 h-full w-full sm:w-[420px] bg-parchment z-[70] flex flex-col shadow-2xl"
           >
             <div className="flex items-center justify-between px-6 py-5 border-b border-ink/10">
-              <h2 className="font-display text-2xl">Your Bag ({items.length})</h2>
+              <h2 className="font-editorial uppercase tracking-tight text-2xl">Your Bag ({items.length})</h2>
               <button onClick={closeCart} aria-label="Close cart" className="p-1 hover:text-rust transition-colors">
                 <X size={22} />
               </button>

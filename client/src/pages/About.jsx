@@ -2,6 +2,9 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight, Cross, Heart, Sparkles, Users } from "lucide-react";
 import ProductImage from "../components/ProductImage";
+import RevealImage from "../components/RevealImage";
+import RevealText from "../components/RevealText";
+import Magnetic from "../components/Magnetic";
 
 const VALUES = [
   { icon: Cross, title: "Faith First", body: "Every design begins with scripture. We build clothing around conviction, not the other way around." },
@@ -9,6 +12,18 @@ const VALUES = [
   { icon: Users, title: "Community", body: "We're building a family of believers who wear their faith boldly — this brand grows through you, not around you." },
   { icon: Heart, title: "Purpose Over Profit", body: "A portion of every drop supports ministry work and community outreach across India." },
 ];
+
+function Eyebrow({ n, children, center }) {
+  return (
+    <p
+      className={`flex items-center gap-2.5 font-condensed tracking-[0.2em] text-gold text-xs mb-4 ${
+        center ? "justify-center" : ""
+      }`}
+    >
+      <span className="text-parchment/30">({n})</span> {children}
+    </p>
+  );
+}
 
 export default function About() {
   return (
@@ -19,14 +34,22 @@ export default function About() {
           style={{ background: "radial-gradient(60% 50% at 50% 10%, rgba(201,162,77,0.15) 0%, rgba(18,16,9,0) 70%)" }}
         />
         <div className="relative mx-auto max-w-4xl px-5 md:px-8 text-center">
-          <p className="font-condensed tracking-[0.2em] text-gold text-xs mb-4">OUR STORY</p>
-          <h1 className="font-display text-4xl md:text-6xl leading-tight mb-6">
-            Clothing Built on <span className="italic text-gold">Conviction</span>
+          <Eyebrow n="01" center>OUR STORY</Eyebrow>
+          <h1 className="font-editorial uppercase tracking-tight leading-[0.95] text-4xl md:text-6xl mb-6">
+            <RevealText>Clothing Built on</RevealText>
+            <RevealText className="block text-gold" delay={0.1}>
+              Conviction.
+            </RevealText>
           </h1>
-          <p className="text-parchment/70 text-lg leading-relaxed">
+          <motion.p
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            className="text-parchment/70 text-lg leading-relaxed"
+          >
             His Will Fashion started with a simple frustration: nowhere to find streetwear that felt as bold
             as our faith. So we built it ourselves — one verse, one drop, one testimony at a time.
-          </p>
+          </motion.p>
         </div>
       </section>
 
@@ -37,8 +60,10 @@ export default function About() {
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.7 }}
         >
-          <p className="font-condensed tracking-[0.2em] text-gold text-xs mb-3">THE BEGINNING</p>
-          <h2 className="font-display text-3xl md:text-4xl mb-6">From a Prayer to a Movement</h2>
+          <Eyebrow n="02">THE BEGINNING</Eyebrow>
+          <h2 className="font-editorial uppercase tracking-tight text-3xl md:text-4xl mb-6 leading-[0.95]">
+            From a Prayer to a Movement
+          </h2>
           <p className="text-ink/70 leading-relaxed mb-5">
             What began as a small idea between friends who wanted their wardrobe to reflect their walk with
             Christ has grown into a community stretching across India. Every piece carries a verse, a
@@ -49,21 +74,17 @@ export default function About() {
             family — because it is.
           </p>
         </motion.div>
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.7, delay: 0.1 }}
-          className="aspect-[4/5] rounded-3xl overflow-hidden"
-        >
+        <RevealImage className="aspect-[4/5] rounded-3xl overflow-hidden">
           <ProductImage src="/products/kingdom-mindset-tee.jpg" alt="Kingdom Mindset Tee" />
-        </motion.div>
+        </RevealImage>
       </section>
 
       <section className="bg-ink text-parchment py-24 grain">
         <div className="mx-auto max-w-7xl px-5 md:px-8">
-          <p className="font-condensed tracking-[0.2em] text-gold text-xs mb-3 text-center">WHAT WE STAND FOR</p>
-          <h2 className="font-display text-4xl md:text-5xl text-center mb-14">Our Values</h2>
+          <div className="text-center mb-14">
+            <Eyebrow n="03" center>WHAT WE STAND FOR</Eyebrow>
+            <h2 className="font-editorial uppercase tracking-tight text-4xl md:text-5xl">Our Values</h2>
+          </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {VALUES.map((v, i) => (
               <motion.div
@@ -72,10 +93,10 @@ export default function About() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
                 transition={{ duration: 0.6, delay: i * 0.08 }}
-                className="bg-parchment/[0.04] border border-parchment/10 rounded-2xl p-6"
+                className="bg-parchment/[0.04] border border-parchment/10 rounded-2xl p-6 hover:border-gold/40 transition-colors"
               >
                 <v.icon className="text-gold mb-4" size={26} strokeWidth={1.5} />
-                <h3 className="font-display text-xl mb-2">{v.title}</h3>
+                <h3 className="font-editorial uppercase tracking-tight text-lg mb-2">{v.title}</h3>
                 <p className="text-parchment/60 text-sm leading-relaxed">{v.body}</p>
               </motion.div>
             ))}
@@ -84,14 +105,19 @@ export default function About() {
       </section>
 
       <section className="mx-auto max-w-3xl px-5 py-24 text-center">
-        <h2 className="font-display text-3xl md:text-4xl mb-6">Ready to Wear Your Faith?</h2>
+        <Eyebrow n="04" center>JOIN US</Eyebrow>
+        <h2 className="font-editorial uppercase tracking-tight text-3xl md:text-4xl mb-6">
+          Ready to Wear Your Faith?
+        </h2>
         <p className="text-ink/60 mb-8">Join the growing family of believers repping His Will Fashion across the country.</p>
-        <Link
-          to="/shop"
-          className="inline-flex items-center gap-2 bg-ink text-parchment font-condensed tracking-[0.14em] px-8 py-4 rounded-full hover:bg-rust transition-colors duration-300"
-        >
-          SHOP THE COLLECTION <ArrowRight size={16} />
-        </Link>
+        <Magnetic>
+          <Link
+            to="/shop"
+            className="inline-flex items-center gap-2 bg-ink text-parchment font-condensed tracking-[0.14em] px-8 py-4 rounded-full hover:bg-rust transition-colors duration-300"
+          >
+            SHOP THE COLLECTION <ArrowRight size={16} />
+          </Link>
+        </Magnetic>
       </section>
     </div>
   );
