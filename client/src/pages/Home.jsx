@@ -22,18 +22,15 @@ const SPOTLIGHT_IDS = ["lion-of-judah-tee", "jesus-little-princess-tee", "grace-
 const TESTIMONIALS = [
   {
     quote: "The quality is incredible and every time I wear it someone asks about the verse. It's become a way to open conversations about my faith.",
-    name: "Priya S.",
-    city: "Bengaluru",
+    name: "Alex Jadhav",
   },
   {
     quote: "Finally, streetwear that doesn't compromise on style OR conviction. The Lion of Judah tee is on repeat.",
-    name: "Daniel M.",
-    city: "Kochi",
+    name: "Shweta Bamnia",
   },
   {
     quote: "Ordered for my whole cell group. Shipping was fast even to a smaller town, and the packaging felt like a gift.",
-    name: "Ruth A.",
-    city: "Pune",
+    name: "Lucky Rajendar",
   },
 ];
 
@@ -257,7 +254,7 @@ export default function Home() {
                 <span className="text-gold font-display text-3xl leading-none">&ldquo;</span>
                 <p className="text-parchment/80 leading-relaxed">{t.quote}</p>
                 <p className="font-condensed tracking-[0.1em] text-sm text-gold mt-auto">
-                  {t.name.toUpperCase()} &middot; {t.city}
+                  {t.name.toUpperCase()}
                 </p>
               </motion.div>
             ))}
