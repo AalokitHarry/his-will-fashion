@@ -64,7 +64,7 @@ export default function Checkout() {
         <ShoppingBag className="mx-auto text-ink/30 mb-5" size={40} strokeWidth={1.2} />
         <h1 className="font-editorial uppercase tracking-tight text-3xl mb-4">Your bag is empty</h1>
         <p className="text-ink/60 mb-8">Add something to your bag before checking out.</p>
-        <Link to="/shop" className="inline-flex items-center gap-2 bg-ink text-parchment font-condensed tracking-[0.14em] px-8 py-4 rounded-full hover:bg-rust transition-colors">
+        <Link to="/shop" className="inline-flex items-center gap-2 bg-ink text-parchment font-condensed tracking-[0.14em] px-8 py-4 rounded-none border border-ink hover:bg-rust hover:border-rust transition-colors">
           BROWSE THE COLLECTION
         </Link>
       </div>
@@ -132,7 +132,7 @@ export default function Checkout() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-ink text-parchment font-condensed tracking-[0.15em] py-4 rounded-full hover:bg-rust transition-colors duration-300 disabled:opacity-60 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2"
+              className="w-full bg-ink text-parchment font-condensed tracking-[0.15em] py-4 rounded-none border border-ink hover:bg-rust hover:border-rust transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2"
             >
               <PackageCheck size={15} />
               {loading ? "PLACING ORDER..." : `PLACE ORDER — ${formatINR(total)} (CASH ON DELIVERY)`}

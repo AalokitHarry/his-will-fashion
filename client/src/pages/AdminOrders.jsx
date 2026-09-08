@@ -69,7 +69,7 @@ export default function AdminOrders() {
           <button
             type="submit"
             disabled={loading}
-            className="bg-ink text-parchment font-condensed tracking-[0.14em] py-3.5 rounded-full hover:bg-rust transition-colors disabled:opacity-60"
+            className="bg-ink text-parchment font-condensed tracking-[0.14em] py-3.5 rounded-none border border-ink hover:bg-rust hover:border-rust transition-colors disabled:opacity-60"
           >
             {loading ? "CHECKING..." : "VIEW ORDERS"}
           </button>
@@ -90,13 +90,13 @@ export default function AdminOrders() {
             <button
               onClick={() => load(token)}
               disabled={loading}
-              className="flex items-center gap-1.5 text-sm border border-ink/20 rounded-full px-4 py-2 hover:border-gold transition-colors"
+              className="flex items-center gap-1.5 text-sm border border-ink/30 px-4 py-2 hover:border-ink transition-colors"
             >
               <RefreshCw size={14} className={loading ? "animate-spin" : ""} /> Refresh
             </button>
             <button
               onClick={logOut}
-              className="flex items-center gap-1.5 text-sm border border-ink/20 rounded-full px-4 py-2 hover:border-rust hover:text-rust transition-colors"
+              className="flex items-center gap-1.5 text-sm border border-ink/30 px-4 py-2 hover:border-rust hover:text-rust transition-colors"
             >
               <LogOut size={14} /> Log out
             </button>
@@ -108,7 +108,7 @@ export default function AdminOrders() {
         ) : (
           <div className="flex flex-col gap-5">
             {orders.map((order) => (
-              <div key={order.orderId} className="bg-white/60 border border-ink/10 rounded-2xl p-6">
+              <div key={order.orderId} className="bg-white/60 border border-ink p-6">
                 <div className="flex flex-wrap items-start justify-between gap-3 mb-5 pb-5 border-b border-ink/10">
                   <div>
                     <p className="font-condensed tracking-wide text-sm text-gold">{order.orderId}</p>

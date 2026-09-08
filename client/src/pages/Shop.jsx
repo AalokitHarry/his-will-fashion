@@ -49,10 +49,10 @@ export default function Shop() {
               <button
                 key={cat}
                 onClick={() => setCategory(cat)}
-                className={`font-condensed tracking-[0.08em] text-xs px-4 py-2 rounded-full border transition-colors ${
+                className={`font-mono uppercase tracking-[0.08em] text-xs px-4 py-2 border transition-colors ${
                   activeCategory === cat
                     ? "bg-ink text-parchment border-ink"
-                    : "border-ink/20 text-ink/70 hover:border-gold hover:text-rust"
+                    : "border-ink/30 text-ink/70 hover:border-rust hover:text-rust"
                 }`}
               >
                 {cat.toUpperCase()}
@@ -62,7 +62,7 @@ export default function Shop() {
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value)}
-            className="font-condensed tracking-[0.05em] text-sm border border-ink/20 rounded-full px-4 py-2 bg-transparent focus:outline-none focus:border-gold"
+            className="font-mono uppercase tracking-[0.05em] text-xs border border-ink/30 px-4 py-2 bg-transparent focus:outline-none focus:border-rust"
           >
             {SORTS.map((s) => (
               <option key={s.value} value={s.value}>

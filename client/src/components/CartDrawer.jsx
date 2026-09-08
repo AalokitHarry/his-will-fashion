@@ -102,7 +102,7 @@ export default function CartDrawer() {
                 <Link
                   to="/checkout"
                   onClick={closeCart}
-                  className="w-full bg-ink text-parchment font-condensed tracking-[0.15em] text-center py-3.5 rounded-full hover:bg-rust transition-colors duration-300"
+                  className="w-full bg-ink text-parchment font-condensed tracking-[0.15em] text-center py-3.5 rounded-none border border-ink hover:bg-rust hover:border-rust transition-colors duration-200"
                 >
                   PROCEED TO CHECKOUT
                 </Link>

@@ -128,7 +128,7 @@ export default function Contact() {
               </div>
               <button
                 type="submit"
-                className="bg-ink text-parchment font-condensed tracking-[0.14em] py-3.5 rounded-full hover:bg-rust transition-colors duration-300"
+                className="bg-ink text-parchment font-condensed tracking-[0.14em] py-3.5 rounded-none border border-ink hover:bg-rust hover:border-rust transition-colors duration-200"
               >
                 SEND MESSAGE
               </button>

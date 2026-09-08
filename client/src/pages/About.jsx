@@ -113,7 +113,7 @@ export default function About() {
         <Magnetic>
           <Link
             to="/shop"
-            className="inline-flex items-center gap-2 bg-ink text-parchment font-condensed tracking-[0.14em] px-8 py-4 rounded-full hover:bg-rust transition-colors duration-300"
+            className="inline-flex items-center gap-2 bg-ink text-parchment font-condensed tracking-[0.14em] px-8 py-4 rounded-none border border-ink hover:bg-rust hover:border-rust transition-colors duration-200"
           >
             SHOP THE COLLECTION <ArrowRight size={16} />
           </Link>

@@ -46,7 +46,7 @@ export default function OrderConfirmed() {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link
             to="/shop"
-            className="inline-flex items-center gap-2 bg-ink text-parchment font-condensed tracking-[0.14em] px-8 py-4 rounded-full hover:bg-rust transition-colors duration-300"
+            className="inline-flex items-center gap-2 bg-ink text-parchment font-condensed tracking-[0.14em] px-8 py-4 rounded-none border border-ink hover:bg-rust hover:border-rust transition-colors duration-200"
           >
             CONTINUE SHOPPING
           </Link>
@@ -54,7 +54,7 @@ export default function OrderConfirmed() {
             href="https://www.instagram.com/his_wll_fashion_club"
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-2 border border-ink/20 font-condensed tracking-[0.14em] px-8 py-4 rounded-full hover:border-gold hover:text-rust transition-colors duration-300"
+            className="inline-flex items-center gap-2 border border-ink font-condensed tracking-[0.14em] px-8 py-4 hover:border-rust hover:text-rust transition-colors duration-300"
           >
             <Camera size={16} /> FOLLOW ALONG
           </a>

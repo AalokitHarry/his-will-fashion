@@ -95,7 +95,7 @@ export default function Home() {
               <Magnetic>
                 <Link
                   to="/shop"
-                  className="inline-flex items-center gap-2 bg-ink text-parchment font-condensed tracking-[0.14em] px-8 py-4 rounded-full hover:bg-rust transition-colors duration-300"
+                  className="inline-flex items-center gap-2 bg-ink text-parchment font-condensed tracking-[0.14em] px-8 py-4 rounded-none border border-ink hover:bg-rust hover:border-rust transition-colors duration-200"
                 >
                   SHOP NOW <ArrowRight size={16} />
                 </Link>
@@ -277,7 +277,7 @@ export default function Home() {
             href="https://www.instagram.com/his_wll_fashion_club"
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-2 bg-ink text-parchment font-condensed tracking-[0.14em] px-8 py-4 rounded-full hover:bg-rust transition-colors duration-300"
+            className="inline-flex items-center gap-2 bg-ink text-parchment font-condensed tracking-[0.14em] px-8 py-4 rounded-none border border-ink hover:bg-rust hover:border-rust transition-colors duration-200"
           >
             @his_wll_fashion_club <ArrowRight size={16} />
           </a>

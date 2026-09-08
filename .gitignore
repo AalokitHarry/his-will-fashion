@@ -2,3 +2,6 @@
 Thumbs.db
 *.log
 .wrangler
+
+# Locally installed Claude Code skills (dev tooling, not project source)
+.claude/skills/
