@@ -5,7 +5,7 @@ import { Minus, Plus, RotateCcw, ShieldCheck, Truck } from "lucide-react";
 import { getProductById, PRODUCTS } from "../data/products";
 import { useCart } from "../context/CartContext";
 import { formatINR } from "../utils/format";
-import ProductImage from "../components/ProductImage";
+import ProductCarousel from "../components/ProductCarousel";
 import ProductCard from "../components/ProductCard";
 
 export default function ProductDetail() {
@@ -37,9 +37,9 @@ export default function ProductDetail() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="md:sticky md:top-28 self-start aspect-[3/4] rounded-3xl overflow-hidden"
+          className="md:sticky md:top-28 self-start"
         >
-          <ProductImage src={product.image} alt={product.name} />
+          <ProductCarousel images={product.images || [product.image]} alt={product.name} />
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }}>

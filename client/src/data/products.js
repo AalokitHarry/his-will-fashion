@@ -6,6 +6,10 @@
 
 export const CATEGORIES = ["All", "Tees"];
 
+// Each product has 3 photos: [0] on-model (used as the primary/thumbnail
+// image), [1] flat-lay, [2] on a hanger — shown together in the product
+// page carousel.
+
 export const PRODUCTS = [
   {
     id: "lion-of-judah-tee",
@@ -19,7 +23,12 @@ export const PRODUCTS = [
     tag: "New",
     description:
       "Oversized heavyweight tee with a bold 'Lion of Judah' back print — a crowned lion over a dusk skyline, with the full verse lettered beside it. Drop-shoulder fit in 240 GSM cotton fleece.",
-    image: "/products/lion-of-judah-tee.jpg",
+    image: "/products/lion-of-judah-tee-1.jpg",
+    images: [
+      "/products/lion-of-judah-tee-1.jpg",
+      "/products/lion-of-judah-tee-2.jpg",
+      "/products/lion-of-judah-tee-3.jpg",
+    ],
   },
   {
     id: "heavenly-influencer-tee",
@@ -33,7 +42,12 @@ export const PRODUCTS = [
     tag: "New",
     description:
       "Bold varsity-style 'Heavenly Influencer' print with 'Let your light shine before others' lettered beneath. Oversized fit, heavyweight cotton fleece.",
-    image: "/products/heavenly-influencer-tee.jpg",
+    image: "/products/heavenly-influencer-tee-1.jpg",
+    images: [
+      "/products/heavenly-influencer-tee-1.jpg",
+      "/products/heavenly-influencer-tee-2.jpg",
+      "/products/heavenly-influencer-tee-3.jpg",
+    ],
   },
   {
     id: "kingdom-mindset-tee",
@@ -47,7 +61,12 @@ export const PRODUCTS = [
     tag: "New",
     description:
       "A crest-style badge graphic with a crown and laurel wreath, screen-printed front and center on an oversized, heavyweight tee.",
-    image: "/products/kingdom-mindset-tee.jpg",
+    image: "/products/kingdom-mindset-tee-1.jpg",
+    images: [
+      "/products/kingdom-mindset-tee-1.jpg",
+      "/products/kingdom-mindset-tee-2.jpg",
+      "/products/kingdom-mindset-tee-3.jpg",
+    ],
   },
   {
     id: "grace-changed-my-story-tee",
@@ -61,7 +80,12 @@ export const PRODUCTS = [
     tag: "New",
     description:
       "Hand-lettered sticker-style back graphic with a small cross accent — a quiet testimony worn loud. Oversized heavyweight fit.",
-    image: "/products/grace-changed-my-story-tee.jpg",
+    image: "/products/grace-changed-my-story-tee-1.jpg",
+    images: [
+      "/products/grace-changed-my-story-tee-1.jpg",
+      "/products/grace-changed-my-story-tee-2.jpg",
+      "/products/grace-changed-my-story-tee-3.jpg",
+    ],
   },
   {
     id: "jesus-little-princess-tee",
@@ -75,7 +99,12 @@ export const PRODUCTS = [
     tag: "New",
     description:
       "A soft illustrated graphic with sunflowers on a cream tee, paired with 'I am fearfully and wonderfully made.' Oversized, heavyweight cotton.",
-    image: "/products/jesus-little-princess-tee.jpg",
+    image: "/products/jesus-little-princess-tee-1.jpg",
+    images: [
+      "/products/jesus-little-princess-tee-1.jpg",
+      "/products/jesus-little-princess-tee-2.jpg",
+      "/products/jesus-little-princess-tee-3.jpg",
+    ],
   },
   {
     id: "philippians-4-7-tee",
@@ -89,7 +118,12 @@ export const PRODUCTS = [
     tag: "New",
     description:
       "The full verse lettered vertically down the back in clean serif type — 'And the peace of God, which surpasses all understanding, will guard your hearts and minds through Christ Jesus.'",
-    image: "/products/philippians-4-7-tee.jpg",
+    image: "/products/philippians-4-7-tee-1.jpg",
+    images: [
+      "/products/philippians-4-7-tee-1.jpg",
+      "/products/philippians-4-7-tee-2.jpg",
+      "/products/philippians-4-7-tee-3.jpg",
+    ],
   },
   {
     id: "i-ace-my-race-tee",
@@ -103,7 +137,12 @@ export const PRODUCTS = [
     tag: "New",
     description:
       "Hand-painted lettering in pink and gold with a crown accent on jet black. Oversized, heavyweight fit for everyday wear.",
-    image: "/products/i-ace-my-race-tee.jpg",
+    image: "/products/i-ace-my-race-tee-1.jpg",
+    images: [
+      "/products/i-ace-my-race-tee-1.jpg",
+      "/products/i-ace-my-race-tee-2.jpg",
+      "/products/i-ace-my-race-tee-3.jpg",
+    ],
   },
   {
     id: "plain-eggplant-tee",
@@ -117,7 +156,12 @@ export const PRODUCTS = [
     tag: "New",
     description:
       "The blank canvas of the collection — same oversized, heavyweight 240 GSM cotton fleece as every printed piece, in a deep eggplant tone. Understated, versatile, built to layer.",
-    image: "/products/plain-eggplant-tee.jpg",
+    image: "/products/plain-eggplant-tee-1.jpg",
+    images: [
+      "/products/plain-eggplant-tee-1.jpg",
+      "/products/plain-eggplant-tee-2.jpg",
+      "/products/plain-eggplant-tee-3.jpg",
+    ],
   },
 ];
 
