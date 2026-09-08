@@ -67,7 +67,7 @@ export default function CartDrawer() {
                         {item.color} / {item.size}
                       </p>
                       <div className="flex items-center justify-between mt-1">
-                        <div className="flex items-center border border-ink/15 rounded-full">
+                        <div className="flex items-center border border-ink/15 rounded-lg">
                           <button
                             onClick={() => updateQty(item, item.qty - 1)}
                             className="p-1.5 hover:text-gold"
@@ -102,7 +102,7 @@ export default function CartDrawer() {
                 <Link
                   to="/checkout"
                   onClick={closeCart}
-                  className="w-full bg-ink text-parchment font-condensed tracking-[0.15em] text-center py-3.5 rounded-full border border-ink hover:bg-rust hover:border-rust transition-colors duration-200"
+                  className="w-full bg-gold text-ink font-condensed tracking-[0.15em] text-center py-3.5 rounded-lg border border-gold hover:bg-rust hover:border-rust hover:text-parchment transition-colors duration-200"
                 >
                   PROCEED TO CHECKOUT
                 </Link>

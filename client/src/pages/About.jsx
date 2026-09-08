@@ -5,6 +5,7 @@ import ProductImage from "../components/ProductImage";
 import RevealImage from "../components/RevealImage";
 import RevealText from "../components/RevealText";
 import Magnetic from "../components/Magnetic";
+import IlluminatedCapital from "../components/IlluminatedCapital";
 
 const VALUES = [
   { icon: Cross, title: "Faith First", body: "Every design begins with scripture. We build clothing around conviction, not the other way around." },
@@ -27,15 +28,12 @@ function Eyebrow({ n, children, center }) {
 
 export default function About() {
   return (
-    <div className="bg-parchment">
-      <section className="bg-ink text-parchment pt-32 pb-24 grain relative overflow-hidden">
-        <div
-          className="absolute inset-0 opacity-60"
-          style={{ background: "radial-gradient(60% 50% at 50% 10%, rgba(201,162,77,0.15) 0%, rgba(18,16,9,0) 70%)" }}
-        />
+    <div>
+      <section className="bg-ink text-parchment pt-32 pb-24 relative overflow-hidden">
+        <IlluminatedCapital letter="H" className="hidden md:block absolute left-[-6%] top-[4%] opacity-40 z-0" />
         <div className="relative mx-auto max-w-4xl px-5 md:px-8 text-center">
           <Eyebrow n="01" center>OUR STORY</Eyebrow>
-          <h1 className="font-editorial leading-[0.95] text-4xl md:text-6xl mb-6">
+          <h1 className="font-editorial leading-[1.05] text-4xl md:text-6xl mb-6">
             <RevealText trigger="mount">Clothing Built on</RevealText>
             <RevealText className="block text-gold" delay={0.1} trigger="mount">
               Conviction.
@@ -61,25 +59,25 @@ export default function About() {
           transition={{ duration: 0.7 }}
         >
           <Eyebrow n="02">THE BEGINNING</Eyebrow>
-          <h2 className="font-editorial text-3xl md:text-4xl mb-6 leading-[0.95]">
+          <h2 className="font-editorial text-3xl md:text-4xl mb-6 leading-[1.05]">
             From a Prayer to a Movement
           </h2>
-          <p className="text-ink/70 leading-relaxed mb-5">
+          <p className="text-parchment/70 leading-relaxed mb-5">
             What began as a small idea between friends who wanted their wardrobe to reflect their walk with
             Christ has grown into a community stretching across India. Every piece carries a verse, a
             reminder, a quiet witness worn into the everyday.
           </p>
-          <p className="text-ink/70 leading-relaxed">
+          <p className="text-parchment/70 leading-relaxed">
             We design in small batches, print with intention, and ship every order like it's going to
             family — because it is.
           </p>
         </motion.div>
-        <RevealImage className="aspect-[4/5] rounded-3xl overflow-hidden">
+        <RevealImage className="aspect-[4/5] rounded-lg overflow-hidden">
           <ProductImage src="/products/kingdom-mindset-tee-1.jpg" alt="Kingdom Mindset Tee" />
         </RevealImage>
       </section>
 
-      <section className="bg-ink text-parchment py-24 grain">
+      <section className="bg-charcoal text-parchment py-24 grain">
         <div className="mx-auto max-w-7xl px-5 md:px-8">
           <div className="text-center mb-14">
             <Eyebrow n="03" center>WHAT WE STAND FOR</Eyebrow>
@@ -93,7 +91,7 @@ export default function About() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
                 transition={{ duration: 0.6, delay: i * 0.08 }}
-                className="bg-parchment/[0.04] border border-parchment/10 rounded-2xl p-6 hover:border-gold/40 transition-colors"
+                className="bg-ink/40 border border-gold/15 rounded-lg p-6 hover:border-gold/40 transition-colors"
               >
                 <v.icon className="text-gold mb-4" size={26} strokeWidth={1.5} />
                 <h3 className="font-editorial text-lg mb-2">{v.title}</h3>
@@ -109,11 +107,11 @@ export default function About() {
         <h2 className="font-editorial text-3xl md:text-4xl mb-6">
           Ready to Wear Your Faith?
         </h2>
-        <p className="text-ink/60 mb-8">Join the growing family of believers repping His Will Fashion across the country.</p>
+        <p className="text-parchment/60 mb-8">Join the growing family of believers repping His Will Fashion across the country.</p>
         <Magnetic>
           <Link
             to="/shop"
-            className="inline-flex items-center gap-2 bg-ink text-parchment font-condensed tracking-[0.14em] px-8 py-4 rounded-full border border-ink hover:bg-rust hover:border-rust transition-colors duration-200"
+            className="inline-flex items-center gap-2 bg-gold text-ink font-condensed tracking-[0.14em] px-8 py-4 rounded-lg border border-gold hover:bg-rust hover:border-rust hover:text-parchment transition-colors duration-200"
           >
             SHOP THE COLLECTION <ArrowRight size={16} />
           </Link>

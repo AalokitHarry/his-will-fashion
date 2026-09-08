@@ -6,7 +6,7 @@ import ScrollToTop from "./ScrollToTop";
 
 export default function Layout() {
   return (
-    <div className="min-h-screen flex flex-col bg-parchment text-ink">
+    <div className="min-h-screen flex flex-col bg-ink text-parchment">
       <ScrollToTop />
       <Navbar />
       <CartDrawer />

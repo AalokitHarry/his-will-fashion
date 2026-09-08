@@ -11,43 +11,22 @@ const LINKS = [
 ];
 
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const { itemCount, openCart } = useCart();
   const { pathname } = useLocation();
-
-  const isHome = pathname === "/";
-  const transparent = isHome && !scrolled;
-  // The home hero sits on a light background, so the floating navbar needs
-  // dark text there; once it goes solid (scrolled, or any other page) it's
-  // back to the usual dark bar with light text.
-  const tone = transparent
-    ? { text: "text-ink", sub: "text-ink/70 hover:text-rust", active: "text-rust", icon: "text-ink hover:text-rust" }
-    : { text: "text-parchment", sub: "text-parchment/85 hover:text-rust-soft", active: "text-rust-soft", icon: "text-parchment hover:text-rust-soft" };
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
-    onScroll();
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   useEffect(() => {
     setMenuOpen(false);
   }, [pathname]);
 
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-500 ${
-        transparent ? "bg-transparent" : "bg-ink/95 backdrop-blur-md border-b border-gold/20"
-      }`}
-    >
+    <header className="fixed top-0 left-0 right-0 z-50 bg-ink/95 backdrop-blur-md border-b border-gold/20">
       <div className="mx-auto max-w-7xl px-5 md:px-8 flex items-center justify-between h-18 py-4">
         <Link to="/" className="flex items-center gap-2.5 group">
-          <span className="w-9 h-9 rounded-full border border-gold flex items-center justify-center text-gold group-hover:bg-gold group-hover:text-ink transition-colors duration-300">
-            <span className="font-display text-xl leading-none translate-y-[-1px]">†</span>
+          <span className="w-9 h-9 rounded-md bg-gold flex items-center justify-center text-ink font-display text-lg leading-none group-hover:bg-rust group-hover:text-parchment transition-colors duration-300">
+            H
           </span>
-          <span className={`font-condensed tracking-[0.15em] text-lg transition-colors duration-500 ${tone.text}`}>
+          <span className="font-condensed tracking-[0.15em] text-lg text-parchment">
             HIS WILL <span className="text-gold">FASHION</span>
           </span>
         </Link>
@@ -59,7 +38,7 @@ export default function Navbar() {
               to={link.to}
               className={({ isActive }) =>
                 `font-condensed tracking-[0.1em] text-sm transition-colors relative py-1 ${
-                  isActive ? tone.active : tone.sub
+                  isActive ? "text-gold" : "text-parchment/80 hover:text-gold"
                 }`
               }
             >
@@ -72,7 +51,7 @@ export default function Navbar() {
           <button
             onClick={openCart}
             aria-label="Open cart"
-            className={`relative flex items-center justify-center w-10 h-10 rounded-full transition-colors ${tone.icon}`}
+            className="relative flex items-center justify-center w-10 h-10 rounded-full text-parchment hover:text-gold transition-colors"
           >
             <ShoppingBag size={21} strokeWidth={1.6} />
             <AnimatePresence>
@@ -89,7 +68,7 @@ export default function Navbar() {
             </AnimatePresence>
           </button>
           <button
-            className={`md:hidden transition-colors ${tone.text}`}
+            className="md:hidden text-parchment transition-colors"
             onClick={() => setMenuOpen((o) => !o)}
             aria-label="Toggle menu"
           >

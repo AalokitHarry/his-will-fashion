@@ -8,6 +8,7 @@ import Marquee from "../components/Marquee";
 import Magnetic from "../components/Magnetic";
 import RevealText from "../components/RevealText";
 import RevealImage from "../components/RevealImage";
+import IlluminatedCapital from "../components/IlluminatedCapital";
 
 const TICKER = [
   "PAN INDIA SHIPPING",
@@ -37,7 +38,7 @@ const TESTIMONIALS = [
 function Eyebrow({ n, children }) {
   return (
     <p className="flex items-center gap-2.5 font-condensed tracking-[0.2em] text-gold text-xs mb-3">
-      <span className="text-ink/30">({n})</span> {children}
+      <span className="text-parchment/30">({n})</span> {children}
     </p>
   );
 }
@@ -49,8 +50,12 @@ export default function Home() {
   return (
     <div>
       {/* HERO */}
-      <section className="relative min-h-screen flex items-center bg-parchment text-ink overflow-hidden pt-24 pb-16">
-        <div className="mx-auto max-w-7xl w-full px-5 md:px-8 grid md:grid-cols-[1.1fr_0.9fr] gap-12 md:gap-8 items-center">
+      <section className="relative min-h-screen flex items-center bg-ink text-parchment overflow-hidden pt-24 pb-16">
+        <IlluminatedCapital
+          letter="H"
+          className="hidden md:block absolute right-[-8%] top-[6%] opacity-70 z-0"
+        />
+        <div className="relative z-10 mx-auto max-w-7xl w-full px-5 md:px-8 grid md:grid-cols-[1.1fr_0.9fr] gap-12 md:gap-8 items-center">
           <div>
             <motion.div
               initial={{ opacity: 0, y: 8 }}
@@ -59,7 +64,7 @@ export default function Home() {
               className="flex items-center gap-3 mb-8"
             >
               <span className="w-10 h-px bg-gold" />
-              <p className="font-condensed tracking-[0.3em] text-xs text-ink/50">
+              <p className="font-condensed tracking-[0.3em] text-xs text-parchment/50">
                 PREMIUM CHRISTIAN STREETWEAR
               </p>
             </motion.div>
@@ -68,7 +73,7 @@ export default function Home() {
               <RevealText as="span" className="block" trigger="mount">
                 Wear Your Faith.
               </RevealText>
-              <RevealText as="span" className="block italic text-gold" delay={0.12} trigger="mount">
+              <RevealText as="span" className="block text-gold" delay={0.12} trigger="mount">
                 Live His Will.
               </RevealText>
             </h1>
@@ -77,7 +82,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.5 }}
-              className="mt-8 max-w-md text-ink/60 text-base md:text-lg leading-relaxed"
+              className="mt-8 max-w-md text-parchment/60 text-base md:text-lg leading-relaxed"
             >
               Faith-inspired apparel crafted for those who carry the Word wherever they go. Heavyweight
               fabric, considered design, scripture in every stitch.
@@ -92,7 +97,7 @@ export default function Home() {
               <Magnetic>
                 <Link
                   to="/shop"
-                  className="inline-flex items-center gap-2 bg-ink text-parchment font-condensed tracking-[0.14em] px-8 py-4 rounded-full hover:bg-rust transition-colors duration-300"
+                  className="inline-flex items-center gap-2 bg-gold text-ink font-condensed tracking-[0.14em] px-8 py-4 rounded-lg hover:bg-rust hover:text-parchment transition-colors duration-300"
                 >
                   SHOP NOW <ArrowRight size={16} />
                 </Link>
@@ -109,7 +114,7 @@ export default function Home() {
           <RevealImage
             trigger="mount"
             delay={0.3}
-            className="relative aspect-[3/4] md:aspect-[4/5] rounded-2xl overflow-hidden"
+            className="relative aspect-[3/4] md:aspect-[4/5] rounded-lg overflow-hidden"
           >
             <ProductImage src="/products/lion-of-judah-tee-1.jpg" alt="Lion of Judah Tee" />
           </RevealImage>
@@ -118,15 +123,15 @@ export default function Home() {
         <motion.div
           animate={{ y: [0, 8, 0] }}
           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute bottom-6 left-1/2 -translate-x-1/2 text-ink/30"
+          className="absolute bottom-6 left-1/2 -translate-x-1/2 text-parchment/30 z-10"
         >
           <ArrowDown size={20} />
         </motion.div>
       </section>
 
       {/* TICKER */}
-      <div className="bg-ink text-parchment py-3 font-condensed tracking-[0.15em] text-sm">
-        <Marquee items={TICKER} />
+      <div className="bg-gold text-ink py-3 font-condensed font-semibold tracking-[0.15em] text-sm">
+        <Marquee items={TICKER} separatorClassName="text-ink/45" />
       </div>
 
       {/* FEATURED COLLECTION */}
@@ -139,7 +144,7 @@ export default function Home() {
           <Magnetic>
             <Link
               to="/shop"
-              className="inline-flex items-center gap-1.5 font-condensed tracking-[0.1em] text-sm border-b border-ink/20 pb-1 hover:border-gold hover:text-rust transition-colors w-fit"
+              className="inline-flex items-center gap-1.5 font-condensed tracking-[0.1em] text-sm border-b border-parchment/20 pb-1 hover:border-gold hover:text-gold transition-colors w-fit"
             >
               VIEW ALL PRODUCTS <ArrowRight size={14} />
             </Link>
@@ -153,22 +158,25 @@ export default function Home() {
       </section>
 
       {/* VERSE SPOTLIGHT */}
-      <section className="bg-ink text-parchment py-28 md:py-36 grain relative overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-center opacity-[0.05] pointer-events-none">
+      <section className="bg-gold text-ink py-28 md:py-36 relative overflow-hidden">
+        <div className="absolute inset-0 flex items-center justify-center opacity-[0.08] pointer-events-none">
           <span className="font-display text-[40vw] leading-none">†</span>
         </div>
         <div className="relative mx-auto max-w-3xl px-6 text-center">
-          <span className="text-gold text-4xl font-display">&ldquo;</span>
-          <p className="font-display italic text-2xl md:text-4xl leading-snug md:leading-snug">
+          <span className="text-ink/40 text-4xl font-display">&ldquo;</span>
+          <p className="font-display uppercase text-2xl md:text-4xl leading-snug md:leading-snug">
             Not by might, nor by power, but by my Spirit, says the LORD of hosts.
           </p>
-          <p className="mt-6 font-condensed tracking-[0.2em] text-gold text-sm">ZECHARIAH 4:6</p>
+          <p className="mt-6 inline-flex items-center justify-center gap-2 font-condensed tracking-[0.2em] text-sm text-ink">
+            <span className="w-1.5 h-1.5 rounded-full bg-rust" />
+            ZECHARIAH 4:6
+          </p>
         </div>
       </section>
 
       {/* BRAND STORY */}
       <section className="mx-auto max-w-7xl px-5 md:px-8 py-24 md:py-32 grid md:grid-cols-2 gap-14 items-center">
-        <RevealImage className="relative aspect-[4/5] rounded-3xl overflow-hidden order-2 md:order-1">
+        <RevealImage className="relative aspect-[4/5] rounded-lg overflow-hidden order-2 md:order-1">
           <ProductImage src="/products/kingdom-mindset-tee-1.jpg" alt="Kingdom Mindset Tee" />
         </RevealImage>
         <motion.div
@@ -179,22 +187,22 @@ export default function Home() {
           className="order-1 md:order-2"
         >
           <Eyebrow n="03">WHY WE EXIST</Eyebrow>
-          <h2 className="font-editorial text-4xl md:text-5xl mb-6 leading-[0.95]">
+          <h2 className="font-editorial text-4xl md:text-5xl mb-6 leading-[1.05]">
             More Than a Brand. A Declaration.
           </h2>
-          <p className="text-ink/70 text-base md:text-lg leading-relaxed mb-5">
+          <p className="text-parchment/70 text-base md:text-lg leading-relaxed mb-5">
             His Will Fashion was built for believers who want their wardrobe to reflect their walk. Every
             piece is designed to start conversations, carry conviction, and be worn without apology — from
             Sunday service to the streets.
           </p>
-          <p className="text-ink/70 text-base md:text-lg leading-relaxed mb-8">
+          <p className="text-parchment/70 text-base md:text-lg leading-relaxed mb-8">
             We source heavyweight fabric, print with care, and ship across India so the message travels
             further than we ever could alone.
           </p>
           <Magnetic>
             <Link
               to="/about"
-              className="inline-flex items-center gap-2 font-condensed tracking-[0.12em] text-sm border-b border-ink pb-1 hover:text-rust hover:border-rust transition-colors"
+              className="inline-flex items-center gap-2 font-condensed tracking-[0.12em] text-sm border-b border-parchment/40 pb-1 hover:text-gold hover:border-gold transition-colors"
             >
               READ OUR STORY <ArrowRight size={14} />
             </Link>
@@ -215,13 +223,13 @@ export default function Home() {
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.6, delay: i * 0.1 }}
             >
-              <Link to={`/product/${product.id}`} className="group relative block aspect-[3/4] rounded-2xl overflow-hidden">
+              <Link to={`/product/${product.id}`} className="group relative block aspect-[3/4] rounded-lg overflow-hidden border border-gold/15">
                 <ProductImage
                   src={product.image}
                   alt={product.name}
                   className="transition-transform duration-700 group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/10 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/15 to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 p-6 flex items-center justify-between">
                   <h3 className="font-display text-xl text-parchment">{product.name}</h3>
                   <span className="w-9 h-9 rounded-full border border-parchment/50 flex items-center justify-center text-parchment shrink-0 ml-3 group-hover:bg-gold group-hover:border-gold group-hover:text-ink transition-colors">
@@ -235,7 +243,7 @@ export default function Home() {
       </section>
 
       {/* TESTIMONIALS */}
-      <section className="bg-ink text-parchment py-24 md:py-32 grain">
+      <section className="bg-charcoal text-parchment py-24 md:py-32 grain">
         <div className="mx-auto max-w-7xl px-5 md:px-8">
           <p className="font-condensed tracking-[0.2em] text-gold text-xs mb-3 text-center">(05) TESTIMONIES</p>
           <h2 className="font-editorial text-4xl md:text-5xl text-center mb-14">
@@ -249,7 +257,7 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
                 transition={{ duration: 0.6, delay: i * 0.1 }}
-                className="bg-parchment/[0.04] border border-parchment/10 rounded-2xl p-7 flex flex-col gap-5"
+                className="bg-ink/40 border border-gold/15 rounded-lg p-7 flex flex-col gap-5"
               >
                 <span className="text-gold font-display text-3xl leading-none">&ldquo;</span>
                 <p className="text-parchment/80 leading-relaxed">{t.quote}</p>
@@ -266,7 +274,7 @@ export default function Home() {
       <section className="mx-auto max-w-7xl px-5 md:px-8 py-24 md:py-32 text-center">
         <Camera className="mx-auto text-gold mb-5" size={30} strokeWidth={1.4} />
         <h2 className="font-editorial text-4xl md:text-5xl mb-4">Join the Movement</h2>
-        <p className="text-ink/60 max-w-lg mx-auto mb-8">
+        <p className="text-parchment/60 max-w-lg mx-auto mb-8">
           Follow along for new drops, behind-the-scenes, and a community wearing their faith out loud.
         </p>
         <Magnetic>
@@ -274,7 +282,7 @@ export default function Home() {
             href="https://www.instagram.com/his_wll_fashion_club"
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-2 bg-ink text-parchment font-condensed tracking-[0.14em] px-8 py-4 rounded-full border border-ink hover:bg-rust hover:border-rust transition-colors duration-200"
+            className="inline-flex items-center gap-2 bg-gold text-ink font-condensed tracking-[0.14em] px-8 py-4 rounded-lg border border-gold hover:bg-rust hover:border-rust hover:text-parchment transition-colors duration-200"
           >
             @his_wll_fashion_club <ArrowRight size={16} />
           </a>

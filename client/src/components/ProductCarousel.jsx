@@ -17,7 +17,7 @@ export default function ProductCarousel({ images, alt, className = "" }) {
 
   return (
     <div className={className}>
-      <div className="relative aspect-[3/4] overflow-hidden bg-ink group">
+      <div className="relative aspect-[3/4] overflow-hidden bg-charcoal border border-gold/15 group">
         <AnimatePresence initial={false} custom={direction} mode="popLayout">
           <motion.div
             key={index}
@@ -71,7 +71,7 @@ export default function ProductCarousel({ images, alt, className = "" }) {
               key={src}
               onClick={() => go(i)}
               className={`w-16 aspect-[3/4] overflow-hidden border transition-colors ${
-                i === index ? "border-ink" : "border-ink/15 hover:border-ink/40"
+                i === index ? "border-gold" : "border-parchment/15 hover:border-parchment/40"
               }`}
             >
               <ProductImage src={src} alt={`${alt} thumbnail ${i + 1}`} />

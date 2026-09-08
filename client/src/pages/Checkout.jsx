@@ -61,10 +61,10 @@ export default function Checkout() {
   if (items.length === 0) {
     return (
       <div className="pt-40 pb-32 text-center px-5">
-        <ShoppingBag className="mx-auto text-ink/30 mb-5" size={40} strokeWidth={1.2} />
+        <ShoppingBag className="mx-auto text-parchment/30 mb-5" size={40} strokeWidth={1.2} />
         <h1 className="font-editorial text-3xl mb-4">Your bag is empty</h1>
-        <p className="text-ink/60 mb-8">Add something to your bag before checking out.</p>
-        <Link to="/shop" className="inline-flex items-center gap-2 bg-ink text-parchment font-condensed tracking-[0.14em] px-8 py-4 rounded-full border border-ink hover:bg-rust hover:border-rust transition-colors">
+        <p className="text-parchment/60 mb-8">Add something to your bag before checking out.</p>
+        <Link to="/shop" className="inline-flex items-center gap-2 bg-gold text-ink font-condensed tracking-[0.14em] px-8 py-4 rounded-lg border border-gold hover:bg-rust hover:border-rust hover:text-parchment transition-colors">
           BROWSE THE COLLECTION
         </Link>
       </div>
@@ -72,7 +72,7 @@ export default function Checkout() {
   }
 
   return (
-    <div className="bg-parchment pt-28 pb-24">
+    <div className="pt-28 pb-24">
       <div className="mx-auto max-w-6xl px-5 md:px-8">
         <h1 className="font-editorial text-3xl md:text-4xl mb-10">Checkout</h1>
         <div className="grid lg:grid-cols-[1.3fr_1fr] gap-12">
@@ -93,12 +93,12 @@ export default function Checkout() {
                 <Field label="Address Line 2 (optional)" name="addressLine2" value={form.addressLine2} onChange={onChange} className="sm:col-span-2" />
                 <Field label="City" name="city" value={form.city} onChange={onChange} required />
                 <div className="flex flex-col gap-1.5">
-                  <label className="font-condensed tracking-[0.08em] text-xs text-ink/60">STATE</label>
+                  <label className="font-condensed tracking-[0.08em] text-xs text-parchment/60">STATE</label>
                   <select
                     name="state"
                     value={form.state}
                     onChange={onChange}
-                    className="border border-ink/20 rounded-lg px-3.5 py-3 bg-parchment focus:outline-none focus:border-gold"
+                    className="border border-parchment/20 rounded-lg px-3.5 py-3 bg-parchment text-ink focus:outline-none focus:border-gold"
                   >
                     {INDIAN_STATES.map((s) => (
                       <option key={s} value={s}>{s}</option>
@@ -118,7 +118,7 @@ export default function Checkout() {
                 onChange={onChange}
                 rows={3}
                 placeholder="Delivery instructions, gift note, etc."
-                className="w-full border border-ink/20 rounded-lg px-3.5 py-3 bg-parchment focus:outline-none focus:border-gold resize-none"
+                className="w-full border border-parchment/20 rounded-lg px-3.5 py-3 bg-parchment text-ink focus:outline-none focus:border-gold resize-none"
               />
             </section>
 
@@ -132,17 +132,17 @@ export default function Checkout() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-ink text-parchment font-condensed tracking-[0.15em] py-4 rounded-full border border-ink hover:bg-rust hover:border-rust transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2"
+              className="w-full bg-gold text-ink font-condensed tracking-[0.15em] py-4 rounded-lg border border-gold hover:bg-rust hover:border-rust hover:text-parchment transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2"
             >
               <PackageCheck size={15} />
               {loading ? "PLACING ORDER..." : `PLACE ORDER — ${formatINR(total)} (CASH ON DELIVERY)`}
             </button>
-            <p className="text-xs text-ink/45 -mt-6 text-center">
+            <p className="text-xs text-parchment/45 -mt-6 text-center">
               Pay in cash when your order arrives. We'll reach out to confirm before it ships.
             </p>
           </form>
 
-          <aside className="bg-ink text-parchment rounded-3xl p-7 h-fit lg:sticky lg:top-28 grain">
+          <aside className="bg-charcoal border border-gold/15 text-parchment rounded-lg p-7 h-fit lg:sticky lg:top-28">
             <h2 className="font-editorial text-xl mb-6">Order Summary</h2>
             <div className="flex flex-col gap-4 mb-6 max-h-80 overflow-y-auto pr-1">
               {items.map((item) => (
@@ -190,10 +190,10 @@ export default function Checkout() {
 function Field({ label, className = "", ...props }) {
   return (
     <div className={`flex flex-col gap-1.5 ${className}`}>
-      <label className="font-condensed tracking-[0.08em] text-xs text-ink/60">{label.toUpperCase()}</label>
+      <label className="font-condensed tracking-[0.08em] text-xs text-parchment/60">{label.toUpperCase()}</label>
       <input
         {...props}
-        className="border border-ink/20 rounded-lg px-3.5 py-3 bg-parchment focus:outline-none focus:border-gold disabled:opacity-50"
+        className="border border-parchment/20 rounded-lg px-3.5 py-3 bg-parchment text-ink focus:outline-none focus:border-gold disabled:opacity-50"
       />
     </div>
   );

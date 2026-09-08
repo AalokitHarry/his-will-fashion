@@ -8,14 +8,14 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-[1.4fr_1fr_1fr_1.2fr] gap-12 pb-12 border-b border-parchment/10">
           <div>
             <div className="flex items-center gap-2.5 mb-4">
-              <span className="w-8 h-8 rounded-full border border-gold/60 flex items-center justify-center text-gold">
-                <span className="font-display text-lg leading-none translate-y-[-1px]">†</span>
+              <span className="w-8 h-8 rounded-md bg-gold flex items-center justify-center text-ink font-display text-base leading-none">
+                H
               </span>
               <span className="font-condensed tracking-[0.15em] text-xl text-parchment">
                 HIS WILL <span className="text-gold">FASHION</span>
               </span>
             </div>
-            <p className="font-display italic text-lg text-parchment/70 leading-relaxed max-w-xs">
+            <p className="text-parchment/70 leading-relaxed max-w-xs">
               "Wear your faith. Live His will." Premium Christian streetwear, cut for everyday devotion.
             </p>
           </div>

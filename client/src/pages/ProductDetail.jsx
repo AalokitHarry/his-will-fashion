@@ -7,6 +7,7 @@ import { useCart } from "../context/CartContext";
 import { formatINR } from "../utils/format";
 import ProductCarousel from "../components/ProductCarousel";
 import ProductCard from "../components/ProductCard";
+import VerseMark from "../components/VerseMark";
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -31,7 +32,7 @@ export default function ProductDetail() {
   const related = PRODUCTS.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 4);
 
   return (
-    <div className="bg-parchment pt-24">
+    <div className="pt-24">
       <div className="mx-auto max-w-7xl px-5 md:px-8 py-10 grid md:grid-cols-2 gap-12 lg:gap-16">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -44,28 +45,26 @@ export default function ProductDetail() {
 
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }}>
           {(product.verse || product.tagline) && (
-            <p className="font-condensed tracking-[0.15em] text-gold text-xs mb-3">
-              {product.verse || product.tagline}
-            </p>
+            <VerseMark className="mb-3" trigger="mount">{product.verse || product.tagline}</VerseMark>
           )}
           <h1 className="font-display text-3xl md:text-4xl leading-tight mb-3">{product.name}</h1>
           <div className="flex items-center gap-3 mb-6">
             <span className="text-xl font-medium">{formatINR(product.price)}</span>
             {product.compareAt && (
-              <span className="text-base text-ink/40 line-through">{formatINR(product.compareAt)}</span>
+              <span className="text-base text-parchment/40 line-through">{formatINR(product.compareAt)}</span>
             )}
             {product.compareAt && (
-              <span className="text-xs font-condensed tracking-wide bg-rust text-parchment px-2 py-1 rounded-full">
+              <span className="text-xs font-condensed tracking-wide bg-rust text-parchment px-2 py-1 rounded-md">
                 SAVE {Math.round(100 - (product.price / product.compareAt) * 100)}%
               </span>
             )}
           </div>
 
-          <p className="text-ink/70 leading-relaxed mb-8">{product.description}</p>
+          <p className="text-parchment/70 leading-relaxed mb-8">{product.description}</p>
 
           <div className="mb-6">
-            <p className="font-condensed tracking-[0.1em] text-xs text-ink/60 mb-2.5">
-              COLOR — <span className="text-ink">{color}</span>
+            <p className="font-condensed tracking-[0.1em] text-xs text-parchment/60 mb-2.5">
+              COLOR — <span className="text-parchment">{color}</span>
             </p>
             <div className="flex gap-2.5">
               {product.colors.map((c) => (
@@ -75,7 +74,7 @@ export default function ProductDetail() {
                   aria-label={c.name}
                   disabled={product.colors.length === 1}
                   className={`w-9 h-9 rounded-full border-2 transition-all ${
-                    color === c.name ? "border-gold scale-110" : "border-transparent hover:border-ink/20"
+                    color === c.name ? "border-gold scale-110" : "border-transparent hover:border-parchment/30"
                   } ${product.colors.length === 1 ? "cursor-default" : ""}`}
                   style={{ backgroundColor: c.hex }}
                 />
@@ -84,7 +83,7 @@ export default function ProductDetail() {
           </div>
 
           <div className="mb-8">
-            <p className="font-condensed tracking-[0.1em] text-xs text-ink/60 mb-2.5">SIZE</p>
+            <p className="font-condensed tracking-[0.1em] text-xs text-parchment/60 mb-2.5">SIZE</p>
             <div className="flex flex-wrap gap-2.5">
               {product.sizes.map((s) => (
                 <button
@@ -92,8 +91,8 @@ export default function ProductDetail() {
                   onClick={() => setSize(s)}
                   className={`min-w-[3rem] px-3.5 py-2.5 rounded-lg border font-condensed tracking-wide text-sm transition-colors ${
                     size === s
-                      ? "bg-ink text-parchment border-ink"
-                      : "border-ink/20 text-ink/70 hover:border-gold"
+                      ? "bg-gold text-ink border-gold"
+                      : "border-parchment/20 text-parchment/70 hover:border-gold"
                   }`}
                 >
                   {s}
@@ -103,7 +102,7 @@ export default function ProductDetail() {
           </div>
 
           <div className="flex items-center gap-4 mb-8">
-            <div className="flex items-center border border-ink/20 rounded-full">
+            <div className="flex items-center border border-parchment/20 rounded-lg">
               <button onClick={() => setQty((q) => Math.max(1, q - 1))} className="p-3 hover:text-gold" aria-label="Decrease quantity">
                 <Minus size={15} />
               </button>
@@ -114,22 +113,22 @@ export default function ProductDetail() {
             </div>
             <button
               onClick={() => addItem(product, { size, color, qty })}
-              className="flex-1 bg-ink text-parchment font-condensed tracking-[0.14em] py-3.5 rounded-full border border-ink hover:bg-rust hover:border-rust transition-colors duration-200"
+              className="flex-1 bg-gold text-ink font-condensed tracking-[0.14em] py-3.5 rounded-lg border border-gold hover:bg-rust hover:border-rust hover:text-parchment transition-colors duration-200"
             >
               ADD TO BAG — {formatINR(product.price * qty)}
             </button>
           </div>
 
-          <div className="grid grid-cols-3 gap-3 text-center border-t border-ink/10 pt-6">
-            <div className="flex flex-col items-center gap-2 text-ink/60">
+          <div className="grid grid-cols-3 gap-3 text-center border-t border-parchment/10 pt-6">
+            <div className="flex flex-col items-center gap-2 text-parchment/60">
               <Truck size={18} strokeWidth={1.5} />
               <span className="text-[11px] font-condensed tracking-wide">PAN INDIA SHIPPING</span>
             </div>
-            <div className="flex flex-col items-center gap-2 text-ink/60">
+            <div className="flex flex-col items-center gap-2 text-parchment/60">
               <RotateCcw size={18} strokeWidth={1.5} />
               <span className="text-[11px] font-condensed tracking-wide">7-DAY EASY RETURNS</span>
             </div>
-            <div className="flex flex-col items-center gap-2 text-ink/60">
+            <div className="flex flex-col items-center gap-2 text-parchment/60">
               <ShieldCheck size={18} strokeWidth={1.5} />
               <span className="text-[11px] font-condensed tracking-wide">SECURE CHECKOUT</span>
             </div>
@@ -138,7 +137,7 @@ export default function ProductDetail() {
       </div>
 
       {related.length > 0 && (
-        <div className="mx-auto max-w-7xl px-5 md:px-8 py-20 border-t border-ink/10 mt-10">
+        <div className="mx-auto max-w-7xl px-5 md:px-8 py-20 border-t border-parchment/10 mt-10">
           <h2 className="font-editorial text-3xl mb-8">You May Also Like</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-7">
             {related.map((p, i) => (

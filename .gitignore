@@ -5,3 +5,5 @@ Thumbs.db
 
 # Locally installed Claude Code skills (dev tooling, not project source)
 .claude/skills/
+.agents/
+skills-lock.json

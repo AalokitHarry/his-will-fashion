@@ -35,11 +35,11 @@ export default function Contact() {
   };
 
   return (
-    <div className="bg-parchment">
-      <section className="bg-ink text-parchment pt-32 pb-20 grain">
+    <div>
+      <section className="bg-gold text-ink pt-32 pb-20">
         <div className="mx-auto max-w-4xl px-5 md:px-8 text-center">
-          <p className="font-condensed tracking-[0.2em] text-gold text-xs mb-4">(01) GET IN TOUCH</p>
-          <h1 className="font-editorial text-4xl md:text-6xl leading-[0.95]">
+          <p className="font-condensed tracking-[0.2em] text-ink/60 text-xs mb-4">(01) GET IN TOUCH</p>
+          <h1 className="font-editorial text-4xl md:text-6xl leading-[1.05]">
             We'd Love to Hear From You
           </h1>
         </div>
@@ -48,18 +48,18 @@ export default function Contact() {
       <section className="mx-auto max-w-6xl px-5 md:px-8 py-20 grid md:grid-cols-[1fr_1.2fr] gap-14">
         <div className="flex flex-col gap-8">
           <div className="flex items-start gap-4">
-            <span className="w-11 h-11 rounded-full bg-ink text-gold flex items-center justify-center shrink-0">
+            <span className="w-11 h-11 rounded-lg bg-gold text-ink flex items-center justify-center shrink-0">
               <Mail size={18} />
             </span>
             <div>
               <h3 className="font-condensed tracking-[0.1em] text-sm mb-1">EMAIL US</h3>
-              <a href="mailto:hello@hiswillfashion.in" className="text-ink/70 hover:text-rust transition-colors">
+              <a href="mailto:hello@hiswillfashion.in" className="text-parchment/70 hover:text-gold transition-colors">
                 hello@hiswillfashion.in
               </a>
             </div>
           </div>
           <div className="flex items-start gap-4">
-            <span className="w-11 h-11 rounded-full bg-ink text-gold flex items-center justify-center shrink-0">
+            <span className="w-11 h-11 rounded-lg bg-gold text-ink flex items-center justify-center shrink-0">
               <Camera size={18} />
             </span>
             <div>
@@ -68,26 +68,26 @@ export default function Contact() {
                 href="https://www.instagram.com/his_wll_fashion_club"
                 target="_blank"
                 rel="noreferrer"
-                className="text-ink/70 hover:text-rust transition-colors"
+                className="text-parchment/70 hover:text-gold transition-colors"
               >
                 @his_wll_fashion_club
               </a>
             </div>
           </div>
           <div className="flex items-start gap-4">
-            <span className="w-11 h-11 rounded-full bg-ink text-gold flex items-center justify-center shrink-0">
+            <span className="w-11 h-11 rounded-lg bg-gold text-ink flex items-center justify-center shrink-0">
               <MapPin size={18} />
             </span>
             <div>
               <h3 className="font-condensed tracking-[0.1em] text-sm mb-1">SHIP FROM</h3>
-              <p className="text-ink/70">India — shipping Pan India</p>
+              <p className="text-parchment/70">India — shipping Pan India</p>
             </div>
           </div>
         </div>
 
         <form onSubmit={onSubmit} className="flex flex-col gap-4">
           {sent ? (
-            <div className="flex flex-col items-center justify-center text-center gap-3 bg-ink text-parchment rounded-2xl p-10 h-full">
+            <div className="flex flex-col items-center justify-center text-center gap-3 bg-charcoal border border-gold/15 text-parchment rounded-lg p-10 h-full">
               <CheckCircle2 className="text-gold" size={32} />
               <p className="font-editorial text-xl">Your email app should be opening now.</p>
               <p className="text-parchment/60 text-sm">If it didn't, write to us directly at hello@hiswillfashion.in</p>
@@ -95,40 +95,40 @@ export default function Contact() {
           ) : (
             <>
               <div className="flex flex-col gap-1.5">
-                <label className="font-condensed tracking-[0.08em] text-xs text-ink/60">NAME</label>
+                <label className="font-condensed tracking-[0.08em] text-xs text-parchment/60">NAME</label>
                 <input
                   required
                   name="name"
                   value={form.name}
                   onChange={onChange}
-                  className="border border-ink/20 rounded-lg px-3.5 py-3 bg-parchment focus:outline-none focus:border-gold"
+                  className="border border-parchment/20 rounded-lg px-3.5 py-3 bg-parchment text-ink focus:outline-none focus:border-gold"
                 />
               </div>
               <div className="flex flex-col gap-1.5">
-                <label className="font-condensed tracking-[0.08em] text-xs text-ink/60">EMAIL</label>
+                <label className="font-condensed tracking-[0.08em] text-xs text-parchment/60">EMAIL</label>
                 <input
                   required
                   type="email"
                   name="email"
                   value={form.email}
                   onChange={onChange}
-                  className="border border-ink/20 rounded-lg px-3.5 py-3 bg-parchment focus:outline-none focus:border-gold"
+                  className="border border-parchment/20 rounded-lg px-3.5 py-3 bg-parchment text-ink focus:outline-none focus:border-gold"
                 />
               </div>
               <div className="flex flex-col gap-1.5">
-                <label className="font-condensed tracking-[0.08em] text-xs text-ink/60">MESSAGE</label>
+                <label className="font-condensed tracking-[0.08em] text-xs text-parchment/60">MESSAGE</label>
                 <textarea
                   required
                   rows={5}
                   name="message"
                   value={form.message}
                   onChange={onChange}
-                  className="border border-ink/20 rounded-lg px-3.5 py-3 bg-parchment focus:outline-none focus:border-gold resize-none"
+                  className="border border-parchment/20 rounded-lg px-3.5 py-3 bg-parchment text-ink focus:outline-none focus:border-gold resize-none"
                 />
               </div>
               <button
                 type="submit"
-                className="bg-ink text-parchment font-condensed tracking-[0.14em] py-3.5 rounded-full border border-ink hover:bg-rust hover:border-rust transition-colors duration-200"
+                className="bg-gold text-ink font-condensed tracking-[0.14em] py-3.5 rounded-lg border border-gold hover:bg-rust hover:border-rust hover:text-parchment transition-colors duration-200"
               >
                 SEND MESSAGE
               </button>
@@ -141,17 +141,17 @@ export default function Contact() {
         <p className="font-condensed tracking-[0.2em] text-gold text-xs mb-3">(02) LOGISTICS</p>
         <h2 className="font-editorial text-3xl mb-6">Shipping</h2>
         <div className="grid sm:grid-cols-3 gap-6 text-sm">
-          <div className="border border-ink/10 rounded-xl p-5">
+          <div className="border border-gold/15 rounded-lg p-5">
             <p className="font-condensed tracking-[0.1em] text-gold mb-2">COVERAGE</p>
-            <p className="text-ink/70">We ship to every pincode across India.</p>
+            <p className="text-parchment/70">We ship to every pincode across India.</p>
           </div>
-          <div className="border border-ink/10 rounded-xl p-5">
+          <div className="border border-gold/15 rounded-lg p-5">
             <p className="font-condensed tracking-[0.1em] text-gold mb-2">DISPATCH</p>
-            <p className="text-ink/70">Orders are dispatched within 2–3 business days of confirmation.</p>
+            <p className="text-parchment/70">Orders are dispatched within 2–3 business days of confirmation.</p>
           </div>
-          <div className="border border-ink/10 rounded-xl p-5">
+          <div className="border border-gold/15 rounded-lg p-5">
             <p className="font-condensed tracking-[0.1em] text-gold mb-2">SHIPPING FEE</p>
-            <p className="text-ink/70">Free on orders over ₹1,999. Flat ₹99 on smaller orders.</p>
+            <p className="text-parchment/70">Free on orders over ₹1,999. Flat ₹99 on smaller orders.</p>
           </div>
         </div>
       </section>
@@ -159,14 +159,14 @@ export default function Contact() {
       <section id="faq" className="mx-auto max-w-4xl px-5 md:px-8 pb-24 scroll-mt-28">
         <p className="font-condensed tracking-[0.2em] text-gold text-xs mb-3">(03) QUESTIONS</p>
         <h2 className="font-editorial text-3xl mb-6">Frequently Asked Questions</h2>
-        <div className="flex flex-col divide-y divide-ink/10 border-t border-b border-ink/10">
+        <div className="flex flex-col divide-y divide-parchment/10 border-t border-b border-parchment/10">
           {FAQS.map((f) => (
             <details key={f.q} className="group py-5">
               <summary className="flex items-center justify-between cursor-pointer list-none font-condensed tracking-[0.05em] text-base">
                 {f.q}
                 <span className="text-gold transition-transform group-open:rotate-45 text-xl leading-none">+</span>
               </summary>
-              <p className="text-ink/60 mt-3 leading-relaxed">{f.a}</p>
+              <p className="text-parchment/60 mt-3 leading-relaxed">{f.a}</p>
             </details>
           ))}
         </div>

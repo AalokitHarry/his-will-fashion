@@ -23,19 +23,21 @@ export default function RevealText({
   return (
     <Tag className={className}>
       {words.map((word, i) => (
-        <span key={i} className="inline-block overflow-hidden align-top pb-[0.1em] -mb-[0.1em]">
-          <motion.span
-            className="inline-block"
-            {...triggerProps}
-            transition={{
-              duration: 0.7,
-              delay: delay + i * 0.05,
-              ease: [0.16, 1, 0.3, 1],
-            }}
-          >
-            {word}
-            {i < words.length - 1 ? " " : ""}
-          </motion.span>
+        <span key={i} className="inline-block">
+          <span className="inline-block overflow-hidden align-top pb-[0.1em] -mb-[0.1em]">
+            <motion.span
+              className="inline-block"
+              {...triggerProps}
+              transition={{
+                duration: 0.7,
+                delay: delay + i * 0.05,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+            >
+              {word}
+            </motion.span>
+          </span>
+          {i < words.length - 1 ? " " : ""}
         </span>
       ))}
     </Tag>
