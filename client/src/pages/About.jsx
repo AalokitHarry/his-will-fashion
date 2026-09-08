@@ -36,8 +36,8 @@ export default function About() {
         <div className="relative mx-auto max-w-4xl px-5 md:px-8 text-center">
           <Eyebrow n="01" center>OUR STORY</Eyebrow>
           <h1 className="font-editorial leading-[0.95] text-4xl md:text-6xl mb-6">
-            <RevealText>Clothing Built on</RevealText>
-            <RevealText className="block text-gold" delay={0.1}>
+            <RevealText trigger="mount">Clothing Built on</RevealText>
+            <RevealText className="block text-gold" delay={0.1} trigger="mount">
               Conviction.
             </RevealText>
           </h1>

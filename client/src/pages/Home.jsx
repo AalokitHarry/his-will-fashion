@@ -68,10 +68,10 @@ export default function Home() {
             </motion.div>
 
             <h1 className="font-editorial leading-[1.05] text-5xl md:text-6xl lg:text-7xl">
-              <RevealText as="span" className="block">
+              <RevealText as="span" className="block" trigger="mount">
                 Wear Your Faith.
               </RevealText>
-              <RevealText as="span" className="block italic text-gold" delay={0.12}>
+              <RevealText as="span" className="block italic text-gold" delay={0.12} trigger="mount">
                 Live His Will.
               </RevealText>
             </h1>
