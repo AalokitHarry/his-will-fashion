@@ -75,7 +75,7 @@ export default function About() {
           </p>
         </motion.div>
         <RevealImage className="aspect-[4/5] rounded-3xl overflow-hidden">
-          <ProductImage src="/products/kingdom-mindset-tee.jpg" alt="Kingdom Mindset Tee" />
+          <ProductImage src="/products/kingdom-mindset-tee-1.jpg" alt="Kingdom Mindset Tee" />
         </RevealImage>
       </section>
 

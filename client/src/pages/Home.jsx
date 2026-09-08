@@ -114,7 +114,7 @@ export default function Home() {
             delay={0.3}
             className="relative aspect-[3/4] md:aspect-[4/5] rounded-2xl overflow-hidden"
           >
-            <ProductImage src="/products/lion-of-judah-tee.jpg" alt="Lion of Judah Tee" />
+            <ProductImage src="/products/lion-of-judah-tee-1.jpg" alt="Lion of Judah Tee" />
           </RevealImage>
         </div>
 
@@ -172,7 +172,7 @@ export default function Home() {
       {/* BRAND STORY */}
       <section className="mx-auto max-w-7xl px-5 md:px-8 py-24 md:py-32 grid md:grid-cols-2 gap-14 items-center">
         <RevealImage className="relative aspect-[4/5] rounded-3xl overflow-hidden order-2 md:order-1">
-          <ProductImage src="/products/kingdom-mindset-tee.jpg" alt="Kingdom Mindset Tee" />
+          <ProductImage src="/products/kingdom-mindset-tee-1.jpg" alt="Kingdom Mindset Tee" />
         </RevealImage>
         <motion.div
           initial={{ opacity: 0, y: 24 }}
