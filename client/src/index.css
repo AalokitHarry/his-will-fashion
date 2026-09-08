@@ -1,35 +1,35 @@
 @import "tailwindcss";
 
 @theme {
-  /* Neo-brutalist system: one bold geometric sans everywhere instead of the
-     old 4-typeface mix. Space Grotesk carries every heading, label, nav item
-     and button; Inter is body copy only; Space Mono is small tag/meta text. */
-  --font-display: "Space Grotesk", "Arial", sans-serif;
-  --font-editorial: "Space Grotesk", "Arial", sans-serif;
-  --font-condensed: "Space Grotesk", "Arial", sans-serif;
-  --font-mono: "Space Mono", "Courier New", monospace;
-  --font-body: "Inter", system-ui, sans-serif;
+  /* Luxury editorial system: Cormorant (elegant serif) carries every
+     headline and display moment; Montserrat is everything else — body,
+     nav, labels, buttons. Two typefaces total, not four. */
+  --font-display: "Cormorant", "Georgia", serif;
+  --font-editorial: "Cormorant", "Georgia", serif;
+  --font-condensed: "Montserrat", sans-serif;
+  --font-mono: "Montserrat", sans-serif;
+  --font-body: "Montserrat", system-ui, sans-serif;
 
-  /* Raw streetwear system: near-black + bone white + one loud crimson signal.
-     Gold stays only as a rare glint (crowns/kingdom motifs), not a base tone. */
-  --color-ink: #0a0a0a;
-  --color-ink-soft: #161616;
-  --color-charcoal: #262626;
-  --color-parchment: #f1f0ea;
-  --color-parchment-dim: #e2e0d6;
-  --color-gold: #d4a72c;
-  --color-gold-soft: #e8c65a;
-  --color-rust: #d11a2a;
-  --color-rust-soft: #e8483f;
+  /* Premium black + antique gold — warm near-black, soft cream, gold as the
+     primary accent (not a rare glint). No red/crimson anywhere. */
+  --color-ink: #1c1613;
+  --color-ink-soft: #2a2119;
+  --color-charcoal: #3d3226;
+  --color-parchment: #faf7f0;
+  --color-parchment-dim: #efe9db;
+  --color-gold: #c9a24d;
+  --color-gold-soft: #ddbd74;
+  --color-rust: #8a6116;
+  --color-rust-soft: #a67c26;
 
-  /* Brutalist system: hard corners everywhere, no soft curves. */
-  --radius-lg: 0px;
-  --radius-xl: 0px;
-  --radius-2xl: 0px;
-  --radius-3xl: 0px;
+  /* Soft, refined curves — not sharp/brutalist, not oversized/playful. */
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
 
-  --animate-marquee: marquee 22s linear infinite;
-  --animate-fade-up: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-marquee: marquee 30s linear infinite;
+  --animate-fade-up: fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
   --animate-shimmer: shimmer 2.4s linear infinite;
 }
 
@@ -65,8 +65,8 @@ body {
 }
 
 ::selection {
-  background: var(--color-rust);
-  color: var(--color-parchment);
+  background: var(--color-gold);
+  color: var(--color-ink);
 }
 
 ::-webkit-scrollbar {
@@ -76,17 +76,8 @@ body {
   background: var(--color-parchment);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--color-ink);
-}
-
-.brutal-shadow {
-  box-shadow: 6px 6px 0 var(--color-ink);
-}
-.brutal-shadow-sm {
-  box-shadow: 4px 4px 0 var(--color-ink);
-}
-.brutal-shadow-light {
-  box-shadow: 6px 6px 0 var(--color-parchment);
+  background: var(--color-gold);
+  border-radius: 999px;
 }
 
 .text-outline {
@@ -94,13 +85,15 @@ body {
   color: transparent;
 }
 
-/* Space Grotesk carries the whole display/UI system now — force bold (700)
-   by default wherever these utilities are used, so it reads as intentionally
-   heavy rather than falling back to a synthesized/lighter weight. */
+/* Cormorant reads as refined at a moderate weight with generous size —
+   unlike the old bold-sans system, it should NOT default to heavy. */
 .font-editorial,
-.font-condensed,
 .font-display {
-  font-weight: 700;
+  font-weight: 500;
+}
+.font-condensed {
+  font-weight: 500;
+  letter-spacing: 0.08em;
 }
 
 .grain {

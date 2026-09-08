@@ -35,7 +35,7 @@ export default function About() {
         />
         <div className="relative mx-auto max-w-4xl px-5 md:px-8 text-center">
           <Eyebrow n="01" center>OUR STORY</Eyebrow>
-          <h1 className="font-editorial uppercase tracking-tight leading-[0.95] text-4xl md:text-6xl mb-6">
+          <h1 className="font-editorial leading-[0.95] text-4xl md:text-6xl mb-6">
             <RevealText>Clothing Built on</RevealText>
             <RevealText className="block text-gold" delay={0.1}>
               Conviction.
@@ -61,7 +61,7 @@ export default function About() {
           transition={{ duration: 0.7 }}
         >
           <Eyebrow n="02">THE BEGINNING</Eyebrow>
-          <h2 className="font-editorial uppercase tracking-tight text-3xl md:text-4xl mb-6 leading-[0.95]">
+          <h2 className="font-editorial text-3xl md:text-4xl mb-6 leading-[0.95]">
             From a Prayer to a Movement
           </h2>
           <p className="text-ink/70 leading-relaxed mb-5">
@@ -83,7 +83,7 @@ export default function About() {
         <div className="mx-auto max-w-7xl px-5 md:px-8">
           <div className="text-center mb-14">
             <Eyebrow n="03" center>WHAT WE STAND FOR</Eyebrow>
-            <h2 className="font-editorial uppercase tracking-tight text-4xl md:text-5xl">Our Values</h2>
+            <h2 className="font-editorial text-4xl md:text-5xl">Our Values</h2>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {VALUES.map((v, i) => (
@@ -96,7 +96,7 @@ export default function About() {
                 className="bg-parchment/[0.04] border border-parchment/10 rounded-2xl p-6 hover:border-gold/40 transition-colors"
               >
                 <v.icon className="text-gold mb-4" size={26} strokeWidth={1.5} />
-                <h3 className="font-editorial uppercase tracking-tight text-lg mb-2">{v.title}</h3>
+                <h3 className="font-editorial text-lg mb-2">{v.title}</h3>
                 <p className="text-parchment/60 text-sm leading-relaxed">{v.body}</p>
               </motion.div>
             ))}
@@ -106,14 +106,14 @@ export default function About() {
 
       <section className="mx-auto max-w-3xl px-5 py-24 text-center">
         <Eyebrow n="04" center>JOIN US</Eyebrow>
-        <h2 className="font-editorial uppercase tracking-tight text-3xl md:text-4xl mb-6">
+        <h2 className="font-editorial text-3xl md:text-4xl mb-6">
           Ready to Wear Your Faith?
         </h2>
         <p className="text-ink/60 mb-8">Join the growing family of believers repping His Will Fashion across the country.</p>
         <Magnetic>
           <Link
             to="/shop"
-            className="inline-flex items-center gap-2 bg-ink text-parchment font-condensed tracking-[0.14em] px-8 py-4 rounded-none border border-ink hover:bg-rust hover:border-rust transition-colors duration-200"
+            className="inline-flex items-center gap-2 bg-ink text-parchment font-condensed tracking-[0.14em] px-8 py-4 rounded-full border border-ink hover:bg-rust hover:border-rust transition-colors duration-200"
           >
             SHOP THE COLLECTION <ArrowRight size={16} />
           </Link>

@@ -114,7 +114,7 @@ export default function ProductDetail() {
             </div>
             <button
               onClick={() => addItem(product, { size, color, qty })}
-              className="flex-1 bg-ink text-parchment font-condensed tracking-[0.14em] py-3.5 rounded-none border border-ink hover:bg-rust hover:border-rust transition-colors duration-200"
+              className="flex-1 bg-ink text-parchment font-condensed tracking-[0.14em] py-3.5 rounded-full border border-ink hover:bg-rust hover:border-rust transition-colors duration-200"
             >
               ADD TO BAG — {formatINR(product.price * qty)}
             </button>
@@ -139,7 +139,7 @@ export default function ProductDetail() {
 
       {related.length > 0 && (
         <div className="mx-auto max-w-7xl px-5 md:px-8 py-20 border-t border-ink/10 mt-10">
-          <h2 className="font-editorial uppercase tracking-tight text-3xl mb-8">You May Also Like</h2>
+          <h2 className="font-editorial text-3xl mb-8">You May Also Like</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-7">
             {related.map((p, i) => (
               <ProductCard key={p.id} product={p} index={i} />

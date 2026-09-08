@@ -22,7 +22,7 @@ export default function OrderConfirmed() {
         >
           <CheckCircle2 size={34} strokeWidth={1.6} />
         </motion.div>
-        <h1 className="font-editorial uppercase tracking-tight text-4xl mb-3">Order Placed</h1>
+        <h1 className="font-editorial text-4xl mb-3">Order Placed</h1>
         <p className="text-ink/60 mb-8">
           Thank you for wearing your faith with us. We've received your order and will reach out by phone
           or email to confirm before it ships, Pan India. Pay in cash when it arrives.
@@ -46,7 +46,7 @@ export default function OrderConfirmed() {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link
             to="/shop"
-            className="inline-flex items-center gap-2 bg-ink text-parchment font-condensed tracking-[0.14em] px-8 py-4 rounded-none border border-ink hover:bg-rust hover:border-rust transition-colors duration-200"
+            className="inline-flex items-center gap-2 bg-ink text-parchment font-condensed tracking-[0.14em] px-8 py-4 rounded-full border border-ink hover:bg-rust hover:border-rust transition-colors duration-200"
           >
             CONTINUE SHOPPING
           </Link>

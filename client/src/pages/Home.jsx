@@ -56,22 +56,22 @@ export default function Home() {
         <div className="mx-auto max-w-7xl w-full px-5 md:px-8 grid md:grid-cols-[1.1fr_0.9fr] gap-12 md:gap-8 items-center">
           <div>
             <motion.div
-              initial={{ opacity: 0, x: -12 }}
-              animate={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="flex items-center gap-3 mb-7"
+              className="flex items-center gap-3 mb-8"
             >
-              <span className="w-8 h-px bg-ink/40" />
-              <p className="font-condensed tracking-[0.3em] text-xs text-ink/60">
-                PREMIUM CHRISTIAN STREETWEAR &middot; VOL. 01
+              <span className="w-10 h-px bg-gold" />
+              <p className="font-condensed tracking-[0.3em] text-xs text-ink/50">
+                PREMIUM CHRISTIAN STREETWEAR
               </p>
             </motion.div>
 
-            <h1 className="font-editorial uppercase leading-[0.87] tracking-tight text-[13vw] md:text-[4.2rem] lg:text-[5rem]">
+            <h1 className="font-editorial leading-[1.05] text-5xl md:text-6xl lg:text-7xl">
               <RevealText as="span" className="block">
                 Wear Your Faith.
               </RevealText>
-              <RevealText as="span" className="block text-rust" delay={0.12}>
+              <RevealText as="span" className="block italic text-gold" delay={0.12}>
                 Live His Will.
               </RevealText>
             </h1>
@@ -80,10 +80,10 @@ export default function Home() {
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.5 }}
-              className="mt-8 max-w-md text-ink/60 text-base md:text-lg"
+              className="mt-8 max-w-md text-ink/60 text-base md:text-lg leading-relaxed"
             >
-              Faith-inspired apparel crafted for those who carry the Word wherever they go. Bold design,
-              heavyweight fabric, scripture in every stitch.
+              Faith-inspired apparel crafted for those who carry the Word wherever they go. Heavyweight
+              fabric, considered design, scripture in every stitch.
             </motion.p>
 
             <motion.div
@@ -95,14 +95,14 @@ export default function Home() {
               <Magnetic>
                 <Link
                   to="/shop"
-                  className="inline-flex items-center gap-2 bg-ink text-parchment font-condensed tracking-[0.14em] px-8 py-4 rounded-none border border-ink hover:bg-rust hover:border-rust transition-colors duration-200"
+                  className="inline-flex items-center gap-2 bg-ink text-parchment font-condensed tracking-[0.14em] px-8 py-4 rounded-full hover:bg-rust transition-colors duration-300"
                 >
                   SHOP NOW <ArrowRight size={16} />
                 </Link>
               </Magnetic>
               <Link
                 to="/about"
-                className="font-condensed tracking-[0.12em] text-sm border-b border-ink/30 pb-1 hover:border-rust hover:text-rust transition-colors"
+                className="font-condensed tracking-[0.12em] text-sm border-b border-gold/50 pb-1 hover:border-gold hover:text-gold transition-colors"
               >
                 OUR STORY
               </Link>
@@ -137,7 +137,7 @@ export default function Home() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
           <div>
             <Eyebrow n="02">THE BESTSELLERS</Eyebrow>
-            <h2 className="font-editorial uppercase tracking-tight text-4xl md:text-5xl">Worn by the Movement</h2>
+            <h2 className="font-editorial text-4xl md:text-5xl">Worn by the Movement</h2>
           </div>
           <Magnetic>
             <Link
@@ -182,7 +182,7 @@ export default function Home() {
           className="order-1 md:order-2"
         >
           <Eyebrow n="03">WHY WE EXIST</Eyebrow>
-          <h2 className="font-editorial uppercase tracking-tight text-4xl md:text-5xl mb-6 leading-[0.95]">
+          <h2 className="font-editorial text-4xl md:text-5xl mb-6 leading-[0.95]">
             More Than a Brand. A Declaration.
           </h2>
           <p className="text-ink/70 text-base md:text-lg leading-relaxed mb-5">
@@ -208,7 +208,7 @@ export default function Home() {
       {/* SPOTLIGHT */}
       <section className="mx-auto max-w-7xl px-5 md:px-8 pb-24 md:pb-32">
         <Eyebrow n="04">FAN FAVORITES</Eyebrow>
-        <h2 className="font-editorial uppercase tracking-tight text-4xl md:text-5xl mb-10">Wear It Loud</h2>
+        <h2 className="font-editorial text-4xl md:text-5xl mb-10">Wear It Loud</h2>
         <div className="grid md:grid-cols-3 gap-6">
           {spotlight.map((product, i) => (
             <motion.div
@@ -241,7 +241,7 @@ export default function Home() {
       <section className="bg-ink text-parchment py-24 md:py-32 grain">
         <div className="mx-auto max-w-7xl px-5 md:px-8">
           <p className="font-condensed tracking-[0.2em] text-gold text-xs mb-3 text-center">(05) TESTIMONIES</p>
-          <h2 className="font-editorial uppercase tracking-tight text-4xl md:text-5xl text-center mb-14">
+          <h2 className="font-editorial text-4xl md:text-5xl text-center mb-14">
             The Family Speaks
           </h2>
           <div className="grid md:grid-cols-3 gap-6">
@@ -268,7 +268,7 @@ export default function Home() {
       {/* INSTAGRAM CTA */}
       <section className="mx-auto max-w-7xl px-5 md:px-8 py-24 md:py-32 text-center">
         <Camera className="mx-auto text-gold mb-5" size={30} strokeWidth={1.4} />
-        <h2 className="font-editorial uppercase tracking-tight text-4xl md:text-5xl mb-4">Join the Movement</h2>
+        <h2 className="font-editorial text-4xl md:text-5xl mb-4">Join the Movement</h2>
         <p className="text-ink/60 max-w-lg mx-auto mb-8">
           Follow along for new drops, behind-the-scenes, and a community wearing their faith out loud.
         </p>
@@ -277,7 +277,7 @@ export default function Home() {
             href="https://www.instagram.com/his_wll_fashion_club"
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-2 bg-ink text-parchment font-condensed tracking-[0.14em] px-8 py-4 rounded-none border border-ink hover:bg-rust hover:border-rust transition-colors duration-200"
+            className="inline-flex items-center gap-2 bg-ink text-parchment font-condensed tracking-[0.14em] px-8 py-4 rounded-full border border-ink hover:bg-rust hover:border-rust transition-colors duration-200"
           >
             @his_wll_fashion_club <ArrowRight size={16} />
           </a>

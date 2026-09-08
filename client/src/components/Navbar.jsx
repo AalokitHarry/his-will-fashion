@@ -39,16 +39,16 @@ export default function Navbar() {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-500 ${
-        transparent ? "bg-transparent" : "bg-ink/95 backdrop-blur-md border-b border-rust/20"
+        transparent ? "bg-transparent" : "bg-ink/95 backdrop-blur-md border-b border-gold/20"
       }`}
     >
       <div className="mx-auto max-w-7xl px-5 md:px-8 flex items-center justify-between h-18 py-4">
         <Link to="/" className="flex items-center gap-2.5 group">
-          <span className="w-8 h-8 rounded-full border-2 border-rust flex items-center justify-center text-rust group-hover:bg-rust group-hover:text-parchment transition-colors duration-300">
-            <span className="font-display text-lg leading-none translate-y-[-1px]">†</span>
+          <span className="w-9 h-9 rounded-full border border-gold flex items-center justify-center text-gold group-hover:bg-gold group-hover:text-ink transition-colors duration-300">
+            <span className="font-display text-xl leading-none translate-y-[-1px]">†</span>
           </span>
-          <span className={`font-condensed tracking-[0.15em] text-xl transition-colors duration-500 ${tone.text}`}>
-            HIS WILL <span className="text-rust">FASHION</span>
+          <span className={`font-condensed tracking-[0.15em] text-lg transition-colors duration-500 ${tone.text}`}>
+            HIS WILL <span className="text-gold">FASHION</span>
           </span>
         </Link>
 
@@ -58,7 +58,7 @@ export default function Navbar() {
               key={link.to}
               to={link.to}
               className={({ isActive }) =>
-                `font-mono uppercase tracking-[0.1em] text-xs transition-colors relative py-1 ${
+                `font-condensed tracking-[0.1em] text-sm transition-colors relative py-1 ${
                   isActive ? tone.active : tone.sub
                 }`
               }
@@ -105,14 +105,14 @@ export default function Navbar() {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="md:hidden overflow-hidden bg-ink border-t border-rust/20"
+            className="md:hidden overflow-hidden bg-ink border-t border-gold/20"
           >
             <div className="flex flex-col px-5 py-4 gap-4">
               {LINKS.map((link) => (
                 <NavLink
                   key={link.to}
                   to={link.to}
-                  className="font-mono uppercase tracking-[0.1em] text-base text-parchment/90 hover:text-rust-soft"
+                  className="font-condensed tracking-[0.1em] text-lg text-parchment/90 hover:text-gold"
                 >
                   {link.label}
                 </NavLink>

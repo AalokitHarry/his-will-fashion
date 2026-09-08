@@ -39,7 +39,7 @@ export default function Contact() {
       <section className="bg-ink text-parchment pt-32 pb-20 grain">
         <div className="mx-auto max-w-4xl px-5 md:px-8 text-center">
           <p className="font-condensed tracking-[0.2em] text-gold text-xs mb-4">(01) GET IN TOUCH</p>
-          <h1 className="font-editorial uppercase tracking-tight text-4xl md:text-6xl leading-[0.95]">
+          <h1 className="font-editorial text-4xl md:text-6xl leading-[0.95]">
             We'd Love to Hear From You
           </h1>
         </div>
@@ -89,7 +89,7 @@ export default function Contact() {
           {sent ? (
             <div className="flex flex-col items-center justify-center text-center gap-3 bg-ink text-parchment rounded-2xl p-10 h-full">
               <CheckCircle2 className="text-gold" size={32} />
-              <p className="font-editorial uppercase tracking-tight text-xl">Your email app should be opening now.</p>
+              <p className="font-editorial text-xl">Your email app should be opening now.</p>
               <p className="text-parchment/60 text-sm">If it didn't, write to us directly at hello@hiswillfashion.in</p>
             </div>
           ) : (
@@ -128,7 +128,7 @@ export default function Contact() {
               </div>
               <button
                 type="submit"
-                className="bg-ink text-parchment font-condensed tracking-[0.14em] py-3.5 rounded-none border border-ink hover:bg-rust hover:border-rust transition-colors duration-200"
+                className="bg-ink text-parchment font-condensed tracking-[0.14em] py-3.5 rounded-full border border-ink hover:bg-rust hover:border-rust transition-colors duration-200"
               >
                 SEND MESSAGE
               </button>
@@ -139,7 +139,7 @@ export default function Contact() {
 
       <section id="shipping" className="mx-auto max-w-4xl px-5 md:px-8 py-16 scroll-mt-28">
         <p className="font-condensed tracking-[0.2em] text-gold text-xs mb-3">(02) LOGISTICS</p>
-        <h2 className="font-editorial uppercase tracking-tight text-3xl mb-6">Shipping</h2>
+        <h2 className="font-editorial text-3xl mb-6">Shipping</h2>
         <div className="grid sm:grid-cols-3 gap-6 text-sm">
           <div className="border border-ink/10 rounded-xl p-5">
             <p className="font-condensed tracking-[0.1em] text-gold mb-2">COVERAGE</p>
@@ -158,7 +158,7 @@ export default function Contact() {
 
       <section id="faq" className="mx-auto max-w-4xl px-5 md:px-8 pb-24 scroll-mt-28">
         <p className="font-condensed tracking-[0.2em] text-gold text-xs mb-3">(03) QUESTIONS</p>
-        <h2 className="font-editorial uppercase tracking-tight text-3xl mb-6">Frequently Asked Questions</h2>
+        <h2 className="font-editorial text-3xl mb-6">Frequently Asked Questions</h2>
         <div className="flex flex-col divide-y divide-ink/10 border-t border-b border-ink/10">
           {FAQS.map((f) => (
             <details key={f.q} className="group py-5">

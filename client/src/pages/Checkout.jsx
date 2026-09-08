@@ -62,9 +62,9 @@ export default function Checkout() {
     return (
       <div className="pt-40 pb-32 text-center px-5">
         <ShoppingBag className="mx-auto text-ink/30 mb-5" size={40} strokeWidth={1.2} />
-        <h1 className="font-editorial uppercase tracking-tight text-3xl mb-4">Your bag is empty</h1>
+        <h1 className="font-editorial text-3xl mb-4">Your bag is empty</h1>
         <p className="text-ink/60 mb-8">Add something to your bag before checking out.</p>
-        <Link to="/shop" className="inline-flex items-center gap-2 bg-ink text-parchment font-condensed tracking-[0.14em] px-8 py-4 rounded-none border border-ink hover:bg-rust hover:border-rust transition-colors">
+        <Link to="/shop" className="inline-flex items-center gap-2 bg-ink text-parchment font-condensed tracking-[0.14em] px-8 py-4 rounded-full border border-ink hover:bg-rust hover:border-rust transition-colors">
           BROWSE THE COLLECTION
         </Link>
       </div>
@@ -74,7 +74,7 @@ export default function Checkout() {
   return (
     <div className="bg-parchment pt-28 pb-24">
       <div className="mx-auto max-w-6xl px-5 md:px-8">
-        <h1 className="font-editorial uppercase tracking-tight text-3xl md:text-4xl mb-10">Checkout</h1>
+        <h1 className="font-editorial text-3xl md:text-4xl mb-10">Checkout</h1>
         <div className="grid lg:grid-cols-[1.3fr_1fr] gap-12">
           <form onSubmit={handlePlaceOrder} className="flex flex-col gap-10">
             <section>
@@ -132,7 +132,7 @@ export default function Checkout() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-ink text-parchment font-condensed tracking-[0.15em] py-4 rounded-none border border-ink hover:bg-rust hover:border-rust transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2"
+              className="w-full bg-ink text-parchment font-condensed tracking-[0.15em] py-4 rounded-full border border-ink hover:bg-rust hover:border-rust transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2"
             >
               <PackageCheck size={15} />
               {loading ? "PLACING ORDER..." : `PLACE ORDER — ${formatINR(total)} (CASH ON DELIVERY)`}
@@ -143,7 +143,7 @@ export default function Checkout() {
           </form>
 
           <aside className="bg-ink text-parchment rounded-3xl p-7 h-fit lg:sticky lg:top-28 grain">
-            <h2 className="font-editorial uppercase tracking-tight text-xl mb-6">Order Summary</h2>
+            <h2 className="font-editorial text-xl mb-6">Order Summary</h2>
             <div className="flex flex-col gap-4 mb-6 max-h-80 overflow-y-auto pr-1">
               {items.map((item) => (
                 <div key={`${item.id}-${item.size}-${item.color}`} className="flex gap-3">
