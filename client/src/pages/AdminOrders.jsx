@@ -151,6 +151,9 @@ export default function AdminOrders() {
                     <div key={i} className="flex justify-between text-sm">
                       <span>
                         {item.qty} &times; {item.name}
+                        {(item.size || item.color) && (
+                          <span className="text-parchment/50"> ({[item.color, item.size].filter(Boolean).join(" / ")})</span>
+                        )}
                       </span>
                       <span className="text-parchment/60">{formatINR(item.lineTotal)}</span>
                     </div>

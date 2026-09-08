@@ -20,7 +20,7 @@ export function priceCart(items) {
   let subtotal = 0;
   const lines = [];
 
-  for (const { id, qty } of items) {
+  for (const { id, qty, size, color } of items) {
     const product = PRODUCTS[id];
     if (!product) throw new Error(`Unknown product: ${id}`);
     const quantity = Number(qty);
@@ -29,7 +29,7 @@ export function priceCart(items) {
     }
     const lineTotal = product.price * quantity;
     subtotal += lineTotal;
-    lines.push({ id, name: product.name, price: product.price, qty: quantity, lineTotal });
+    lines.push({ id, name: product.name, price: product.price, qty: quantity, lineTotal, size, color });
   }
 
   const shipping = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_FEE;

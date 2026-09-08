@@ -9,6 +9,7 @@ database_id = "73f32d92-20a9-4c5f-9c0c-d08803b3c573"
 
 [vars]
 CLIENT_ORIGIN = "http://localhost:5173,https://his-will-fashion.aalokitharry1995.workers.dev"
+FROM_EMAIL = "His Will Fashion <orders@hiswillfashion.in>"
 
 [dev]
 port = 4242

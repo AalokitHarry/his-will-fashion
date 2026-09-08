@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { priceCart } from "./products.js";
+import { sendOrderConfirmationEmail } from "./email.js";
 
 const app = new Hono();
 
@@ -65,6 +66,10 @@ app.post("/api/orders/place", async (c) => {
         new Date().toISOString()
       )
       .run();
+
+    c.executionCtx.waitUntil(
+      sendOrderConfirmationEmail(c.env, { orderId, customer, lines, subtotal, shipping, total })
+    );
 
     return c.json({ orderId, total });
   } catch (err) {
