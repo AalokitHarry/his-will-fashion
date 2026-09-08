@@ -77,6 +77,36 @@ app.post("/api/orders/place", async (c) => {
   }
 });
 
+const ORDER_STATUSES = ["pending_confirmation", "confirmed", "shipped", "delivered", "cancelled"];
+
+// Admin: update an order's status — password-protected via ADMIN_TOKEN.
+app.patch("/api/orders/:orderId/status", async (c) => {
+  const auth = c.req.header("Authorization") || "";
+  const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
+
+  if (!c.env.ADMIN_TOKEN || token !== c.env.ADMIN_TOKEN) {
+    return c.json({ error: "Unauthorized" }, 401);
+  }
+
+  const { orderId } = c.req.param();
+  const body = await c.req.json().catch(() => ({}));
+  const { status } = body || {};
+
+  if (!ORDER_STATUSES.includes(status)) {
+    return c.json({ error: `Status must be one of: ${ORDER_STATUSES.join(", ")}` }, 400);
+  }
+
+  const result = await c.env.DB.prepare("UPDATE orders SET status = ? WHERE order_id = ?")
+    .bind(status, orderId)
+    .run();
+
+  if (!result.meta.changes) {
+    return c.json({ error: "Order not found" }, 404);
+  }
+
+  return c.json({ orderId, status });
+});
+
 // Admin order list — password-protected via ADMIN_TOKEN.
 app.get("/api/orders", async (c) => {
   const auth = c.req.header("Authorization") || "";

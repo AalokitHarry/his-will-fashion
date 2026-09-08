@@ -1,9 +1,25 @@
 import { useEffect, useState } from "react";
 import { AlertCircle, LogOut, RefreshCw } from "lucide-react";
-import { fetchOrders } from "../api/orders";
+import { fetchOrders, updateOrderStatus } from "../api/orders";
 import { formatINR } from "../utils/format";
 
 const TOKEN_KEY = "hwf_admin_token";
+
+const ORDER_STATUSES = ["pending_confirmation", "confirmed", "shipped", "delivered", "cancelled"];
+const STATUS_LABELS = {
+  pending_confirmation: "Pending Confirmation",
+  confirmed: "Confirmed",
+  shipped: "Shipped",
+  delivered: "Delivered",
+  cancelled: "Cancelled",
+};
+const STATUS_STYLES = {
+  pending_confirmation: "bg-parchment/10 text-parchment",
+  confirmed: "bg-gold/15 text-gold border border-gold/30",
+  shipped: "bg-gold/25 text-gold border border-gold/40",
+  delivered: "bg-gold text-ink",
+  cancelled: "bg-rust/15 text-rust border border-rust/30",
+};
 
 export default function AdminOrders() {
   const [token, setToken] = useState(() => localStorage.getItem(TOKEN_KEY) || "");
@@ -11,6 +27,8 @@ export default function AdminOrders() {
   const [orders, setOrders] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [updatingId, setUpdatingId] = useState(null);
+  const [statusError, setStatusError] = useState("");
 
   const load = async (t) => {
     setLoading(true);
@@ -38,6 +56,21 @@ export default function AdminOrders() {
   const handleSubmit = (e) => {
     e.preventDefault();
     load(passwordInput);
+  };
+
+  const handleStatusChange = async (orderId, newStatus) => {
+    const prevOrders = orders;
+    setUpdatingId(orderId);
+    setStatusError("");
+    setOrders((os) => os.map((o) => (o.orderId === orderId ? { ...o, status: newStatus } : o)));
+    try {
+      await updateOrderStatus(token, orderId, newStatus);
+    } catch (err) {
+      setOrders(prevOrders);
+      setStatusError(err.message || "Failed to update status.");
+    } finally {
+      setUpdatingId(null);
+    }
   };
 
   const logOut = () => {
@@ -103,6 +136,13 @@ export default function AdminOrders() {
           </div>
         </div>
 
+        {statusError && (
+          <div className="flex items-start gap-2.5 bg-rust/10 border border-rust/30 text-rust rounded-lg px-4 py-3 text-sm mb-6">
+            <AlertCircle size={18} className="shrink-0 mt-0.5" />
+            <span>{statusError}</span>
+          </div>
+        )}
+
         {orders.length === 0 ? (
           <p className="text-parchment/50 text-center py-20">No orders yet.</p>
         ) : (
@@ -119,9 +159,20 @@ export default function AdminOrders() {
                       })}
                     </p>
                   </div>
-                  <span className="text-xs font-condensed tracking-wide bg-parchment/10 px-3 py-1.5 rounded-lg">
-                    {order.status.replace(/_/g, " ").toUpperCase()}
-                  </span>
+                  <select
+                    value={order.status}
+                    disabled={updatingId === order.orderId}
+                    onChange={(e) => handleStatusChange(order.orderId, e.target.value)}
+                    className={`text-xs font-condensed tracking-wide px-3 py-1.5 rounded-lg cursor-pointer focus:outline-none focus:border-gold disabled:opacity-50 disabled:cursor-wait ${
+                      STATUS_STYLES[order.status] || STATUS_STYLES.pending_confirmation
+                    }`}
+                  >
+                    {ORDER_STATUSES.map((s) => (
+                      <option key={s} value={s} className="bg-ink text-parchment">
+                        {STATUS_LABELS[s].toUpperCase()}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 <div className="grid sm:grid-cols-2 gap-6 mb-5">

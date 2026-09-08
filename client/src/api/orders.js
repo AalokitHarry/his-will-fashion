@@ -24,3 +24,11 @@ export function fetchOrders(token) {
     headers: { Authorization: `Bearer ${token}` },
   });
 }
+
+export function updateOrderStatus(token, orderId, status) {
+  return request(`/api/orders/${orderId}/status`, {
+    method: "PATCH",
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ status }),
+  });
+}
