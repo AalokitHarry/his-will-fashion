@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
+import { ChevronDown } from "lucide-react";
 import { CATEGORIES, PRODUCTS } from "../data/products";
 import ProductCard from "../components/ProductCard";
 
@@ -43,33 +44,40 @@ export default function Shop() {
       </div>
 
       <div className="mx-auto max-w-7xl px-5 md:px-8 py-12">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 mb-10">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 mb-10 pb-8 border-b border-ink/10">
           <div className="flex flex-wrap gap-2.5">
             {CATEGORIES.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setCategory(cat)}
-                className={`font-mono uppercase tracking-[0.08em] text-xs px-4 py-2 border transition-colors ${
+                className={`font-condensed tracking-[0.1em] text-xs px-5 py-2.5 rounded-full border transition-colors ${
                   activeCategory === cat
                     ? "bg-ink text-parchment border-ink"
-                    : "border-ink/30 text-ink/70 hover:border-rust hover:text-rust"
+                    : "border-ink/20 text-ink/60 hover:border-gold hover:text-ink"
                 }`}
               >
                 {cat.toUpperCase()}
               </button>
             ))}
           </div>
-          <select
-            value={sort}
-            onChange={(e) => setSort(e.target.value)}
-            className="font-mono uppercase tracking-[0.05em] text-xs border border-ink/30 px-4 py-2 bg-transparent focus:outline-none focus:border-rust"
-          >
-            {SORTS.map((s) => (
-              <option key={s.value} value={s.value}>
-                {s.label}
-              </option>
-            ))}
-          </select>
+          <div className="relative w-fit">
+            <select
+              value={sort}
+              onChange={(e) => setSort(e.target.value)}
+              className="appearance-none font-condensed tracking-[0.08em] text-xs rounded-full border border-ink/20 pl-5 pr-10 py-2.5 bg-transparent text-ink/70 hover:border-gold focus:outline-none focus:border-gold transition-colors cursor-pointer"
+            >
+              {SORTS.map((s) => (
+                <option key={s.value} value={s.value}>
+                  {s.label.toUpperCase()}
+                </option>
+              ))}
+            </select>
+            <ChevronDown
+              size={14}
+              strokeWidth={1.5}
+              className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-ink/50"
+            />
+          </div>
         </div>
 
         {products.length === 0 ? (
