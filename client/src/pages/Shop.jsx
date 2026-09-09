@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { CATEGORIES, PRODUCTS } from "../data/products";
 import ProductCard from "../components/ProductCard";
+import useSEO from "../hooks/useSEO";
 
 const SORTS = [
   { value: "featured", label: "Featured" },
@@ -33,6 +34,13 @@ export default function Shop() {
     if (sort === "price-desc") list.sort((a, b) => b.price - a.price);
     return list;
   }, [activeCategory, sort]);
+
+  useSEO({
+    title: "Shop All — Faith-Inspired Streetwear Tees",
+    description:
+      "Shop the full His Will Fashion collection — oversized heavyweight tees carrying real scripture. Pan India shipping, Cash on Delivery.",
+    path: "/shop",
+  });
 
   return (
     <div>

@@ -6,6 +6,7 @@ import { formatINR } from "../utils/format";
 import { INDIAN_STATES } from "../data/indianStates";
 import { placeOrder } from "../api/orders";
 import ProductImage from "../components/ProductImage";
+import useSEO from "../hooks/useSEO";
 
 const FREE_SHIPPING_THRESHOLD = 1999;
 const SHIPPING_FEE = 99;
@@ -28,6 +29,8 @@ export default function Checkout() {
   const [form, setForm] = useState(emptyForm);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  useSEO({ title: "Checkout", path: "/checkout", noindex: true });
 
   const shipping = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_FEE;
   const total = subtotal + shipping;

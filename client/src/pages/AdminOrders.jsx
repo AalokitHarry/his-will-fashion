@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { AlertCircle, LogOut, RefreshCw } from "lucide-react";
 import { fetchOrders, updateOrderStatus } from "../api/orders";
 import { formatINR } from "../utils/format";
+import useSEO from "../hooks/useSEO";
 
 const TOKEN_KEY = "hwf_admin_token";
 
@@ -22,6 +23,8 @@ const STATUS_STYLES = {
 };
 
 export default function AdminOrders() {
+  useSEO({ title: "Admin", path: "/admin", noindex: true });
+
   const [token, setToken] = useState(() => localStorage.getItem(TOKEN_KEY) || "");
   const [passwordInput, setPasswordInput] = useState("");
   const [orders, setOrders] = useState(null);

@@ -6,6 +6,7 @@ import RevealImage from "../components/RevealImage";
 import RevealText from "../components/RevealText";
 import Magnetic from "../components/Magnetic";
 import IlluminatedCapital from "../components/IlluminatedCapital";
+import useSEO from "../hooks/useSEO";
 
 const VALUES = [
   { icon: Cross, title: "Faith First", body: "Every design begins with scripture. We build clothing around conviction, not the other way around." },
@@ -27,6 +28,13 @@ function Eyebrow({ n, children, center }) {
 }
 
 export default function About() {
+  useSEO({
+    title: "Our Story",
+    description:
+      "His Will Fashion started with a simple frustration: nowhere to find streetwear that felt as bold as our faith. Small-batch, faith-driven, Pan India.",
+    path: "/about",
+  });
+
   return (
     <div>
       <section className="bg-ink text-parchment pt-32 pb-24 relative overflow-hidden">

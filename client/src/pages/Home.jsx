@@ -9,6 +9,7 @@ import Magnetic from "../components/Magnetic";
 import RevealText from "../components/RevealText";
 import RevealImage from "../components/RevealImage";
 import IlluminatedCapital from "../components/IlluminatedCapital";
+import useSEO from "../hooks/useSEO";
 
 const TICKER = [
   "PAN INDIA SHIPPING",
@@ -46,6 +47,13 @@ function Eyebrow({ n, children }) {
 export default function Home() {
   const featured = PRODUCTS.slice(0, 4);
   const spotlight = SPOTLIGHT_IDS.map(getProductById).filter(Boolean);
+
+  useSEO({
+    title: "Premium Christian Streetwear",
+    description:
+      "Faith-inspired streetwear with real scripture and real craft — oversized heavyweight tees, not generic Christian merch. Pan India shipping, Cash on Delivery.",
+    path: "/",
+  });
 
   return (
     <div>

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Camera, CheckCircle2, Mail, MapPin } from "lucide-react";
+import useSEO from "../hooks/useSEO";
 
 const FAQS = [
   {
@@ -23,6 +24,22 @@ const FAQS = [
 export default function Contact() {
   const [sent, setSent] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", message: "" });
+
+  useSEO({
+    title: "Contact & FAQ",
+    description:
+      "Get in touch with His Will Fashion — shipping, returns, sizing, and order questions answered. Pan India shipping, Cash on Delivery.",
+    path: "/contact",
+    jsonLd: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: FAQS.map((f) => ({
+        "@type": "Question",
+        name: f.q,
+        acceptedAnswer: { "@type": "Answer", text: f.a },
+      })),
+    },
+  });
 
   const onChange = (e) => setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
 

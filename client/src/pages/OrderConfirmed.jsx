@@ -2,9 +2,12 @@ import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Camera, CheckCircle2 } from "lucide-react";
 import { formatINR } from "../utils/format";
+import useSEO from "../hooks/useSEO";
 
 export default function OrderConfirmed() {
   const { state } = useLocation();
+
+  useSEO({ title: "Order Confirmed", path: "/order-confirmed", noindex: true });
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-5 py-32">

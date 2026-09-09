@@ -8,6 +8,7 @@ import { formatINR } from "../utils/format";
 import ProductCarousel from "../components/ProductCarousel";
 import ProductCard from "../components/ProductCard";
 import VerseMark from "../components/VerseMark";
+import useSEO from "../hooks/useSEO";
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -17,6 +18,34 @@ export default function ProductDetail() {
   const [size, setSize] = useState(product?.sizes?.[0]);
   const [color, setColor] = useState(product?.colors?.[0]?.name);
   const [qty, setQty] = useState(1);
+
+  useSEO(
+    product
+      ? {
+          title: `${product.name} — ${product.verse || product.tagline || "His Will Fashion"}`,
+          description: product.description,
+          path: `/product/${product.id}`,
+          image: `https://his-will-fashion.aalokitharry1995.workers.dev${product.image}`,
+          jsonLd: {
+            "@context": "https://schema.org",
+            "@type": "Product",
+            name: product.name,
+            description: product.description,
+            image: product.images.map((src) => `https://his-will-fashion.aalokitharry1995.workers.dev${src}`),
+            sku: product.id,
+            brand: { "@type": "Brand", name: "His Will Fashion" },
+            offers: {
+              "@type": "Offer",
+              url: `https://his-will-fashion.aalokitharry1995.workers.dev/product/${product.id}`,
+              priceCurrency: "INR",
+              price: product.price,
+              availability: "https://schema.org/InStock",
+              itemCondition: "https://schema.org/NewCondition",
+            },
+          },
+        }
+      : { title: "Product Not Found", noindex: true, path: `/product/${id}` }
+  );
 
   if (!product) {
     return (
