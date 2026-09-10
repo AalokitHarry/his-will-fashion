@@ -2,77 +2,77 @@
 <!-- Static sitemap — update this file when products are added, removed, or renamed. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://his-will-fashion.aalokitharry1995.workers.dev/</loc>
+    <loc>https://hiswillfashion.com/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://his-will-fashion.aalokitharry1995.workers.dev/shop</loc>
+    <loc>https://hiswillfashion.com/shop</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://his-will-fashion.aalokitharry1995.workers.dev/about</loc>
+    <loc>https://hiswillfashion.com/about</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://his-will-fashion.aalokitharry1995.workers.dev/contact</loc>
+    <loc>https://hiswillfashion.com/contact</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://his-will-fashion.aalokitharry1995.workers.dev/product/lion-of-judah-tee</loc>
+    <loc>https://hiswillfashion.com/product/lion-of-judah-tee</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://his-will-fashion.aalokitharry1995.workers.dev/product/heavenly-influencer-tee</loc>
+    <loc>https://hiswillfashion.com/product/heavenly-influencer-tee</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://his-will-fashion.aalokitharry1995.workers.dev/product/kingdom-mindset-tee</loc>
+    <loc>https://hiswillfashion.com/product/kingdom-mindset-tee</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://his-will-fashion.aalokitharry1995.workers.dev/product/grace-changed-my-story-tee</loc>
+    <loc>https://hiswillfashion.com/product/grace-changed-my-story-tee</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://his-will-fashion.aalokitharry1995.workers.dev/product/jesus-little-princess-tee</loc>
+    <loc>https://hiswillfashion.com/product/jesus-little-princess-tee</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://his-will-fashion.aalokitharry1995.workers.dev/product/philippians-4-7-tee</loc>
+    <loc>https://hiswillfashion.com/product/philippians-4-7-tee</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://his-will-fashion.aalokitharry1995.workers.dev/product/i-ace-my-race-tee</loc>
+    <loc>https://hiswillfashion.com/product/i-ace-my-race-tee</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://his-will-fashion.aalokitharry1995.workers.dev/product/plain-eggplant-tee</loc>
+    <loc>https://hiswillfashion.com/product/plain-eggplant-tee</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://his-will-fashion.aalokitharry1995.workers.dev/privacy-policy</loc>
+    <loc>https://hiswillfashion.com/privacy-policy</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://his-will-fashion.aalokitharry1995.workers.dev/refund-policy</loc>
+    <loc>https://hiswillfashion.com/refund-policy</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://his-will-fashion.aalokitharry1995.workers.dev/terms</loc>
+    <loc>https://hiswillfashion.com/terms</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>

@@ -10,7 +10,7 @@ import ProductCard from "../components/ProductCard";
 import VerseMark from "../components/VerseMark";
 import useSEO from "../hooks/useSEO";
 
-const SITE_URL = "https://his-will-fashion.aalokitharry1995.workers.dev";
+const SITE_URL = "https://hiswillfashion.com";
 const absoluteUrl = (src) => (src?.startsWith("http") ? src : `${SITE_URL}${src}`);
 
 export default function ProductDetail() {
@@ -40,7 +40,7 @@ export default function ProductDetail() {
             brand: { "@type": "Brand", name: "His Will Fashion" },
             offers: {
               "@type": "Offer",
-              url: `https://his-will-fashion.aalokitharry1995.workers.dev/product/${product.id}`,
+              url: `https://hiswillfashion.com/product/${product.id}`,
               priceCurrency: "INR",
               price: product.price,
               availability: "https://schema.org/InStock",

@@ -4,4 +4,4 @@ Disallow: /admin
 Disallow: /checkout
 Disallow: /order-confirmed
 
-Sitemap: https://his-will-fashion.aalokitharry1995.workers.dev/sitemap.xml
+Sitemap: https://hiswillfashion.com/sitemap.xml

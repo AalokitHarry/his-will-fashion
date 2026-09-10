@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-const SITE_URL = "https://his-will-fashion.aalokitharry1995.workers.dev";
+const SITE_URL = "https://hiswillfashion.com";
 const SITE_NAME = "His Will Fashion";
 const DEFAULT_IMAGE = `${SITE_URL}/products/lion-of-judah-tee-1.jpg`;
 
