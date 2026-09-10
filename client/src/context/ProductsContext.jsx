@@ -26,14 +26,15 @@ export function ProductsProvider({ children }) {
     load();
   }, []);
 
-  // Lets the admin "add product" flow show a new item immediately without
+  // Lets the admin "add/delete product" flows update immediately without
   // waiting on a full refetch.
   const addProductLocal = (product) => setProducts((prev) => [product, ...prev]);
+  const removeProductLocal = (id) => setProducts((prev) => prev.filter((p) => p.id !== id));
 
   const getProductById = (id) => products.find((p) => p.id === id);
 
   const value = useMemo(
-    () => ({ products, loading, error, reload: load, addProductLocal, getProductById }),
+    () => ({ products, loading, error, reload: load, addProductLocal, removeProductLocal, getProductById }),
     [products, loading, error]
   );
 

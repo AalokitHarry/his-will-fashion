@@ -26,3 +26,13 @@ CREATE TABLE IF NOT EXISTS products (
   images TEXT NOT NULL,
   created_at TEXT NOT NULL
 );
+
+-- Product photos, stored as raw bytes in D1 (no R2/object-storage account
+-- required). One row per photo, keyed by product id + slot (1-3).
+CREATE TABLE IF NOT EXISTS product_photos (
+  product_id TEXT NOT NULL,
+  slot INTEGER NOT NULL,
+  content_type TEXT NOT NULL,
+  data BLOB NOT NULL,
+  PRIMARY KEY (product_id, slot)
+);

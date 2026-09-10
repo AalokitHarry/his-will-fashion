@@ -4,6 +4,7 @@ import { fetchOrders, updateOrderStatus } from "../api/orders";
 import { formatINR } from "../utils/format";
 import useSEO from "../hooks/useSEO";
 import AddProductForm from "../components/AddProductForm";
+import ProductList from "../components/ProductList";
 
 const TOKEN_KEY = "hwf_admin_token";
 
@@ -163,7 +164,10 @@ export default function AdminOrders() {
         </div>
 
         {tab === "products" ? (
-          <AddProductForm />
+          <>
+            <AddProductForm />
+            <ProductList />
+          </>
         ) : (
           <>
             {statusError && (

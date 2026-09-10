@@ -122,18 +122,32 @@ async function uniqueProductId(db, baseSlug) {
 }
 
 const IMAGE_TYPES = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" };
+const MAX_PHOTO_BYTES = 1_000_000; // ~1MB — keeps each photo well inside D1's per-row size limit.
+
+// Serves a product photo stored as a blob in D1 (no object-storage account
+// needed). Cached for a day — product photos aren't edited after upload.
+app.get("/api/products/image/:id/:slot", async (c) => {
+  const { id, slot } = c.req.param();
+  const row = await c.env.DB.prepare("SELECT content_type, data FROM product_photos WHERE product_id = ? AND slot = ?")
+    .bind(id, Number(slot))
+    .first();
+  if (!row) return c.notFound();
+  // D1 hands back a BLOB column as a plain array of byte values, not an
+  // ArrayBuffer — Response() needs a real typed array to serialize it.
+  return new Response(new Uint8Array(row.data), {
+    headers: { "Content-Type": row.content_type, "Cache-Control": "public, max-age=86400" },
+  });
+});
 
 // Admin: add a new product — password-protected via ADMIN_TOKEN. Expects
 // multipart/form-data with `name`, `price`, and exactly 3 photo files
 // (`photo1` = the on-model shot shown first, `photo2`/`photo3` = the rest).
+// Photos are stored as blobs in D1 — no object-storage account required.
 app.post("/api/admin/products", async (c) => {
   const auth = c.req.header("Authorization") || "";
   const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
   if (!c.env.ADMIN_TOKEN || token !== c.env.ADMIN_TOKEN) {
     return c.json({ error: "Unauthorized" }, 401);
-  }
-  if (!c.env.PRODUCT_IMAGES || !c.env.R2_PUBLIC_URL) {
-    return c.json({ error: "Photo storage isn't configured yet." }, 503);
   }
 
   const body = await c.req.parseBody().catch(() => ({}));
@@ -150,19 +164,27 @@ app.post("/api/admin/products", async (c) => {
     if (!IMAGE_TYPES[photo.type]) {
       return c.json({ error: `Unsupported photo type: ${photo.type || "unknown"}. Use JPG, PNG, or WebP.` }, 400);
     }
+    if (photo.size > MAX_PHOTO_BYTES) {
+      return c.json(
+        { error: `"${photo.name}" is too large (${Math.round(photo.size / 1024)}KB). Use a photo under 1MB — most phones can export a smaller/"web size" version.` },
+        400
+      );
+    }
   }
 
   const id = await uniqueProductId(c.env.DB, slugify(name));
+  const origin = new URL(c.req.url).origin;
   const imageUrls = [];
 
   for (let i = 0; i < photos.length; i++) {
     const photo = photos[i];
-    const ext = IMAGE_TYPES[photo.type];
-    const key = `products/${id}-${i + 1}.${ext}`;
-    await c.env.PRODUCT_IMAGES.put(key, await photo.arrayBuffer(), {
-      httpMetadata: { contentType: photo.type },
-    });
-    imageUrls.push(`${c.env.R2_PUBLIC_URL}/${key}`);
+    const slot = i + 1;
+    await c.env.DB.prepare(
+      "INSERT INTO product_photos (product_id, slot, content_type, data) VALUES (?, ?, ?, ?)"
+    )
+      .bind(id, slot, photo.type, await photo.arrayBuffer())
+      .run();
+    imageUrls.push(`${origin}/api/products/image/${id}/${slot}`);
   }
 
   const now = new Date().toISOString();
@@ -175,6 +197,25 @@ app.post("/api/admin/products", async (c) => {
 
   const row = await c.env.DB.prepare("SELECT * FROM products WHERE id = ?").bind(id).first();
   return c.json({ product: rowToProduct(row) }, 201);
+});
+
+// Admin: delete a product — password-protected via ADMIN_TOKEN. Removes the
+// product row and its stored photos.
+app.delete("/api/admin/products/:id", async (c) => {
+  const auth = c.req.header("Authorization") || "";
+  const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
+  if (!c.env.ADMIN_TOKEN || token !== c.env.ADMIN_TOKEN) {
+    return c.json({ error: "Unauthorized" }, 401);
+  }
+
+  const { id } = c.req.param();
+  await c.env.DB.prepare("DELETE FROM product_photos WHERE product_id = ?").bind(id).run();
+  const result = await c.env.DB.prepare("DELETE FROM products WHERE id = ?").bind(id).run();
+
+  if (!result.meta.changes) {
+    return c.json({ error: "Product not found" }, 404);
+  }
+  return c.json({ id });
 });
 
 const ORDER_STATUSES = ["pending_confirmation", "confirmed", "shipped", "delivered", "cancelled"];

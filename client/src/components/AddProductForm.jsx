@@ -5,9 +5,11 @@ import { createProduct } from "../api/products";
 import { useProducts } from "../context/ProductsContext";
 import { formatINR } from "../utils/format";
 
+const MAX_PHOTO_BYTES = 1_000_000;
+
 const PHOTO_SLOTS = [
   { key: "photo1", label: "Photo 1 — On model", hint: "Shown first on the site" },
-  { key: "photo2", label: "Photo 2", hint: "" },
+  { key: "photo2", label: "Photo 2", hint: "Under 1MB each" },
   { key: "photo3", label: "Photo 3", hint: "" },
 ];
 
@@ -66,6 +68,10 @@ export default function AddProductForm() {
     if (!name.trim()) return setError("Enter a product name.");
     if (!price || Number(price) <= 0) return setError("Enter a valid price.");
     if (!photos.photo1 || !photos.photo2 || !photos.photo3) return setError("All 3 photos are required.");
+    const tooBig = Object.values(photos).find((f) => f.size > MAX_PHOTO_BYTES);
+    if (tooBig) {
+      return setError(`"${tooBig.name}" is ${Math.round(tooBig.size / 1024)}KB — please use a photo under 1MB.`);
+    }
 
     setSubmitting(true);
     try {
