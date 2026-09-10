@@ -1,19 +1,151 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { AlertCircle, Trash2 } from "lucide-react";
-import { deleteProduct } from "../api/products";
+import { AlertCircle, CheckCircle2, Pencil, Trash2 } from "lucide-react";
+import { deleteProduct, updateProduct } from "../api/products";
 import { useProducts } from "../context/ProductsContext";
 import { formatINR } from "../utils/format";
+import PhotoInput, { MAX_PHOTO_BYTES } from "./PhotoInput";
+
+const PHOTO_SLOTS = ["photo1", "photo2", "photo3"];
+
+function EditRow({ product, onDone, onCancel }) {
+  const { updateProductLocal } = useProducts();
+  const [name, setName] = useState(product.name);
+  const [price, setPrice] = useState(String(product.price));
+  const [replacingPhotos, setReplacingPhotos] = useState(false);
+  const [photos, setPhotos] = useState({ photo1: null, photo2: null, photo3: null });
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+
+  const setPhoto = (key, file) => setPhotos((p) => ({ ...p, [key]: file }));
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+    setError("");
+    if (!name.trim()) return setError("Enter a product name.");
+    if (!price || Number(price) <= 0) return setError("Enter a valid price.");
+    if (replacingPhotos) {
+      if (!photos.photo1 || !photos.photo2 || !photos.photo3) {
+        return setError("Upload all 3 photos, or turn off photo replacement to keep the existing ones.");
+      }
+      const tooBig = Object.values(photos).find((f) => f.size > MAX_PHOTO_BYTES);
+      if (tooBig) {
+        return setError(`"${tooBig.name}" is ${Math.round(tooBig.size / 1024)}KB — please use a photo under 1MB.`);
+      }
+    }
+
+    setSaving(true);
+    try {
+      const token = localStorage.getItem("hwf_admin_token") || "";
+      const formData = new FormData();
+      formData.append("name", name.trim());
+      formData.append("price", price);
+      if (replacingPhotos) {
+        formData.append("photo1", photos.photo1);
+        formData.append("photo2", photos.photo2);
+        formData.append("photo3", photos.photo3);
+      }
+      const updated = await updateProduct(token, product.id, formData);
+      updateProductLocal(updated);
+      onDone();
+    } catch (err) {
+      setError(err.message || "Unable to update product.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSave} className="flex flex-col gap-4 mt-3 pt-3 border-t border-parchment/10">
+      <div className="grid sm:grid-cols-2 gap-3">
+        <div className="flex flex-col gap-1.5">
+          <label className="font-condensed tracking-[0.08em] text-xs text-parchment/60">NAME</label>
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="border border-parchment/20 rounded-md px-3 py-2 text-sm bg-parchment text-ink focus:outline-none focus:border-gold"
+          />
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <label className="font-condensed tracking-[0.08em] text-xs text-parchment/60">PRICE (₹)</label>
+          <input
+            type="number"
+            min="1"
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+            className="border border-parchment/20 rounded-md px-3 py-2 text-sm bg-parchment text-ink focus:outline-none focus:border-gold"
+          />
+        </div>
+      </div>
+
+      <label className="flex items-center gap-2 text-xs text-parchment/60 cursor-pointer w-fit">
+        <input
+          type="checkbox"
+          checked={replacingPhotos}
+          onChange={(e) => setReplacingPhotos(e.target.checked)}
+          className="accent-gold"
+        />
+        Replace all 3 photos
+      </label>
+
+      {replacingPhotos && (
+        <div className="grid grid-cols-3 gap-4 max-w-md">
+          {PHOTO_SLOTS.map((key, i) => (
+            <PhotoInput
+              key={key}
+              label={`Photo ${i + 1}`}
+              file={photos[key]}
+              onChange={(file) => setPhoto(key, file)}
+            />
+          ))}
+        </div>
+      )}
+
+      {error && (
+        <div className="flex items-center gap-1.5 text-rust text-xs">
+          <AlertCircle size={14} className="shrink-0" />
+          <span>{error}</span>
+        </div>
+      )}
+
+      <div className="flex items-center gap-2.5">
+        <button
+          type="submit"
+          disabled={saving}
+          className="text-xs font-condensed tracking-wide bg-gold text-ink px-4 py-2 rounded-md hover:bg-rust hover:text-parchment disabled:opacity-60"
+        >
+          {saving ? "SAVING…" : "SAVE CHANGES"}
+        </button>
+        <button
+          type="button"
+          onClick={onCancel}
+          className="text-xs font-condensed tracking-wide border border-parchment/30 px-4 py-2 rounded-md hover:border-parchment"
+        >
+          CANCEL
+        </button>
+      </div>
+    </form>
+  );
+}
 
 export default function ProductList() {
   const { products, loading, removeProductLocal } = useProducts();
+  const [editId, setEditId] = useState(null);
   const [confirmId, setConfirmId] = useState(null);
   const [password, setPassword] = useState("");
   const [deletingId, setDeletingId] = useState(null);
   const [error, setError] = useState("");
+  const [savedId, setSavedId] = useState(null);
+
+  const startEdit = (id) => {
+    setEditId(id);
+    setConfirmId(null);
+    setSavedId(null);
+  };
 
   const startConfirm = (id) => {
     setConfirmId(id);
+    setEditId(null);
     setPassword("");
     setError("");
   };
@@ -69,16 +201,43 @@ export default function ProductList() {
                   <p className="text-sm text-parchment/60">{formatINR(p.price)}</p>
                 </div>
 
-                {confirmId !== p.id && (
-                  <button
-                    onClick={() => startConfirm(p.id)}
-                    aria-label={`Delete ${p.name}`}
-                    className="shrink-0 p-2 text-parchment/40 hover:text-rust transition-colors"
-                  >
-                    <Trash2 size={17} />
-                  </button>
+                {savedId === p.id && (
+                  <span className="flex items-center gap-1.5 text-gold text-xs shrink-0">
+                    <CheckCircle2 size={15} /> Saved
+                  </span>
+                )}
+
+                {editId !== p.id && confirmId !== p.id && (
+                  <div className="flex items-center gap-1 shrink-0">
+                    <button
+                      onClick={() => startEdit(p.id)}
+                      aria-label={`Edit ${p.name}`}
+                      className="p-2 text-parchment/40 hover:text-gold transition-colors"
+                    >
+                      <Pencil size={16} />
+                    </button>
+                    <button
+                      onClick={() => startConfirm(p.id)}
+                      aria-label={`Delete ${p.name}`}
+                      className="p-2 text-parchment/40 hover:text-rust transition-colors"
+                    >
+                      <Trash2 size={17} />
+                    </button>
+                  </div>
                 )}
               </div>
+
+              {editId === p.id && (
+                <EditRow
+                  product={p}
+                  onCancel={() => setEditId(null)}
+                  onDone={() => {
+                    setEditId(null);
+                    setSavedId(p.id);
+                    setTimeout(() => setSavedId((id) => (id === p.id ? null : id)), 3000);
+                  }}
+                />
+              )}
 
               {confirmId === p.id && (
                 <form onSubmit={(e) => handleDelete(e, p.id)} className="flex flex-wrap items-center gap-2.5 mt-3 pt-3 border-t border-parchment/10">

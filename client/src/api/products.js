@@ -23,6 +23,21 @@ export async function createProduct(token, formData) {
   return data.product;
 }
 
+// formData carries: name, price, and optionally photo1/photo2/photo3 (all 3
+// together to replace photos, or none to keep the existing ones).
+export async function updateProduct(token, id, formData) {
+  const res = await fetch(`${API_BASE}/api/admin/products/${id}`, {
+    method: "PATCH",
+    headers: { Authorization: `Bearer ${token}` },
+    body: formData,
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data.error || "Unable to update product.");
+  }
+  return data.product;
+}
+
 export async function deleteProduct(token, id) {
   const res = await fetch(`${API_BASE}/api/admin/products/${id}`, {
     method: "DELETE",

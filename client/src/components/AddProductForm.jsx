@@ -1,53 +1,16 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { AlertCircle, CheckCircle2, Upload } from "lucide-react";
+import { AlertCircle, CheckCircle2 } from "lucide-react";
 import { createProduct } from "../api/products";
 import { useProducts } from "../context/ProductsContext";
 import { formatINR } from "../utils/format";
-
-const MAX_PHOTO_BYTES = 1_000_000;
+import PhotoInput, { MAX_PHOTO_BYTES } from "./PhotoInput";
 
 const PHOTO_SLOTS = [
   { key: "photo1", label: "Photo 1 — On model", hint: "Shown first on the site" },
   { key: "photo2", label: "Photo 2", hint: "Under 1MB each" },
   { key: "photo3", label: "Photo 3", hint: "" },
 ];
-
-function PhotoInput({ label, hint, file, onChange }) {
-  const [preview, setPreview] = useState(null);
-
-  useEffect(() => {
-    if (!file) {
-      setPreview(null);
-      return;
-    }
-    const url = URL.createObjectURL(file);
-    setPreview(url);
-    return () => URL.revokeObjectURL(url);
-  }, [file]);
-
-  return (
-    <label className="flex flex-col gap-2 cursor-pointer">
-      <span className="font-condensed tracking-[0.08em] text-xs text-parchment/60">
-        {label.toUpperCase()}
-        {hint && <span className="text-parchment/35 normal-case tracking-normal"> — {hint}</span>}
-      </span>
-      <div className="relative aspect-[4/5] rounded-lg border border-dashed border-parchment/25 bg-charcoal overflow-hidden flex items-center justify-center hover:border-gold transition-colors">
-        {preview ? (
-          <img src={preview} alt="" className="w-full h-full object-cover" />
-        ) : (
-          <Upload size={22} className="text-parchment/30" />
-        )}
-      </div>
-      <input
-        type="file"
-        accept="image/jpeg,image/png,image/webp"
-        className="hidden"
-        onChange={(e) => onChange(e.target.files?.[0] || null)}
-      />
-    </label>
-  );
-}
 
 export default function AddProductForm() {
   const { addProductLocal } = useProducts();

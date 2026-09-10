@@ -199,6 +199,69 @@ app.post("/api/admin/products", async (c) => {
   return c.json({ product: rowToProduct(row) }, 201);
 });
 
+// Admin: edit a product — password-protected via ADMIN_TOKEN. Expects
+// multipart/form-data with `name` and/or `price`. Photos are only replaced
+// when all 3 are re-uploaded together; omit them to keep the existing ones.
+app.patch("/api/admin/products/:id", async (c) => {
+  const auth = c.req.header("Authorization") || "";
+  const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
+  if (!c.env.ADMIN_TOKEN || token !== c.env.ADMIN_TOKEN) {
+    return c.json({ error: "Unauthorized" }, 401);
+  }
+
+  const { id } = c.req.param();
+  const existing = await c.env.DB.prepare("SELECT * FROM products WHERE id = ?").bind(id).first();
+  if (!existing) return c.json({ error: "Product not found" }, 404);
+
+  const body = await c.req.parseBody().catch(() => ({}));
+  const name = body.name != null ? String(body.name).trim() : existing.name;
+  const price = body.price != null ? Number(body.price) : existing.price;
+  const photos = [body.photo1, body.photo2, body.photo3];
+  const hasNewPhotos = photos.some((p) => p instanceof File && p.size > 0);
+
+  if (!name) return c.json({ error: "Product name is required." }, 400);
+  if (!Number.isFinite(price) || price <= 0) return c.json({ error: "Enter a valid price." }, 400);
+
+  if (hasNewPhotos) {
+    if (photos.some((p) => !(p instanceof File) || p.size === 0)) {
+      return c.json({ error: "To replace photos, upload all 3 together." }, 400);
+    }
+    for (const photo of photos) {
+      if (!IMAGE_TYPES[photo.type]) {
+        return c.json({ error: `Unsupported photo type: ${photo.type || "unknown"}. Use JPG, PNG, or WebP.` }, 400);
+      }
+      if (photo.size > MAX_PHOTO_BYTES) {
+        return c.json(
+          { error: `"${photo.name}" is too large (${Math.round(photo.size / 1024)}KB). Use a photo under 1MB.` },
+          400
+        );
+      }
+    }
+
+    const origin = new URL(c.req.url).origin;
+    const imageUrls = [];
+    await c.env.DB.prepare("DELETE FROM product_photos WHERE product_id = ?").bind(id).run();
+    for (let i = 0; i < photos.length; i++) {
+      const photo = photos[i];
+      const slot = i + 1;
+      await c.env.DB.prepare(
+        "INSERT INTO product_photos (product_id, slot, content_type, data) VALUES (?, ?, ?, ?)"
+      )
+        .bind(id, slot, photo.type, await photo.arrayBuffer())
+        .run();
+      imageUrls.push(`${origin}/api/products/image/${id}/${slot}`);
+    }
+    await c.env.DB.prepare("UPDATE products SET name = ?, price = ?, images = ? WHERE id = ?")
+      .bind(name, price, JSON.stringify(imageUrls), id)
+      .run();
+  } else {
+    await c.env.DB.prepare("UPDATE products SET name = ?, price = ? WHERE id = ?").bind(name, price, id).run();
+  }
+
+  const row = await c.env.DB.prepare("SELECT * FROM products WHERE id = ?").bind(id).first();
+  return c.json({ product: rowToProduct(row) });
+});
+
 // Admin: delete a product — password-protected via ADMIN_TOKEN. Removes the
 // product row and its stored photos.
 app.delete("/api/admin/products/:id", async (c) => {

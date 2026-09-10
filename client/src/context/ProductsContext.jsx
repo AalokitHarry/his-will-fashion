@@ -26,15 +26,16 @@ export function ProductsProvider({ children }) {
     load();
   }, []);
 
-  // Lets the admin "add/delete product" flows update immediately without
-  // waiting on a full refetch.
+  // Lets the admin "add/edit/delete product" flows update immediately
+  // without waiting on a full refetch.
   const addProductLocal = (product) => setProducts((prev) => [product, ...prev]);
   const removeProductLocal = (id) => setProducts((prev) => prev.filter((p) => p.id !== id));
+  const updateProductLocal = (product) => setProducts((prev) => prev.map((p) => (p.id === product.id ? product : p)));
 
   const getProductById = (id) => products.find((p) => p.id === id);
 
   const value = useMemo(
-    () => ({ products, loading, error, reload: load, addProductLocal, removeProductLocal, getProductById }),
+    () => ({ products, loading, error, reload: load, addProductLocal, removeProductLocal, updateProductLocal, getProductById }),
     [products, loading, error]
   );
 
