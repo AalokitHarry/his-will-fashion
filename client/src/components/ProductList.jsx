@@ -12,6 +12,7 @@ function EditRow({ product, onDone, onCancel }) {
   const { updateProductLocal } = useProducts();
   const [name, setName] = useState(product.name);
   const [price, setPrice] = useState(String(product.price));
+  const [description, setDescription] = useState(product.description || "");
   const [replacingPhotos, setReplacingPhotos] = useState(false);
   const [photos, setPhotos] = useState({ photo1: null, photo2: null, photo3: null });
   const [saving, setSaving] = useState(false);
@@ -40,6 +41,7 @@ function EditRow({ product, onDone, onCancel }) {
       const formData = new FormData();
       formData.append("name", name.trim());
       formData.append("price", price);
+      formData.append("description", description.trim());
       if (replacingPhotos) {
         formData.append("photo1", photos.photo1);
         formData.append("photo2", photos.photo2);
@@ -76,6 +78,18 @@ function EditRow({ product, onDone, onCancel }) {
             className="border border-parchment/20 rounded-md px-3 py-2 text-sm bg-parchment text-ink focus:outline-none focus:border-gold"
           />
         </div>
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <label className="font-condensed tracking-[0.08em] text-xs text-parchment/60">
+          DESCRIPTION <span className="text-parchment/35 normal-case tracking-normal">— optional</span>
+        </label>
+        <textarea
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          rows={3}
+          className="border border-parchment/20 rounded-md px-3 py-2 text-sm bg-parchment text-ink focus:outline-none focus:border-gold resize-none"
+        />
       </div>
 
       <label className="flex items-center gap-2 text-xs text-parchment/60 cursor-pointer w-fit">

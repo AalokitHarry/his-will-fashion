@@ -153,6 +153,7 @@ app.post("/api/admin/products", async (c) => {
   const body = await c.req.parseBody().catch(() => ({}));
   const name = String(body.name || "").trim();
   const price = Number(body.price);
+  const description = String(body.description || "").trim();
   const photos = [body.photo1, body.photo2, body.photo3];
 
   if (!name) return c.json({ error: "Product name is required." }, 400);
@@ -190,9 +191,9 @@ app.post("/api/admin/products", async (c) => {
   const now = new Date().toISOString();
   await c.env.DB.prepare(
     `INSERT INTO products (id, name, category, price, compare_at, sizes, colors, verse, tagline, tag, description, images, created_at)
-     VALUES (?, ?, 'Tees', ?, NULL, ?, '[]', NULL, NULL, 'New', '', ?, ?)`
+     VALUES (?, ?, 'Tees', ?, NULL, ?, '[]', NULL, NULL, 'New', ?, ?, ?)`
   )
-    .bind(id, name, price, JSON.stringify(["S", "M", "L", "XL", "XXL"]), JSON.stringify(imageUrls), now)
+    .bind(id, name, price, JSON.stringify(["S", "M", "L", "XL", "XXL"]), description, JSON.stringify(imageUrls), now)
     .run();
 
   const row = await c.env.DB.prepare("SELECT * FROM products WHERE id = ?").bind(id).first();
@@ -216,6 +217,7 @@ app.patch("/api/admin/products/:id", async (c) => {
   const body = await c.req.parseBody().catch(() => ({}));
   const name = body.name != null ? String(body.name).trim() : existing.name;
   const price = body.price != null ? Number(body.price) : existing.price;
+  const description = body.description != null ? String(body.description).trim() : existing.description;
   const photos = [body.photo1, body.photo2, body.photo3];
   const hasNewPhotos = photos.some((p) => p instanceof File && p.size > 0);
 
@@ -251,11 +253,13 @@ app.patch("/api/admin/products/:id", async (c) => {
         .run();
       imageUrls.push(`${origin}/api/products/image/${id}/${slot}`);
     }
-    await c.env.DB.prepare("UPDATE products SET name = ?, price = ?, images = ? WHERE id = ?")
-      .bind(name, price, JSON.stringify(imageUrls), id)
+    await c.env.DB.prepare("UPDATE products SET name = ?, price = ?, description = ?, images = ? WHERE id = ?")
+      .bind(name, price, description, JSON.stringify(imageUrls), id)
       .run();
   } else {
-    await c.env.DB.prepare("UPDATE products SET name = ?, price = ? WHERE id = ?").bind(name, price, id).run();
+    await c.env.DB.prepare("UPDATE products SET name = ?, price = ?, description = ? WHERE id = ?")
+      .bind(name, price, description, id)
+      .run();
   }
 
   const row = await c.env.DB.prepare("SELECT * FROM products WHERE id = ?").bind(id).first();

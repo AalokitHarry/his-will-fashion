@@ -16,6 +16,7 @@ export default function AddProductForm() {
   const { addProductLocal } = useProducts();
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
+  const [description, setDescription] = useState("");
   const [photos, setPhotos] = useState({ photo1: null, photo2: null, photo3: null });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -42,6 +43,7 @@ export default function AddProductForm() {
       const formData = new FormData();
       formData.append("name", name.trim());
       formData.append("price", price);
+      formData.append("description", description.trim());
       formData.append("photo1", photos.photo1);
       formData.append("photo2", photos.photo2);
       formData.append("photo3", photos.photo3);
@@ -51,6 +53,7 @@ export default function AddProductForm() {
       setCreated(product);
       setName("");
       setPrice("");
+      setDescription("");
       setPhotos({ photo1: null, photo2: null, photo3: null });
     } catch (err) {
       setError(err.message || "Unable to add product.");
@@ -101,6 +104,19 @@ export default function AddProductForm() {
               className="border border-parchment/20 rounded-lg px-3.5 py-3 bg-parchment text-ink focus:outline-none focus:border-gold"
             />
           </div>
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <label className="font-condensed tracking-[0.08em] text-xs text-parchment/60">
+            DESCRIPTION <span className="text-parchment/35 normal-case tracking-normal">— optional</span>
+          </label>
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            rows={3}
+            placeholder="Fabric, print details, fit — whatever's worth knowing before buying."
+            className="border border-parchment/20 rounded-lg px-3.5 py-3 bg-parchment text-ink focus:outline-none focus:border-gold resize-none"
+          />
         </div>
 
         <div className="grid grid-cols-3 gap-4">
