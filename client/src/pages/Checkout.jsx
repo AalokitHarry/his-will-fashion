@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { AlertCircle, CheckCircle2, PackageCheck, ShoppingBag, X } from "lucide-react";
+import { AlertCircle, CheckCircle2, Loader2, PackageCheck, ShoppingBag, X } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { formatINR } from "../utils/format";
 import { INDIAN_STATES } from "../data/indianStates";
@@ -10,6 +10,7 @@ import useSEO from "../hooks/useSEO";
 
 const FREE_SHIPPING_THRESHOLD = 1999;
 const SHIPPING_FEE = 99;
+const STATE_SET = new Set(INDIAN_STATES);
 
 const emptyForm = {
   fullName: "",
@@ -35,11 +36,51 @@ export default function Checkout() {
   const [couponChecking, setCouponChecking] = useState(false);
   const [couponError, setCouponError] = useState("");
 
+  const [pincodeStatus, setPincodeStatus] = useState("idle"); // idle | loading | found | notfound
+  const lastLookedUpPincode = useRef("");
+
   useSEO({ title: "Checkout", path: "/checkout", noindex: true });
 
   const shipping = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_FEE;
   const discount = coupon?.discount || 0;
   const total = subtotal - discount + shipping;
+
+  useEffect(() => {
+    const pincode = form.pincode.trim();
+    if (!/^\d{6}$/.test(pincode)) {
+      setPincodeStatus("idle");
+      return;
+    }
+    if (pincode === lastLookedUpPincode.current) return;
+
+    let cancelled = false;
+    setPincodeStatus("loading");
+
+    fetch(`https://api.postalpincode.in/pincode/${pincode}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (cancelled) return;
+        lastLookedUpPincode.current = pincode;
+        const office = data?.[0]?.Status === "Success" ? data[0].PostOffice?.[0] : null;
+        if (office) {
+          setForm((f) => ({
+            ...f,
+            city: office.District || f.city,
+            state: STATE_SET.has(office.State) ? office.State : f.state,
+          }));
+          setPincodeStatus("found");
+        } else {
+          setPincodeStatus("notfound");
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setPincodeStatus("notfound");
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [form.pincode]);
 
   const onChange = (e) => {
     const { name, value } = e.target;
@@ -137,7 +178,21 @@ export default function Checkout() {
                     ))}
                   </select>
                 </div>
-                <Field label="Pincode" name="pincode" value={form.pincode} onChange={onChange} pattern="[0-9]{6}" title="6-digit pincode" required />
+                <Field label="Pincode" name="pincode" value={form.pincode} onChange={onChange} pattern="[0-9]{6}" title="6-digit pincode" required>
+                  {pincodeStatus === "loading" && (
+                    <span className="flex items-center gap-1.5 text-xs text-parchment/50 mt-1.5">
+                      <Loader2 size={12} className="animate-spin" /> Detecting city &amp; state…
+                    </span>
+                  )}
+                  {pincodeStatus === "found" && (
+                    <span className="flex items-center gap-1.5 text-xs text-gold mt-1.5">
+                      <CheckCircle2 size={12} /> City &amp; state filled in — edit if needed
+                    </span>
+                  )}
+                  {pincodeStatus === "notfound" && (
+                    <span className="text-xs text-parchment/50 mt-1.5">Couldn't detect location — enter city &amp; state manually.</span>
+                  )}
+                </Field>
                 <Field label="Country" name="country" value="India" onChange={() => {}} disabled />
               </div>
             </section>
@@ -262,7 +317,7 @@ export default function Checkout() {
   );
 }
 
-function Field({ label, className = "", ...props }) {
+function Field({ label, className = "", children, ...props }) {
   return (
     <div className={`flex flex-col gap-1.5 ${className}`}>
       <label className="font-condensed tracking-[0.08em] text-xs text-parchment/60">{label.toUpperCase()}</label>
@@ -270,6 +325,7 @@ function Field({ label, className = "", ...props }) {
         {...props}
         className="border border-parchment/20 rounded-lg px-3.5 py-3 bg-parchment text-ink focus:outline-none focus:border-gold disabled:opacity-50"
       />
+      {children}
     </div>
   );
 }
