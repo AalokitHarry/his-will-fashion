@@ -26,6 +26,22 @@ const STATUS_STYLES = {
   cancelled: "bg-rust/15 text-rust border border-rust/30",
 };
 
+// Apparel GST slabs per the GST Council's Sep 2025 rate reform: 5% on a
+// piece sold at ₹2,500 or under, 18% above that — based on each item's unit
+// price, not the order total. Prices on the site are treated as
+// GST-inclusive (standard Indian retail convention), so this backs the tax
+// portion out of what was already charged — it's a bookkeeping reference,
+// not an additional charge, and not a compliance claim (the store isn't
+// GST-registered yet).
+const GST_PIECE_THRESHOLD = 2500;
+
+function orderGST(items) {
+  return items.reduce((sum, item) => {
+    const rate = item.price > GST_PIECE_THRESHOLD ? 0.18 : 0.05;
+    return sum + (item.lineTotal * rate) / (1 + rate);
+  }, 0);
+}
+
 export default function AdminOrders() {
   useSEO({ title: "Admin", path: "/admin", noindex: true });
 
@@ -253,13 +269,17 @@ export default function AdminOrders() {
                       ))}
                     </div>
 
+                    <div className="flex justify-between text-xs text-parchment/45 mb-2 pt-3 border-t border-parchment/10">
+                      <span>GST (5%/18% slabs, included in price)</span>
+                      <span>{formatINR(orderGST(order.items))}</span>
+                    </div>
                     {order.discount > 0 && (
-                      <div className="flex justify-between text-sm text-gold mb-2 pt-3 border-t border-parchment/10">
+                      <div className="flex justify-between text-sm text-gold mb-2">
                         <span>Discount{order.couponCode ? ` (${order.couponCode})` : ""}</span>
                         <span>&minus;{formatINR(order.discount)}</span>
                       </div>
                     )}
-                    <div className={`flex justify-between font-display text-lg ${order.discount > 0 ? "" : "pt-3 border-t border-parchment/10"}`}>
+                    <div className="flex justify-between font-display text-lg">
                       <span>Total ({order.paymentMethod.toUpperCase()})</span>
                       <span>{formatINR(order.total)}</span>
                     </div>
