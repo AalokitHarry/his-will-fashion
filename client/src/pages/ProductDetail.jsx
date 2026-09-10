@@ -8,6 +8,7 @@ import { formatINR } from "../utils/format";
 import ProductCarousel from "../components/ProductCarousel";
 import ProductCard from "../components/ProductCard";
 import VerseMark from "../components/VerseMark";
+import SizeGuideModal from "../components/SizeGuideModal";
 import useSEO from "../hooks/useSEO";
 
 const SITE_URL = "https://hiswillfashion.com";
@@ -22,6 +23,7 @@ export default function ProductDetail() {
   const [size, setSize] = useState(product?.sizes?.[0]);
   const [color, setColor] = useState(product?.colors?.[0]?.name);
   const [qty, setQty] = useState(1);
+  const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
 
   useSEO(
     product
@@ -126,7 +128,16 @@ export default function ProductDetail() {
           )}
 
           <div className="mb-8">
-            <p className="font-condensed tracking-[0.1em] text-xs text-parchment/60 mb-2.5">SIZE</p>
+            <div className="flex items-center justify-between mb-2.5">
+              <p className="font-condensed tracking-[0.1em] text-xs text-parchment/60">SIZE</p>
+              <button
+                type="button"
+                onClick={() => setSizeGuideOpen(true)}
+                className="font-condensed tracking-[0.08em] text-xs text-gold hover:underline"
+              >
+                SIZE GUIDE
+              </button>
+            </div>
             <div className="flex flex-wrap gap-2.5">
               {product.sizes.map((s) => (
                 <button
@@ -189,6 +200,8 @@ export default function ProductDetail() {
           </div>
         </div>
       )}
+
+      <SizeGuideModal open={sizeGuideOpen} onClose={() => setSizeGuideOpen(false)} />
     </div>
   );
 }

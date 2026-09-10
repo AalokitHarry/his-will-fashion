@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { Camera, CheckCircle2, Mail, MapPin } from "lucide-react";
+import { Camera, CheckCircle2, Mail, MapPin, MessageCircle } from "lucide-react";
 import useSEO from "../hooks/useSEO";
+import { waLink } from "../components/WhatsAppButton";
 
 const FAQS = [
   {
     q: "What sizes do you offer?",
-    a: "Most tees and hoodies run true-to-size in an oversized/relaxed fit from S to XXL. Check the size chart on each product page — when in doubt, size down for a slimmer fit.",
+    a: "Most tees and hoodies run true-to-size in an oversized/relaxed fit from S to XXL. Check the size guide on each product page — when in doubt, size down for a slimmer fit.",
   },
   {
     q: "What's your return & exchange policy?",
@@ -17,7 +18,7 @@ const FAQS = [
   },
   {
     q: "How can I track my order?",
-    a: "You'll receive a tracking link by email and SMS once your order ships. For any issues, contact us with your order reference.",
+    a: "Look it up anytime on our Track Order page using your order reference and phone number — no account needed. We'll also email you whenever your status changes.",
   },
 ];
 
@@ -72,6 +73,17 @@ export default function Contact() {
               <h3 className="font-condensed tracking-[0.1em] text-sm mb-1">EMAIL US</h3>
               <a href="mailto:hello@hiswillfashion.in" className="text-parchment/70 hover:text-gold transition-colors">
                 hello@hiswillfashion.in
+              </a>
+            </div>
+          </div>
+          <div className="flex items-start gap-4">
+            <span className="w-11 h-11 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: "#25D366" }}>
+              <MessageCircle size={18} className="text-white" />
+            </span>
+            <div>
+              <h3 className="font-condensed tracking-[0.1em] text-sm mb-1">WHATSAPP</h3>
+              <a href={waLink()} target="_blank" rel="noreferrer" className="text-parchment/70 hover:text-gold transition-colors">
+                +91 79999 29550
               </a>
             </div>
           </div>
