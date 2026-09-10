@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { AlertCircle, CheckCircle2, Trash2 } from "lucide-react";
 import { createCoupon, deleteCoupon, fetchCoupons, setCouponActive } from "../api/coupons";
+import { formatINR } from "../utils/format";
 
 export default function CouponList() {
   const token = localStorage.getItem("hwf_admin_token") || "";
@@ -126,35 +127,42 @@ export default function CouponList() {
       ) : (
         <div className="flex flex-col gap-2.5 max-w-xl">
           {coupons.map((c) => (
-            <div key={c.code} className="flex items-center justify-between bg-charcoal border border-gold/15 rounded-lg px-4 py-3">
-              <div className="flex items-center gap-3">
-                <span className="font-condensed tracking-wide text-sm text-gold">{c.code}</span>
-                <span className="text-sm text-parchment/60">
-                  {c.type === "percent" ? `${c.value}% off` : `₹${c.value} off`}
-                </span>
-                {!c.active && (
-                  <span className="text-[10px] font-condensed tracking-wide bg-parchment/10 text-parchment/50 px-2 py-0.5 rounded-md">
-                    INACTIVE
+            <div key={c.code} className="flex flex-col gap-1 bg-charcoal border border-gold/15 rounded-lg px-4 py-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <span className="font-condensed tracking-wide text-sm text-gold">{c.code}</span>
+                  <span className="text-sm text-parchment/60">
+                    {c.type === "percent" ? `${c.value}% off` : `₹${c.value} off`}
                   </span>
-                )}
+                  {!c.active && (
+                    <span className="text-[10px] font-condensed tracking-wide bg-parchment/10 text-parchment/50 px-2 py-0.5 rounded-md">
+                      INACTIVE
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => toggleActive(c)}
+                    className={`flex items-center gap-1.5 text-xs font-condensed tracking-wide ${
+                      c.active ? "text-gold hover:text-parchment" : "text-parchment/50 hover:text-gold"
+                    } transition-colors`}
+                  >
+                    <CheckCircle2 size={14} /> {c.active ? "ACTIVE" : "ACTIVATE"}
+                  </button>
+                  <button
+                    onClick={() => remove(c)}
+                    aria-label={`Delete ${c.code}`}
+                    className="p-1.5 text-parchment/40 hover:text-rust transition-colors"
+                  >
+                    <Trash2 size={15} />
+                  </button>
+                </div>
               </div>
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={() => toggleActive(c)}
-                  className={`flex items-center gap-1.5 text-xs font-condensed tracking-wide ${
-                    c.active ? "text-gold hover:text-parchment" : "text-parchment/50 hover:text-gold"
-                  } transition-colors`}
-                >
-                  <CheckCircle2 size={14} /> {c.active ? "ACTIVE" : "ACTIVATE"}
-                </button>
-                <button
-                  onClick={() => remove(c)}
-                  aria-label={`Delete ${c.code}`}
-                  className="p-1.5 text-parchment/40 hover:text-rust transition-colors"
-                >
-                  <Trash2 size={15} />
-                </button>
-              </div>
+              <p className="text-xs text-parchment/40">
+                {c.uses > 0
+                  ? `Used ${c.uses} time${c.uses === 1 ? "" : "s"} · ${formatINR(c.totalDiscount)} given away`
+                  : "Not used yet"}
+              </p>
             </div>
           ))}
         </div>

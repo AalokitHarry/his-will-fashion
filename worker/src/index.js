@@ -631,11 +631,26 @@ app.get("/api/admin/coupons", async (c) => {
     return c.json({ error: "Unauthorized" }, 401);
   }
 
+  // LEFT JOIN so a never-used coupon still shows up, with uses/discount at 0.
   const { results } = await c.env.DB.prepare(
-    "SELECT code, type, value, active, created_at FROM coupons ORDER BY created_at DESC"
+    `SELECT coupons.code, coupons.type, coupons.value, coupons.active, coupons.created_at,
+            COUNT(orders.id) AS uses, COALESCE(SUM(orders.discount), 0) AS total_discount
+     FROM coupons
+     LEFT JOIN orders ON orders.coupon_code = coupons.code
+     GROUP BY coupons.code
+     ORDER BY coupons.created_at DESC`
   ).all();
 
-  return c.json({ coupons: results.map((r) => ({ ...r, active: !!r.active })) });
+  return c.json({
+    coupons: results.map((r) => ({
+      code: r.code,
+      type: r.type,
+      value: r.value,
+      active: !!r.active,
+      uses: r.uses,
+      totalDiscount: r.total_discount,
+    })),
+  });
 });
 
 // Admin: create a coupon — password-protected via ADMIN_TOKEN.
@@ -666,7 +681,7 @@ app.post("/api/admin/coupons", async (c) => {
     .bind(code, type, value, new Date().toISOString())
     .run();
 
-  return c.json({ coupon: { code, type, value, active: true } }, 201);
+  return c.json({ coupon: { code, type, value, active: true, uses: 0, totalDiscount: 0 } }, 201);
 });
 
 // Admin: toggle a coupon active/inactive — password-protected via ADMIN_TOKEN.

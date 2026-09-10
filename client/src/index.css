@@ -72,6 +72,14 @@ body {
   color: var(--color-ink);
 }
 
+/* Packing slips print on plain white paper, not the site's dark ink ground. */
+@media print {
+  body {
+    background: #ffffff;
+    color: #000000;
+  }
+}
+
 ::-webkit-scrollbar {
   width: 10px;
 }

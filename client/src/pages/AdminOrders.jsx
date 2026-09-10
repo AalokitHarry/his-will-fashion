@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { AlertCircle, LogOut, RefreshCw } from "lucide-react";
+import { AlertCircle, Download, LogOut, Printer, RefreshCw, Search } from "lucide-react";
 import { fetchOrders, updateOrderStatus } from "../api/orders";
 import { formatINR } from "../utils/format";
+import { useProducts } from "../context/ProductsContext";
 import useSEO from "../hooks/useSEO";
 import AddProductForm from "../components/AddProductForm";
 import ProductList from "../components/ProductList";
@@ -43,6 +44,51 @@ function orderGST(items) {
   }, 0);
 }
 
+function csvCell(value) {
+  const str = String(value ?? "");
+  return /[",\n]/.test(str) ? `"${str.replace(/"/g, '""')}"` : str;
+}
+
+function downloadOrdersCSV(orders) {
+  const headers = [
+    "Order ID", "Date", "Status", "Customer Name", "Phone", "Email",
+    "Address Line 1", "Address Line 2", "City", "State", "Pincode",
+    "Items", "Subtotal", "GST (included)", "Discount", "Coupon Code", "Shipping", "Total", "Payment Method",
+  ];
+  const rows = orders.map((o) => [
+    o.orderId,
+    new Date(o.createdAt).toLocaleString("en-IN"),
+    STATUS_LABELS[o.status] || o.status,
+    o.customer.fullName,
+    o.customer.phone,
+    o.customer.email,
+    o.customer.addressLine1,
+    o.customer.addressLine2 || "",
+    o.customer.city,
+    o.customer.state,
+    o.customer.pincode,
+    o.items.map((i) => `${i.qty}x ${i.name}${i.size || i.color ? ` (${[i.color, i.size].filter(Boolean).join("/")})` : ""}`).join("; "),
+    o.subtotal,
+    Math.round(orderGST(o.items)),
+    o.discount,
+    o.couponCode || "",
+    o.shipping,
+    o.total,
+    o.paymentMethod.toUpperCase(),
+  ]);
+
+  const csv = [headers, ...rows].map((row) => row.map(csvCell).join(",")).join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `his-will-fashion-orders-${new Date().toISOString().slice(0, 10)}.csv`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
 export default function AdminOrders() {
   useSEO({ title: "Admin", path: "/admin", noindex: true });
 
@@ -54,6 +100,10 @@ export default function AdminOrders() {
   const [updatingId, setUpdatingId] = useState(null);
   const [statusError, setStatusError] = useState("");
   const [tab, setTab] = useState("orders");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [search, setSearch] = useState("");
+  const [printOrder, setPrintOrder] = useState(null);
+  const { products } = useProducts();
 
   const load = async (t) => {
     setLoading(true);
@@ -105,6 +155,29 @@ export default function AdminOrders() {
     setPasswordInput("");
   };
 
+  useEffect(() => {
+    if (!printOrder) return;
+    const t = setTimeout(() => window.print(), 50);
+    return () => clearTimeout(t);
+  }, [printOrder]);
+
+  const filteredOrders = useMemo(() => {
+    if (!orders) return [];
+    let list = orders;
+    if (statusFilter !== "all") list = list.filter((o) => o.status === statusFilter);
+    const q = search.trim().toLowerCase();
+    if (q) {
+      list = list.filter(
+        (o) =>
+          o.orderId.toLowerCase().includes(q) ||
+          o.customer.fullName?.toLowerCase().includes(q) ||
+          o.customer.phone?.includes(q) ||
+          o.customer.email?.toLowerCase().includes(q)
+      );
+    }
+    return list;
+  }, [orders, statusFilter, search]);
+
   const stats = useMemo(() => {
     if (!orders) return null;
     const monthStart = new Date();
@@ -132,8 +205,10 @@ export default function AdminOrders() {
     const [bestSellerName, bestSellerUnits] =
       Object.entries(unitsSold).sort((a, b) => b[1] - a[1])[0] || [null, 0];
 
-    return { monthRevenue, monthOrders, pending, bestSellerName, bestSellerUnits };
-  }, [orders]);
+    const lowStock = products.filter((p) => p.stock !== null && p.stock !== undefined && p.stock <= 5).length;
+
+    return { monthRevenue, monthOrders, pending, bestSellerName, bestSellerUnits, lowStock };
+  }, [orders, products]);
 
   if (!token || !orders) {
     return (
@@ -167,7 +242,8 @@ export default function AdminOrders() {
   }
 
   return (
-    <div className="pt-28 pb-24 min-h-screen">
+    <>
+    <div className="pt-28 pb-24 min-h-screen print:hidden">
       <div className="mx-auto max-w-4xl px-5 md:px-8">
         <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
           <div>
@@ -176,13 +252,22 @@ export default function AdminOrders() {
           </div>
           <div className="flex items-center gap-3">
             {tab === "orders" && (
-              <button
-                onClick={() => load(token)}
-                disabled={loading}
-                className="flex items-center gap-1.5 text-sm border border-parchment/30 px-4 py-2 hover:border-gold transition-colors"
-              >
-                <RefreshCw size={14} className={loading ? "animate-spin" : ""} /> Refresh
-              </button>
+              <>
+                <button
+                  onClick={() => downloadOrdersCSV(filteredOrders)}
+                  disabled={filteredOrders.length === 0}
+                  className="flex items-center gap-1.5 text-sm border border-parchment/30 px-4 py-2 hover:border-gold transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  <Download size={14} /> Export CSV
+                </button>
+                <button
+                  onClick={() => load(token)}
+                  disabled={loading}
+                  className="flex items-center gap-1.5 text-sm border border-parchment/30 px-4 py-2 hover:border-gold transition-colors"
+                >
+                  <RefreshCw size={14} className={loading ? "animate-spin" : ""} /> Refresh
+                </button>
+              </>
             )}
             <button
               onClick={logOut}
@@ -194,7 +279,7 @@ export default function AdminOrders() {
         </div>
 
         {tab === "orders" && stats && (
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-10">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-10">
             <div className="bg-charcoal border border-gold/15 rounded-lg p-4">
               <p className="font-condensed tracking-[0.08em] text-[10px] text-parchment/50 mb-1.5">REVENUE THIS MONTH</p>
               <p className="font-display text-xl text-gold">{formatINR(stats.monthRevenue)}</p>
@@ -203,10 +288,20 @@ export default function AdminOrders() {
               <p className="font-condensed tracking-[0.08em] text-[10px] text-parchment/50 mb-1.5">ORDERS THIS MONTH</p>
               <p className="font-display text-xl">{stats.monthOrders}</p>
             </div>
-            <div className="bg-charcoal border border-gold/15 rounded-lg p-4">
+            <button
+              onClick={() => setStatusFilter("pending_confirmation")}
+              className="bg-charcoal border border-gold/15 rounded-lg p-4 text-left hover:border-gold/40 transition-colors"
+            >
               <p className="font-condensed tracking-[0.08em] text-[10px] text-parchment/50 mb-1.5">NEEDS CONFIRMATION</p>
               <p className={`font-display text-xl ${stats.pending > 0 ? "text-rust" : ""}`}>{stats.pending}</p>
-            </div>
+            </button>
+            <button
+              onClick={() => setTab("products")}
+              className="bg-charcoal border border-gold/15 rounded-lg p-4 text-left hover:border-gold/40 transition-colors"
+            >
+              <p className="font-condensed tracking-[0.08em] text-[10px] text-parchment/50 mb-1.5">LOW / OUT OF STOCK</p>
+              <p className={`font-display text-xl ${stats.lowStock > 0 ? "text-rust" : ""}`}>{stats.lowStock}</p>
+            </button>
             <div className="bg-charcoal border border-gold/15 rounded-lg p-4">
               <p className="font-condensed tracking-[0.08em] text-[10px] text-parchment/50 mb-1.5">BEST SELLER</p>
               {stats.bestSellerName ? (
@@ -265,8 +360,39 @@ export default function AdminOrders() {
             {orders.length === 0 ? (
               <p className="text-parchment/50 text-center py-20">No orders yet.</p>
             ) : (
+              <>
+                <div className="flex flex-wrap items-center gap-3 mb-6">
+                  <div className="relative flex-1 min-w-[200px]">
+                    <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-parchment/40" />
+                    <input
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                      placeholder="Search order ID, name, phone, email…"
+                      className="w-full border border-parchment/20 rounded-lg pl-9 pr-3.5 py-2.5 text-sm bg-parchment text-ink focus:outline-none focus:border-gold"
+                    />
+                  </div>
+                  <select
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                    className="text-sm border border-parchment/20 rounded-lg px-3.5 py-2.5 bg-parchment text-ink focus:outline-none focus:border-gold cursor-pointer"
+                  >
+                    <option value="all">All statuses</option>
+                    {ORDER_STATUSES.map((s) => (
+                      <option key={s} value={s}>{STATUS_LABELS[s]}</option>
+                    ))}
+                  </select>
+                  {(search || statusFilter !== "all") && (
+                    <span className="text-xs text-parchment/50">
+                      Showing {filteredOrders.length} of {orders.length}
+                    </span>
+                  )}
+                </div>
+
+                {filteredOrders.length === 0 ? (
+                  <p className="text-parchment/50 text-center py-20">No orders match your search.</p>
+                ) : (
               <div className="flex flex-col gap-5">
-                {orders.map((order) => (
+                {filteredOrders.map((order) => (
                   <div key={order.orderId} className="bg-charcoal border border-gold/15 rounded-lg p-6">
                     <div className="flex flex-wrap items-start justify-between gap-3 mb-5 pb-5 border-b border-parchment/10">
                       <div>
@@ -278,20 +404,29 @@ export default function AdminOrders() {
                           })}
                         </p>
                       </div>
-                      <select
-                        value={order.status}
-                        disabled={updatingId === order.orderId}
-                        onChange={(e) => handleStatusChange(order.orderId, e.target.value)}
-                        className={`text-xs font-condensed tracking-wide px-3 py-1.5 rounded-lg cursor-pointer focus:outline-none focus:border-gold disabled:opacity-50 disabled:cursor-wait ${
-                          STATUS_STYLES[order.status] || STATUS_STYLES.pending_confirmation
-                        }`}
-                      >
-                        {ORDER_STATUSES.map((s) => (
-                          <option key={s} value={s} className="bg-ink text-parchment">
-                            {STATUS_LABELS[s].toUpperCase()}
-                          </option>
-                        ))}
-                      </select>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => setPrintOrder(order)}
+                          aria-label={`Print packing slip for ${order.orderId}`}
+                          className="p-1.5 text-parchment/50 hover:text-gold transition-colors"
+                        >
+                          <Printer size={16} />
+                        </button>
+                        <select
+                          value={order.status}
+                          disabled={updatingId === order.orderId}
+                          onChange={(e) => handleStatusChange(order.orderId, e.target.value)}
+                          className={`text-xs font-condensed tracking-wide px-3 py-1.5 rounded-lg cursor-pointer focus:outline-none focus:border-gold disabled:opacity-50 disabled:cursor-wait ${
+                            STATUS_STYLES[order.status] || STATUS_STYLES.pending_confirmation
+                          }`}
+                        >
+                          {ORDER_STATUSES.map((s) => (
+                            <option key={s} value={s} className="bg-ink text-parchment">
+                              {STATUS_LABELS[s].toUpperCase()}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-5">
@@ -347,10 +482,67 @@ export default function AdminOrders() {
                   </div>
                 ))}
               </div>
+                )}
+              </>
             )}
           </>
         )}
       </div>
     </div>
+
+    {printOrder && (
+      <div className="hidden print:block p-10 text-black bg-white">
+        <h1 className="text-2xl font-bold mb-1">His Will Fashion</h1>
+        <p className="text-sm mb-6">Packing Slip</p>
+        <div className="flex justify-between mb-6 text-sm">
+          <div>
+            <p className="font-semibold mb-1">Ship To</p>
+            <p>{printOrder.customer.fullName}</p>
+            <p>
+              {printOrder.customer.addressLine1}
+              {printOrder.customer.addressLine2 ? `, ${printOrder.customer.addressLine2}` : ""}
+            </p>
+            <p>
+              {printOrder.customer.city}, {printOrder.customer.state} {printOrder.customer.pincode}
+            </p>
+            <p>{printOrder.customer.phone}</p>
+          </div>
+          <div className="text-right">
+            <p><span className="font-semibold">Order:</span> {printOrder.orderId}</p>
+            <p>
+              <span className="font-semibold">Date:</span>{" "}
+              {new Date(printOrder.createdAt).toLocaleDateString("en-IN", { dateStyle: "medium" })}
+            </p>
+            <p><span className="font-semibold">Payment:</span> {printOrder.paymentMethod.toUpperCase()}</p>
+          </div>
+        </div>
+        <table className="w-full text-sm border-collapse">
+          <thead>
+            <tr className="border-b-2 border-black">
+              <th className="text-left py-2">Item</th>
+              <th className="text-center py-2">Qty</th>
+              <th className="text-right py-2">Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            {printOrder.items.map((item, i) => (
+              <tr key={i} className="border-b border-gray-300">
+                <td className="py-2">
+                  {item.name}
+                  {item.size || item.color ? ` (${[item.color, item.size].filter(Boolean).join("/")})` : ""}
+                </td>
+                <td className="text-center py-2">{item.qty}</td>
+                <td className="text-right py-2">{formatINR(item.lineTotal)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div className="text-right mt-4 font-bold">
+          Total: {formatINR(printOrder.total)} ({printOrder.paymentMethod.toUpperCase()})
+        </div>
+        {printOrder.customer.notes && <p className="mt-4 text-sm">Note: {printOrder.customer.notes}</p>}
+      </div>
+    )}
+    </>
   );
 }
