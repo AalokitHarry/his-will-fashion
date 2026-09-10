@@ -17,74 +17,75 @@ export default function CartDrawer() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={closeCart}
-            className="fixed inset-0 bg-ink/70 backdrop-blur-sm z-[60]"
+            className="fixed inset-0 bg-ink/60 z-[60]"
           />
           <motion.aside
-            initial={{ x: "100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "100%" }}
-            transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed top-0 right-0 h-full w-full sm:w-[420px] bg-parchment text-ink z-[70] flex flex-col shadow-2xl"
+            initial={{ opacity: 0, y: -12, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -12, scale: 0.97 }}
+            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            style={{ transformOrigin: "top right" }}
+            className="fixed top-20 inset-x-4 sm:inset-x-auto sm:right-6 md:right-8 sm:w-[400px] max-h-[75vh] z-[70] flex flex-col rounded-xl border border-gold/15 bg-charcoal shadow-2xl overflow-hidden"
           >
-            <div className="flex items-center justify-between px-6 py-5 border-b border-ink/10">
-              <h2 className="font-editorial text-2xl">Your Bag ({items.length})</h2>
-              <button onClick={closeCart} aria-label="Close cart" className="p-1 hover:text-rust transition-colors">
-                <X size={22} />
+            <div className="flex items-center justify-between px-5 py-4 border-b border-parchment/10 shrink-0">
+              <h2 className="font-editorial text-xl text-parchment">Your Bag ({items.length})</h2>
+              <button onClick={closeCart} aria-label="Close cart" className="p-1 text-parchment/50 hover:text-rust transition-colors">
+                <X size={20} />
               </button>
             </div>
 
             {items.length === 0 ? (
-              <div className="flex-1 flex flex-col items-center justify-center gap-4 text-ink/50 px-6 text-center">
-                <ShoppingBag size={40} strokeWidth={1.2} />
-                <p className="font-body">Your bag is empty. Let's change that.</p>
+              <div className="flex flex-col items-center justify-center gap-4 text-parchment/50 px-6 py-14 text-center">
+                <ShoppingBag size={36} strokeWidth={1.2} />
+                <p className="font-body text-sm">Your bag is empty. Let's change that.</p>
                 <Link
                   to="/shop"
                   onClick={closeCart}
-                  className="font-condensed tracking-[0.1em] text-sm text-ink border-b border-gold pb-0.5 hover:text-gold transition-colors"
+                  className="font-condensed tracking-[0.1em] text-sm text-parchment border-b border-gold pb-0.5 hover:text-gold transition-colors"
                 >
                   BROWSE THE COLLECTION
                 </Link>
               </div>
             ) : (
-              <div className="flex-1 overflow-y-auto px-6 py-5 flex flex-col gap-5">
+              <div className="flex-1 min-h-0 overflow-y-auto px-5 py-4 flex flex-col gap-4">
                 {items.map((item) => (
-                  <div key={`${item.id}-${item.size}-${item.color}`} className="flex gap-4">
-                    <div className="w-20 h-24 rounded-lg overflow-hidden shrink-0">
+                  <div key={`${item.id}-${item.size}-${item.color}`} className="flex gap-3.5">
+                    <div className="w-16 h-20 rounded-lg overflow-hidden shrink-0 bg-ink">
                       <ProductImage src={item.image} alt={item.name} />
                     </div>
-                    <div className="flex-1 flex flex-col gap-1">
+                    <div className="flex-1 flex flex-col gap-1 min-w-0">
                       <div className="flex justify-between gap-2">
-                        <p className="font-condensed tracking-wide text-sm leading-tight">{item.name}</p>
+                        <p className="font-condensed tracking-wide text-sm leading-tight text-parchment truncate">{item.name}</p>
                         <button
                           onClick={() => removeItem(item)}
-                          className="text-ink/40 hover:text-rust transition-colors shrink-0"
+                          className="text-parchment/40 hover:text-rust transition-colors shrink-0"
                           aria-label="Remove item"
                         >
-                          <X size={16} />
+                          <X size={15} />
                         </button>
                       </div>
-                      <p className="text-xs text-ink/50">
+                      <p className="text-xs text-parchment/50">
                         {[item.color, item.size].filter(Boolean).join(" / ")}
                       </p>
                       <div className="flex items-center justify-between mt-1">
-                        <div className="flex items-center border border-ink/15 rounded-lg">
+                        <div className="flex items-center border border-parchment/15 rounded-lg">
                           <button
                             onClick={() => updateQty(item, item.qty - 1)}
-                            className="p-1.5 hover:text-gold"
+                            className="p-1.5 text-parchment/70 hover:text-gold"
                             aria-label="Decrease quantity"
                           >
-                            <Minus size={13} />
+                            <Minus size={12} />
                           </button>
-                          <span className="text-xs w-5 text-center">{item.qty}</span>
+                          <span className="text-xs w-5 text-center text-parchment">{item.qty}</span>
                           <button
                             onClick={() => updateQty(item, item.qty + 1)}
-                            className="p-1.5 hover:text-gold"
+                            className="p-1.5 text-parchment/70 hover:text-gold"
                             aria-label="Increase quantity"
                           >
-                            <Plus size={13} />
+                            <Plus size={12} />
                           </button>
                         </div>
-                        <span className="font-medium text-sm">{formatINR(item.price * item.qty)}</span>
+                        <span className="font-medium text-sm text-parchment">{formatINR(item.price * item.qty)}</span>
                       </div>
                     </div>
                   </div>
@@ -93,12 +94,12 @@ export default function CartDrawer() {
             )}
 
             {items.length > 0 && (
-              <div className="border-t border-ink/10 px-6 py-5 flex flex-col gap-4">
-                <div className="flex items-center justify-between font-display text-lg">
+              <div className="border-t border-parchment/10 px-5 py-4 flex flex-col gap-3 shrink-0">
+                <div className="flex items-center justify-between font-display text-lg text-parchment">
                   <span>Subtotal</span>
-                  <span>{formatINR(subtotal)}</span>
+                  <span className="text-gold">{formatINR(subtotal)}</span>
                 </div>
-                <p className="text-xs text-ink/50 -mt-2">Shipping & taxes calculated at checkout.</p>
+                <p className="text-xs text-parchment/45 -mt-1.5">Shipping & taxes calculated at checkout.</p>
                 <Link
                   to="/checkout"
                   onClick={closeCart}
