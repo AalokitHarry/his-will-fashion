@@ -5,6 +5,7 @@ import { formatINR } from "../utils/format";
 import useSEO from "../hooks/useSEO";
 import AddProductForm from "../components/AddProductForm";
 import ProductList from "../components/ProductList";
+import NewsletterList from "../components/NewsletterList";
 
 const TOKEN_KEY = "hwf_admin_token";
 
@@ -148,6 +149,7 @@ export default function AdminOrders() {
           {[
             { key: "orders", label: "Orders" },
             { key: "products", label: "Add Product" },
+            { key: "subscribers", label: "Subscribers" },
           ].map((t) => (
             <button
               key={t.key}
@@ -168,6 +170,8 @@ export default function AdminOrders() {
             <AddProductForm />
             <ProductList />
           </>
+        ) : tab === "subscribers" ? (
+          <NewsletterList />
         ) : (
           <>
             {statusError && (

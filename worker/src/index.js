@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { priceCart } from "./products.js";
-import { sendOrderConfirmationEmail, sendOrderStatusUpdateEmail } from "./email.js";
+import { sendOrderConfirmationEmail, sendOrderStatusUpdateEmail, sendNewsletterWelcomeEmail } from "./email.js";
 
 const app = new Hono();
 
@@ -14,6 +14,46 @@ app.use("/api/*", async (c, next) => {
 });
 
 app.get("/api/health", (c) => c.json({ ok: true }));
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// Public: newsletter signup. Idempotent — resubscribing an existing address
+// is a no-op, not an error.
+app.post("/api/newsletter/subscribe", async (c) => {
+  const body = await c.req.json().catch(() => ({}));
+  const email = String(body.email || "").trim().toLowerCase();
+
+  if (!EMAIL_RE.test(email)) {
+    return c.json({ error: "Enter a valid email address." }, 400);
+  }
+
+  const result = await c.env.DB.prepare(
+    "INSERT OR IGNORE INTO newsletter_subscribers (email, created_at) VALUES (?, ?)"
+  )
+    .bind(email, new Date().toISOString())
+    .run();
+
+  if (result.meta.changes) {
+    c.executionCtx.waitUntil(sendNewsletterWelcomeEmail(c.env, email));
+  }
+
+  return c.json({ subscribed: true });
+});
+
+// Admin: list newsletter subscribers — password-protected via ADMIN_TOKEN.
+app.get("/api/admin/newsletter", async (c) => {
+  const auth = c.req.header("Authorization") || "";
+  const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
+  if (!c.env.ADMIN_TOKEN || token !== c.env.ADMIN_TOKEN) {
+    return c.json({ error: "Unauthorized" }, 401);
+  }
+
+  const { results } = await c.env.DB.prepare(
+    "SELECT email, created_at FROM newsletter_subscribers ORDER BY created_at DESC"
+  ).all();
+
+  return c.json({ subscribers: results });
+});
 
 function validateCustomer(customer) {
   if (!customer || typeof customer !== "object") return "Missing customer details";

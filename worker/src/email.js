@@ -136,3 +136,16 @@ export async function sendOrderStatusUpdateEmail(env, { orderId, customer, statu
 
   await sendEmail(env, { to: customer.email, subject: `Order ${label} — ${orderId} — His Will Fashion`, html });
 }
+
+export async function sendNewsletterWelcomeEmail(env, email) {
+  const html = wrapEmail(`
+      <h1 style="font-size:20px;margin:0 0 6px;">You're In</h1>
+      <p style="color:#555;margin:0 0 20px;">Thanks for joining the family. You'll be the first to hear about new drops, restocks, and testimonies from the community.</p>
+      <p style="text-align:center;margin:28px 0 0;">
+        <a href="${SITE_URL}/shop" style="display:inline-block;background:#d9a92c;color:#0d0a06;font-weight:bold;text-decoration:none;padding:10px 20px;border-radius:6px;font-size:13px;">SHOP THE COLLECTION</a>
+      </p>
+      <p style="color:#999;font-size:12px;margin-top:20px;">Follow along on Instagram @his_wll_fashion_club too.</p>
+  `);
+
+  await sendEmail(env, { to: email, subject: "Welcome to His Will Fashion", html });
+}

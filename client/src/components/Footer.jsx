@@ -1,7 +1,27 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Camera, Mail } from "lucide-react";
+import { Camera, CheckCircle2, Mail } from "lucide-react";
+import { subscribeNewsletter } from "../api/newsletter";
 
 export default function Footer() {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState("idle"); // idle | loading | done | error
+  const [error, setError] = useState("");
+
+  const handleSubscribe = async (e) => {
+    e.preventDefault();
+    setStatus("loading");
+    setError("");
+    try {
+      await subscribeNewsletter(email);
+      setStatus("done");
+      setEmail("");
+    } catch (err) {
+      setStatus("error");
+      setError(err.message || "Unable to subscribe right now.");
+    }
+  };
+
   return (
     <footer className="bg-ink text-parchment/80 grain">
       <div className="mx-auto max-w-7xl px-5 md:px-8 pt-16 pb-8">
@@ -44,20 +64,33 @@ export default function Footer() {
           <div>
             <h4 className="font-condensed tracking-[0.15em] text-sm text-gold mb-4">STAY CONNECTED</h4>
             <p className="text-sm mb-4 text-parchment/60">Faith drops, new releases, and testimonies from the family.</p>
-            <form
-              onSubmit={(e) => e.preventDefault()}
-              className="flex items-center border-b border-parchment/25 focus-within:border-gold transition-colors"
-            >
-              <input
-                type="email"
-                required
-                placeholder="Your email"
-                className="bg-transparent py-2 text-sm flex-1 placeholder:text-parchment/40 focus:outline-none"
-              />
-              <button type="submit" aria-label="Subscribe" className="p-2 text-gold hover:text-parchment transition-colors">
-                <Mail size={16} />
-              </button>
-            </form>
+            {status === "done" ? (
+              <p className="flex items-center gap-2 text-sm text-gold">
+                <CheckCircle2 size={16} /> You're on the list.
+              </p>
+            ) : (
+              <form onSubmit={handleSubscribe} className="flex flex-col gap-1.5">
+                <div className="flex items-center border-b border-parchment/25 focus-within:border-gold transition-colors">
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Your email"
+                    className="bg-transparent py-2 text-sm flex-1 placeholder:text-parchment/40 focus:outline-none"
+                  />
+                  <button
+                    type="submit"
+                    disabled={status === "loading"}
+                    aria-label="Subscribe"
+                    className="p-2 text-gold hover:text-parchment transition-colors disabled:opacity-50"
+                  >
+                    <Mail size={16} />
+                  </button>
+                </div>
+                {status === "error" && <p className="text-rust text-xs">{error}</p>}
+              </form>
+            )}
             <a
               href="https://www.instagram.com/his_wll_fashion_club"
               target="_blank"

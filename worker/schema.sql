@@ -36,3 +36,8 @@ CREATE TABLE IF NOT EXISTS product_photos (
   data BLOB NOT NULL,
   PRIMARY KEY (product_id, slot)
 );
+
+CREATE TABLE IF NOT EXISTS newsletter_subscribers (
+  email TEXT PRIMARY KEY,
+  created_at TEXT NOT NULL
+);
