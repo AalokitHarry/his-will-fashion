@@ -1,11 +1,21 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { Heart } from "lucide-react";
 import ProductImage from "./ProductImage";
 import VerseMark from "./VerseMark";
 import { formatINR } from "../utils/format";
+import { useWishlist } from "../context/WishlistContext";
 
 export default function ProductCard({ product, index = 0 }) {
   const outOfStock = product.stock !== null && product.stock !== undefined && product.stock <= 0;
+  const { isWishlisted, toggleWishlist } = useWishlist();
+  const wishlisted = isWishlisted(product.id);
+
+  const handleWishlistClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleWishlist(product.id);
+  };
 
   return (
     <motion.div
@@ -32,10 +42,20 @@ export default function ProductCard({ product, index = 0 }) {
             </span>
           )}
           {product.compareAt && (
-            <span className="absolute top-3 right-3 bg-rust text-parchment text-[10px] font-condensed tracking-[0.12em] px-2.5 py-1 rounded-md">
+            <span className="absolute top-12 right-3 bg-rust text-parchment text-[10px] font-condensed tracking-[0.12em] px-2.5 py-1 rounded-md">
               SALE
             </span>
           )}
+          <button
+            onClick={handleWishlistClick}
+            aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
+            aria-pressed={wishlisted}
+            className={`absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
+              wishlisted ? "bg-gold text-ink" : "bg-ink/60 text-parchment hover:bg-ink/80"
+            }`}
+          >
+            <Heart size={15} fill={wishlisted ? "currentColor" : "none"} strokeWidth={1.8} />
+          </button>
           <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-ink/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           <span className="absolute bottom-3 left-1/2 -translate-x-1/2 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-400 font-condensed tracking-[0.12em] text-xs text-parchment border border-parchment/50 rounded-md px-4 py-1.5">
             VIEW PRODUCT

@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Minus, Plus, RotateCcw, ShieldCheck, Truck } from "lucide-react";
+import { Heart, Minus, Plus, RotateCcw, ShieldCheck, Truck } from "lucide-react";
 import { useProducts } from "../context/ProductsContext";
 import { useCart } from "../context/CartContext";
+import { useWishlist } from "../context/WishlistContext";
 import { formatINR } from "../utils/format";
 import { fetchProductReviews } from "../api/reviews";
 import ProductCarousel from "../components/ProductCarousel";
@@ -21,6 +22,7 @@ export default function ProductDetail() {
   const { getProductById, products, loading } = useProducts();
   const product = getProductById(id);
   const { addItem } = useCart();
+  const { isWishlisted, toggleWishlist } = useWishlist();
 
   const [size, setSize] = useState(product?.sizes?.[0]);
   const [color, setColor] = useState(product?.colors?.[0]?.name);
@@ -219,6 +221,18 @@ export default function ProductDetail() {
               className="flex-1 bg-gold text-ink font-condensed tracking-[0.14em] py-3.5 rounded-lg border border-gold hover:bg-rust hover:border-rust hover:text-parchment transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gold disabled:hover:border-gold disabled:hover:text-ink"
             >
               {outOfStock ? "SOLD OUT" : `ADD TO BAG — ${formatINR(product.price * qty)}`}
+            </button>
+            <button
+              onClick={() => toggleWishlist(product.id)}
+              aria-label={isWishlisted(product.id) ? "Remove from wishlist" : "Add to wishlist"}
+              aria-pressed={isWishlisted(product.id)}
+              className={`shrink-0 w-14 h-14 flex items-center justify-center rounded-lg border transition-colors ${
+                isWishlisted(product.id)
+                  ? "bg-gold border-gold text-ink"
+                  : "border-parchment/20 text-parchment/70 hover:border-gold hover:text-gold"
+              }`}
+            >
+              <Heart size={18} fill={isWishlisted(product.id) ? "currentColor" : "none"} strokeWidth={1.8} />
             </button>
           </div>
 
