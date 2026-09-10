@@ -148,11 +148,11 @@ export default function Checkout() {
     <div className="pt-28 pb-24">
       <div className="mx-auto max-w-6xl px-5 md:px-8">
         <h1 className="font-editorial text-3xl md:text-4xl mb-10">Checkout</h1>
-        <div className="grid lg:grid-cols-[1.3fr_1fr] gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.3fr_1fr] gap-12">
           <form onSubmit={handlePlaceOrder} className="flex flex-col gap-10">
             <section>
               <h2 className="font-condensed tracking-[0.15em] text-sm text-gold mb-4">CONTACT</h2>
-              <div className="grid sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Field label="Full Name" name="fullName" value={form.fullName} onChange={onChange} required />
                 <Field label="Phone" name="phone" value={form.phone} onChange={onChange} type="tel" pattern="[0-9]{10}" title="10-digit mobile number" required />
                 <Field label="Email" name="email" value={form.email} onChange={onChange} type="email" required className="sm:col-span-2" />
@@ -161,7 +161,7 @@ export default function Checkout() {
 
             <section>
               <h2 className="font-condensed tracking-[0.15em] text-sm text-gold mb-4">SHIPPING ADDRESS</h2>
-              <div className="grid sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Field label="Address Line 1" name="addressLine1" value={form.addressLine1} onChange={onChange} required className="sm:col-span-2" />
                 <Field label="Address Line 2 (optional)" name="addressLine2" value={form.addressLine2} onChange={onChange} className="sm:col-span-2" />
                 <Field label="City" name="city" value={form.city} onChange={onChange} required />
@@ -171,7 +171,7 @@ export default function Checkout() {
                     name="state"
                     value={form.state}
                     onChange={onChange}
-                    className="border border-parchment/20 rounded-lg px-3.5 py-3 bg-parchment text-ink focus:outline-none focus:border-gold"
+                    className="w-full border border-parchment/20 rounded-lg px-3.5 py-3 bg-parchment text-ink focus:outline-none focus:border-gold"
                   >
                     {INDIAN_STATES.map((s) => (
                       <option key={s} value={s}>{s}</option>
@@ -323,7 +323,7 @@ function Field({ label, className = "", children, ...props }) {
       <label className="font-condensed tracking-[0.08em] text-xs text-parchment/60">{label.toUpperCase()}</label>
       <input
         {...props}
-        className="border border-parchment/20 rounded-lg px-3.5 py-3 bg-parchment text-ink focus:outline-none focus:border-gold disabled:opacity-50"
+        className="w-full border border-parchment/20 rounded-lg px-3.5 py-3 bg-parchment text-ink focus:outline-none focus:border-gold disabled:opacity-50"
       />
       {children}
     </div>

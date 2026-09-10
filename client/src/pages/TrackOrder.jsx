@@ -60,18 +60,18 @@ export default function TrackOrder() {
         </div>
         <p className="text-parchment/60 mb-10">Enter your order reference and the phone number you checked out with.</p>
 
-        <form onSubmit={handleSubmit} className="grid sm:grid-cols-[1fr_1fr_auto] gap-3 mb-8">
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_auto] gap-3 mb-8">
           <input
             value={orderId}
             onChange={(e) => setOrderId(e.target.value)}
             placeholder="Order reference (e.g. HWF-XXXXX-XXXX)"
-            className="border border-parchment/20 rounded-lg px-3.5 py-3 bg-parchment text-ink focus:outline-none focus:border-gold"
+            className="w-full border border-parchment/20 rounded-lg px-3.5 py-3 bg-parchment text-ink focus:outline-none focus:border-gold"
           />
           <input
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             placeholder="Phone number"
-            className="border border-parchment/20 rounded-lg px-3.5 py-3 bg-parchment text-ink focus:outline-none focus:border-gold"
+            className="w-full border border-parchment/20 rounded-lg px-3.5 py-3 bg-parchment text-ink focus:outline-none focus:border-gold"
           />
           <button
             type="submit"

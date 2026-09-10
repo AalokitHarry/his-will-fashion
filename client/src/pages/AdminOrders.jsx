@@ -294,7 +294,7 @@ export default function AdminOrders() {
                       </select>
                     </div>
 
-                    <div className="grid sm:grid-cols-2 gap-6 mb-5">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-5">
                       <div>
                         <p className="font-condensed tracking-[0.1em] text-xs text-parchment/50 mb-2">CUSTOMER</p>
                         <p className="font-medium">{order.customer.fullName}</p>

@@ -63,7 +63,7 @@ export default function Contact() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-5 md:px-8 py-20 grid md:grid-cols-[1fr_1.2fr] gap-14">
+      <section className="mx-auto max-w-6xl px-5 md:px-8 py-20 grid grid-cols-1 md:grid-cols-[1fr_1.2fr] gap-14">
         <div className="flex flex-col gap-8">
           <div className="flex items-start gap-4">
             <span className="w-11 h-11 rounded-lg bg-gold text-ink flex items-center justify-center shrink-0">
@@ -169,7 +169,7 @@ export default function Contact() {
       <section id="shipping" className="mx-auto max-w-4xl px-5 md:px-8 py-16 scroll-mt-28">
         <p className="font-condensed tracking-[0.2em] text-gold text-xs mb-3">(02) LOGISTICS</p>
         <h2 className="font-editorial text-3xl mb-6">Shipping</h2>
-        <div className="grid sm:grid-cols-3 gap-6 text-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-sm">
           <div className="border border-gold/15 rounded-lg p-5">
             <p className="font-condensed tracking-[0.1em] text-gold mb-2">COVERAGE</p>
             <p className="text-parchment/70">We ship to every pincode across India.</p>

@@ -59,7 +59,7 @@ export default function About() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-5 md:px-8 py-24 grid md:grid-cols-2 gap-14 items-center">
+      <section className="mx-auto max-w-7xl px-5 md:px-8 py-24 grid grid-cols-1 md:grid-cols-2 gap-14 items-center">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -91,7 +91,7 @@ export default function About() {
             <Eyebrow n="03" center>WHAT WE STAND FOR</Eyebrow>
             <h2 className="font-editorial text-4xl md:text-5xl">Our Values</h2>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {VALUES.map((v, i) => (
               <motion.div
                 key={v.title}

@@ -92,14 +92,14 @@ export default function AddProductForm() {
       )}
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-        <div className="grid sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="flex flex-col gap-1.5">
             <label className="font-condensed tracking-[0.08em] text-xs text-parchment/60">NAME</label>
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Faithful Servant Tee"
-              className="border border-parchment/20 rounded-lg px-3.5 py-3 bg-parchment text-ink focus:outline-none focus:border-gold"
+              className="w-full border border-parchment/20 rounded-lg px-3.5 py-3 bg-parchment text-ink focus:outline-none focus:border-gold"
             />
           </div>
           <div className="flex flex-col gap-1.5">
@@ -110,12 +110,12 @@ export default function AddProductForm() {
               value={price}
               onChange={(e) => setPrice(e.target.value)}
               placeholder="1299"
-              className="border border-parchment/20 rounded-lg px-3.5 py-3 bg-parchment text-ink focus:outline-none focus:border-gold"
+              className="w-full border border-parchment/20 rounded-lg px-3.5 py-3 bg-parchment text-ink focus:outline-none focus:border-gold"
             />
           </div>
         </div>
 
-        <div className="grid sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="flex flex-col gap-1.5">
             <label className="font-condensed tracking-[0.08em] text-xs text-parchment/60">
               STOCK <span className="text-parchment/35 normal-case tracking-normal">— optional, blank = unlimited</span>
@@ -126,7 +126,7 @@ export default function AddProductForm() {
               value={stock}
               onChange={(e) => setStock(e.target.value)}
               placeholder="e.g. 25"
-              className="border border-parchment/20 rounded-lg px-3.5 py-3 bg-parchment text-ink focus:outline-none focus:border-gold"
+              className="w-full border border-parchment/20 rounded-lg px-3.5 py-3 bg-parchment text-ink focus:outline-none focus:border-gold"
             />
           </div>
           <div className="flex flex-col gap-1.5">
@@ -137,7 +137,7 @@ export default function AddProductForm() {
               value={verse}
               onChange={(e) => setVerse(e.target.value)}
               placeholder="e.g. Revelation 5:5"
-              className="border border-parchment/20 rounded-lg px-3.5 py-3 bg-parchment text-ink focus:outline-none focus:border-gold"
+              className="w-full border border-parchment/20 rounded-lg px-3.5 py-3 bg-parchment text-ink focus:outline-none focus:border-gold"
             />
           </div>
         </div>
@@ -151,7 +151,7 @@ export default function AddProductForm() {
             onChange={(e) => setDescription(e.target.value)}
             rows={3}
             placeholder="Fabric, print details, fit — whatever's worth knowing before buying."
-            className="border border-parchment/20 rounded-lg px-3.5 py-3 bg-parchment text-ink focus:outline-none focus:border-gold resize-none"
+            className="w-full border border-parchment/20 rounded-lg px-3.5 py-3 bg-parchment text-ink focus:outline-none focus:border-gold resize-none"
           />
         </div>
 

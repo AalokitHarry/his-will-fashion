@@ -68,7 +68,7 @@ export default function Home() {
           letter="H"
           className="hidden md:block absolute right-[-8%] top-[6%] opacity-70 z-0"
         />
-        <div className="relative z-10 mx-auto max-w-7xl w-full px-5 md:px-8 grid md:grid-cols-[1.1fr_0.9fr] gap-12 md:gap-8 items-center">
+        <div className="relative z-10 mx-auto max-w-7xl w-full px-5 md:px-8 grid grid-cols-1 md:grid-cols-[1.1fr_0.9fr] gap-12 md:gap-8 items-center">
           <div>
             <motion.div
               initial={{ opacity: 0, y: 8 }}
@@ -188,7 +188,7 @@ export default function Home() {
       </section>
 
       {/* BRAND STORY */}
-      <section className="mx-auto max-w-7xl px-5 md:px-8 py-24 md:py-32 grid md:grid-cols-2 gap-14 items-center">
+      <section className="mx-auto max-w-7xl px-5 md:px-8 py-24 md:py-32 grid grid-cols-1 md:grid-cols-2 gap-14 items-center">
         <RevealImage className="relative aspect-[4/5] rounded-lg overflow-hidden order-2 md:order-1">
           <ProductImage src="/products/kingdom-mindset-tee-1.jpg" alt="Kingdom Mindset Tee" />
         </RevealImage>
@@ -227,7 +227,7 @@ export default function Home() {
       <section className="mx-auto max-w-7xl px-5 md:px-8 pb-24 md:pb-32">
         <Eyebrow n="04">FAN FAVORITES</Eyebrow>
         <h2 className="font-editorial text-4xl md:text-5xl mb-10">Wear It Loud</h2>
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {spotlight.map((product, i) => (
             <motion.div
               key={product.id}
@@ -262,7 +262,7 @@ export default function Home() {
           <h2 className="font-editorial text-4xl md:text-5xl text-center mb-14">
             The Family Speaks
           </h2>
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {TESTIMONIALS.map((t, i) => (
               <motion.div
                 key={t.name}

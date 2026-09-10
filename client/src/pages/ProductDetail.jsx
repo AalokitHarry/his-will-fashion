@@ -102,7 +102,7 @@ export default function ProductDetail() {
 
   return (
     <div className="pt-24">
-      <div className="mx-auto max-w-7xl px-5 md:px-8 py-10 grid md:grid-cols-2 gap-12 lg:gap-16">
+      <div className="mx-auto max-w-7xl px-5 md:px-8 py-10 grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}

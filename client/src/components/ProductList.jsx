@@ -66,13 +66,13 @@ function EditRow({ product, onDone, onCancel }) {
 
   return (
     <form onSubmit={handleSave} className="flex flex-col gap-4 mt-3 pt-3 border-t border-parchment/10">
-      <div className="grid sm:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div className="flex flex-col gap-1.5">
           <label className="font-condensed tracking-[0.08em] text-xs text-parchment/60">NAME</label>
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="border border-parchment/20 rounded-md px-3 py-2 text-sm bg-parchment text-ink focus:outline-none focus:border-gold"
+            className="w-full border border-parchment/20 rounded-md px-3 py-2 text-sm bg-parchment text-ink focus:outline-none focus:border-gold"
           />
         </div>
         <div className="flex flex-col gap-1.5">
@@ -82,7 +82,7 @@ function EditRow({ product, onDone, onCancel }) {
             min="1"
             value={price}
             onChange={(e) => setPrice(e.target.value)}
-            className="border border-parchment/20 rounded-md px-3 py-2 text-sm bg-parchment text-ink focus:outline-none focus:border-gold"
+            className="w-full border border-parchment/20 rounded-md px-3 py-2 text-sm bg-parchment text-ink focus:outline-none focus:border-gold"
           />
         </div>
         <div className="flex flex-col gap-1.5">
@@ -95,7 +95,7 @@ function EditRow({ product, onDone, onCancel }) {
             value={stock}
             onChange={(e) => setStock(e.target.value)}
             placeholder="Unlimited"
-            className="border border-parchment/20 rounded-md px-3 py-2 text-sm bg-parchment text-ink focus:outline-none focus:border-gold"
+            className="w-full border border-parchment/20 rounded-md px-3 py-2 text-sm bg-parchment text-ink focus:outline-none focus:border-gold"
           />
         </div>
         <div className="flex flex-col gap-1.5">
@@ -106,7 +106,7 @@ function EditRow({ product, onDone, onCancel }) {
             value={verse}
             onChange={(e) => setVerse(e.target.value)}
             placeholder="e.g. Revelation 5:5"
-            className="border border-parchment/20 rounded-md px-3 py-2 text-sm bg-parchment text-ink focus:outline-none focus:border-gold"
+            className="w-full border border-parchment/20 rounded-md px-3 py-2 text-sm bg-parchment text-ink focus:outline-none focus:border-gold"
           />
         </div>
       </div>
@@ -119,7 +119,7 @@ function EditRow({ product, onDone, onCancel }) {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           rows={3}
-          className="border border-parchment/20 rounded-md px-3 py-2 text-sm bg-parchment text-ink focus:outline-none focus:border-gold resize-none"
+          className="w-full border border-parchment/20 rounded-md px-3 py-2 text-sm bg-parchment text-ink focus:outline-none focus:border-gold resize-none"
         />
       </div>
 

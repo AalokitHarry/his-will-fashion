@@ -107,13 +107,13 @@ export default function ProductReviews({ productId, reviews }) {
             <label className="font-condensed tracking-[0.08em] text-xs text-parchment/60">YOUR RATING</label>
             <StarPicker value={rating} onChange={setRating} />
           </div>
-          <div className="grid sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="flex flex-col gap-1.5">
               <label className="font-condensed tracking-[0.08em] text-xs text-parchment/60">NAME</label>
               <input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="border border-parchment/20 rounded-lg px-3.5 py-3 bg-parchment text-ink focus:outline-none focus:border-gold"
+                className="w-full border border-parchment/20 rounded-lg px-3.5 py-3 bg-parchment text-ink focus:outline-none focus:border-gold"
               />
             </div>
             <div className="flex flex-col gap-1.5">
@@ -125,7 +125,7 @@ export default function ProductReviews({ productId, reviews }) {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="For a verified purchase badge"
-                className="border border-parchment/20 rounded-lg px-3.5 py-3 bg-parchment text-ink focus:outline-none focus:border-gold"
+                className="w-full border border-parchment/20 rounded-lg px-3.5 py-3 bg-parchment text-ink focus:outline-none focus:border-gold"
               />
             </div>
           </div>
@@ -136,7 +136,7 @@ export default function ProductReviews({ productId, reviews }) {
               onChange={(e) => setComment(e.target.value)}
               rows={4}
               placeholder="Fit, fabric, print quality — what should other people know?"
-              className="border border-parchment/20 rounded-lg px-3.5 py-3 bg-parchment text-ink focus:outline-none focus:border-gold resize-none"
+              className="w-full border border-parchment/20 rounded-lg px-3.5 py-3 bg-parchment text-ink focus:outline-none focus:border-gold resize-none"
             />
           </div>
           {submitError && (
