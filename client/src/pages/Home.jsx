@@ -66,7 +66,7 @@ export default function Home() {
       <section className="relative min-h-screen flex items-center bg-ink text-parchment overflow-hidden pt-24 pb-16">
         <IlluminatedCapital
           letter="H"
-          className="hidden md:block absolute right-[-8%] top-[6%] opacity-70 z-0"
+          className="hidden md:block absolute left-[-8%] top-[6%] opacity-40 z-0"
         />
         <div className="relative z-10 mx-auto max-w-7xl w-full px-5 md:px-8 grid grid-cols-1 md:grid-cols-[1.1fr_0.9fr] gap-12 md:gap-8 items-center">
           <div>
