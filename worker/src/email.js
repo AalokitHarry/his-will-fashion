@@ -22,7 +22,7 @@ function wrapEmail(bodyHtml) {
 
 // Best-effort send via Resend's REST API — never throws, since email
 // delivery must never block the order/status action that triggered it.
-async function sendEmail(env, { to, subject, html }) {
+export async function sendEmail(env, { to, subject, html }) {
   if (!env.RESEND_API_KEY || !env.FROM_EMAIL) {
     console.warn("Email not configured (missing RESEND_API_KEY or FROM_EMAIL) — skipping.");
     return;

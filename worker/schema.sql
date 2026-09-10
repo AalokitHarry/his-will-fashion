@@ -59,6 +59,15 @@ CREATE TABLE IF NOT EXISTS newsletter_subscribers (
   created_at TEXT NOT NULL
 );
 
+-- Single-row table tracking the last known up/down state per checked
+-- target, so the uptime cron only emails on a state transition, not on
+-- every 15-minute check while something stays down.
+CREATE TABLE IF NOT EXISTS uptime_status (
+  target TEXT PRIMARY KEY,
+  is_up INTEGER NOT NULL DEFAULT 1,
+  changed_at TEXT NOT NULL
+);
+
 -- Reviews start unapproved (approved = 0) and only appear on the product
 -- page once an admin approves them — never shown live on submission.
 -- verified_purchase is set server-side by matching the submitted email

@@ -10,6 +10,12 @@ database_id = "73f32d92-20a9-4c5f-9c0c-d08803b3c573"
 [vars]
 CLIENT_ORIGIN = "http://localhost:5173,https://his-will-fashion.aalokitharry1995.workers.dev,https://hiswillfashion.com,https://www.hiswillfashion.com"
 FROM_EMAIL = "His Will Fashion <orders@hiswillfashion.com>"
+ALERT_EMAIL = "aalokitharry1995@gmail.com"
 
 [dev]
 port = 4242
+
+# Checks the storefront and API every 15 minutes; emails ALERT_EMAIL only on
+# a down->up or up->down transition, never on every failed check.
+[triggers]
+crons = ["*/15 * * * *"]

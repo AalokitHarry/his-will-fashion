@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { priceCart, previewCoupon } from "./products.js";
 import { sendOrderConfirmationEmail, sendOrderStatusUpdateEmail, sendNewsletterWelcomeEmail } from "./email.js";
+import { runUptimeCheck } from "./uptime.js";
 
 const app = new Hono();
 
@@ -701,4 +702,9 @@ app.delete("/api/admin/coupons/:code", async (c) => {
   return c.json({ code });
 });
 
-export default app;
+export default {
+  fetch: app.fetch,
+  scheduled: async (event, env, ctx) => {
+    ctx.waitUntil(runUptimeCheck(env));
+  },
+};
