@@ -64,7 +64,7 @@ export default function CartDrawer() {
                         </button>
                       </div>
                       <p className="text-xs text-ink/50">
-                        {item.color} / {item.size}
+                        {[item.color, item.size].filter(Boolean).join(" / ")}
                       </p>
                       <div className="flex items-center justify-between mt-1">
                         <div className="flex items-center border border-ink/15 rounded-lg">

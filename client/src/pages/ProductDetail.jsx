@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Minus, Plus, RotateCcw, ShieldCheck, Truck } from "lucide-react";
-import { getProductById, PRODUCTS } from "../data/products";
+import { useProducts } from "../context/ProductsContext";
 import { useCart } from "../context/CartContext";
 import { formatINR } from "../utils/format";
 import ProductCarousel from "../components/ProductCarousel";
@@ -10,8 +10,12 @@ import ProductCard from "../components/ProductCard";
 import VerseMark from "../components/VerseMark";
 import useSEO from "../hooks/useSEO";
 
+const SITE_URL = "https://his-will-fashion.aalokitharry1995.workers.dev";
+const absoluteUrl = (src) => (src?.startsWith("http") ? src : `${SITE_URL}${src}`);
+
 export default function ProductDetail() {
   const { id } = useParams();
+  const { getProductById, products, loading } = useProducts();
   const product = getProductById(id);
   const { addItem } = useCart();
 
@@ -25,13 +29,13 @@ export default function ProductDetail() {
           title: `${product.name} — ${product.verse || product.tagline || "His Will Fashion"}`,
           description: product.description,
           path: `/product/${product.id}`,
-          image: `https://his-will-fashion.aalokitharry1995.workers.dev${product.image}`,
+          image: absoluteUrl(product.image),
           jsonLd: {
             "@context": "https://schema.org",
             "@type": "Product",
             name: product.name,
             description: product.description,
-            image: product.images.map((src) => `https://his-will-fashion.aalokitharry1995.workers.dev${src}`),
+            image: product.images.map(absoluteUrl),
             sku: product.id,
             brand: { "@type": "Brand", name: "His Will Fashion" },
             offers: {
@@ -44,8 +48,14 @@ export default function ProductDetail() {
             },
           },
         }
-      : { title: "Product Not Found", noindex: true, path: `/product/${id}` }
+      : loading
+        ? { title: "Loading…", noindex: true, path: `/product/${id}` }
+        : { title: "Product Not Found", noindex: true, path: `/product/${id}` }
   );
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center text-parchment/50">Loading…</div>;
+  }
 
   if (!product) {
     return (
@@ -58,7 +68,7 @@ export default function ProductDetail() {
     );
   }
 
-  const related = PRODUCTS.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 4);
+  const related = products.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 4);
 
   return (
     <div className="pt-24">
@@ -89,27 +99,31 @@ export default function ProductDetail() {
             )}
           </div>
 
-          <p className="text-parchment/70 leading-relaxed mb-8">{product.description}</p>
+          {product.description && (
+            <p className="text-parchment/70 leading-relaxed mb-8">{product.description}</p>
+          )}
 
-          <div className="mb-6">
-            <p className="font-condensed tracking-[0.1em] text-xs text-parchment/60 mb-2.5">
-              COLOR — <span className="text-parchment">{color}</span>
-            </p>
-            <div className="flex gap-2.5">
-              {product.colors.map((c) => (
-                <button
-                  key={c.name}
-                  onClick={() => setColor(c.name)}
-                  aria-label={c.name}
-                  disabled={product.colors.length === 1}
-                  className={`w-9 h-9 rounded-full border-2 transition-all ${
-                    color === c.name ? "border-gold scale-110" : "border-transparent hover:border-parchment/30"
-                  } ${product.colors.length === 1 ? "cursor-default" : ""}`}
-                  style={{ backgroundColor: c.hex }}
-                />
-              ))}
+          {product.colors?.length > 0 && (
+            <div className="mb-6">
+              <p className="font-condensed tracking-[0.1em] text-xs text-parchment/60 mb-2.5">
+                COLOR — <span className="text-parchment">{color}</span>
+              </p>
+              <div className="flex gap-2.5">
+                {product.colors.map((c) => (
+                  <button
+                    key={c.name}
+                    onClick={() => setColor(c.name)}
+                    aria-label={c.name}
+                    disabled={product.colors.length === 1}
+                    className={`w-9 h-9 rounded-full border-2 transition-all ${
+                      color === c.name ? "border-gold scale-110" : "border-transparent hover:border-parchment/30"
+                    } ${product.colors.length === 1 ? "cursor-default" : ""}`}
+                    style={{ backgroundColor: c.hex }}
+                  />
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           <div className="mb-8">
             <p className="font-condensed tracking-[0.1em] text-xs text-parchment/60 mb-2.5">SIZE</p>

@@ -10,3 +10,19 @@ CREATE TABLE IF NOT EXISTS orders (
   status TEXT NOT NULL,
   created_at TEXT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS products (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  category TEXT NOT NULL DEFAULT 'Tees',
+  price INTEGER NOT NULL,
+  compare_at INTEGER,
+  sizes TEXT NOT NULL,
+  colors TEXT NOT NULL,
+  verse TEXT,
+  tagline TEXT,
+  tag TEXT,
+  description TEXT,
+  images TEXT NOT NULL,
+  created_at TEXT NOT NULL
+);

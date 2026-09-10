@@ -1,27 +1,31 @@
-// Server-side source of truth for pricing.
-// Keep ids/prices in sync with client/src/data/products.js — the worker
-// never trusts prices sent from the browser, only ids and quantities.
-
-export const PRODUCTS = {
-  "lion-of-judah-tee": { name: "Lion of Judah Tee", price: 1299 },
-  "heavenly-influencer-tee": { name: "Heavenly Influencer Tee", price: 1299 },
-  "kingdom-mindset-tee": { name: "Kingdom Mindset Tee", price: 1299 },
-  "grace-changed-my-story-tee": { name: "Grace Changed My Story Tee", price: 1299 },
-  "jesus-little-princess-tee": { name: "Jesus' Little Princess Tee", price: 1199 },
-  "philippians-4-7-tee": { name: "Philippians 4:7 Tee", price: 1199 },
-  "i-ace-my-race-tee": { name: "I Ace My Race Tee", price: 1299 },
-  "plain-eggplant-tee": { name: "The Essentials Tee — Eggplant", price: 899 },
-};
+// Server-side pricing — the worker never trusts prices sent from the
+// browser, only product ids and quantities, and always re-prices against D1.
 
 export const FREE_SHIPPING_THRESHOLD = 1999;
 export const SHIPPING_FEE = 99;
 
-export function priceCart(items) {
+// Fetches only the rows needed to price this cart, keyed by id.
+async function loadProductsByIds(db, ids) {
+  if (ids.length === 0) return {};
+  const placeholders = ids.map(() => "?").join(",");
+  const { results } = await db
+    .prepare(`SELECT id, name, price FROM products WHERE id IN (${placeholders})`)
+    .bind(...ids)
+    .all();
+  const byId = {};
+  for (const row of results) byId[row.id] = row;
+  return byId;
+}
+
+export async function priceCart(db, items) {
+  const ids = [...new Set(items.map((i) => i.id))];
+  const products = await loadProductsByIds(db, ids);
+
   let subtotal = 0;
   const lines = [];
 
   for (const { id, qty, size, color } of items) {
-    const product = PRODUCTS[id];
+    const product = products[id];
     if (!product) throw new Error(`Unknown product: ${id}`);
     const quantity = Number(qty);
     if (!Number.isInteger(quantity) || quantity < 1 || quantity > 20) {

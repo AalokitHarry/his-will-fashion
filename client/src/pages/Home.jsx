@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowDown, ArrowRight, Camera } from "lucide-react";
-import { getProductById, PRODUCTS } from "../data/products";
+import { useProducts } from "../context/ProductsContext";
 import ProductCard from "../components/ProductCard";
 import ProductImage from "../components/ProductImage";
 import Marquee from "../components/Marquee";
@@ -45,7 +45,8 @@ function Eyebrow({ n, children }) {
 }
 
 export default function Home() {
-  const featured = PRODUCTS.slice(0, 4);
+  const { products, loading, getProductById } = useProducts();
+  const featured = products.slice(0, 4);
   const spotlight = SPOTLIGHT_IDS.map(getProductById).filter(Boolean);
 
   useSEO({
@@ -54,6 +55,10 @@ export default function Home() {
       "Faith-inspired streetwear with real scripture and real craft — oversized heavyweight tees, not generic Christian merch. Pan India shipping, Cash on Delivery.",
     path: "/",
   });
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center text-parchment/50">Loading…</div>;
+  }
 
   return (
     <div>

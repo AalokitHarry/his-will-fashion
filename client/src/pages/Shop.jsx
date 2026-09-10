@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
-import { CATEGORIES, PRODUCTS } from "../data/products";
+import { CATEGORIES, useProducts } from "../context/ProductsContext";
 import ProductCard from "../components/ProductCard";
 import useSEO from "../hooks/useSEO";
 
@@ -13,6 +13,7 @@ const SORTS = [
 ];
 
 export default function Shop() {
+  const { products: allProducts, loading } = useProducts();
   const [searchParams, setSearchParams] = useSearchParams();
   const activeCategory = searchParams.get("category") || "All";
   const [sort, setSort] = useState("featured");
@@ -28,12 +29,12 @@ export default function Shop() {
 
   const products = useMemo(() => {
     let list =
-      activeCategory === "All" ? PRODUCTS : PRODUCTS.filter((p) => p.category === activeCategory);
+      activeCategory === "All" ? allProducts : allProducts.filter((p) => p.category === activeCategory);
     list = [...list];
     if (sort === "price-asc") list.sort((a, b) => a.price - b.price);
     if (sort === "price-desc") list.sort((a, b) => b.price - a.price);
     return list;
-  }, [activeCategory, sort]);
+  }, [allProducts, activeCategory, sort]);
 
   useSEO({
     title: "Shop All — Faith-Inspired Streetwear Tees",
@@ -88,7 +89,9 @@ export default function Shop() {
           </div>
         </div>
 
-        {products.length === 0 ? (
+        {loading ? (
+          <p className="text-parchment/50 py-20 text-center">Loading…</p>
+        ) : products.length === 0 ? (
           <p className="text-parchment/50 py-20 text-center">No products found in this category yet.</p>
         ) : (
           <motion.div layout className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-7">

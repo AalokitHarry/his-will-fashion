@@ -158,7 +158,7 @@ export default function Checkout() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm leading-tight truncate">{item.name}</p>
-                    <p className="text-xs text-parchment/50">{item.color} / {item.size}</p>
+                    <p className="text-xs text-parchment/50">{[item.color, item.size].filter(Boolean).join(" / ")}</p>
                   </div>
                   <span className="text-sm">{formatINR(item.price * item.qty)}</span>
                 </div>
