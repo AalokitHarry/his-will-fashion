@@ -45,62 +45,61 @@ export default function SearchOverlay({ isOpen, onClose }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-ink/70 backdrop-blur-sm z-[60]"
+            className="fixed inset-0 bg-ink/60 z-[60]"
           />
           <motion.div
-            initial={{ opacity: 0, y: -16 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -16 }}
-            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed top-0 left-0 right-0 z-[70] bg-parchment text-ink shadow-2xl"
+            initial={{ opacity: 0, y: -12, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -12, scale: 0.97 }}
+            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            style={{ transformOrigin: "top center" }}
+            className="fixed top-20 inset-x-4 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 sm:w-[560px] max-h-[75vh] z-[70] flex flex-col rounded-xl border border-gold/15 bg-charcoal shadow-2xl overflow-hidden"
           >
-            <div className="mx-auto max-w-2xl px-5 py-6">
-              <div className="flex items-center gap-3 border-b-2 border-ink/15 pb-3">
-                <Search size={20} className="text-ink/40 shrink-0" />
-                <input
-                  ref={inputRef}
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search tees, verses, collections…"
-                  className="flex-1 min-w-0 bg-transparent text-lg focus:outline-none placeholder:text-ink/35"
-                />
-                <button
-                  onClick={onClose}
-                  aria-label="Close search"
-                  className="text-ink/40 hover:text-rust transition-colors shrink-0"
-                >
-                  <X size={22} />
-                </button>
-              </div>
-
-              {query.trim() && (
-                <div className="mt-4 max-h-[60vh] overflow-y-auto flex flex-col gap-1">
-                  {results.length === 0 ? (
-                    <p className="text-ink/50 text-sm py-8 text-center">No products match "{query}".</p>
-                  ) : (
-                    results.map((p) => (
-                      <Link
-                        key={p.id}
-                        to={`/product/${p.id}`}
-                        onClick={onClose}
-                        className="flex items-center gap-4 p-2.5 rounded-lg hover:bg-ink/5 transition-colors"
-                      >
-                        <div className="w-12 h-14 rounded-md overflow-hidden shrink-0 bg-charcoal">
-                          <ProductImage src={p.image} alt={p.name} />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="font-medium truncate">{p.name}</p>
-                          {(p.verse || p.tagline) && (
-                            <p className="text-xs text-ink/50 truncate">{p.verse || p.tagline}</p>
-                          )}
-                        </div>
-                        <span className="text-sm font-medium shrink-0">{formatINR(p.price)}</span>
-                      </Link>
-                    ))
-                  )}
-                </div>
-              )}
+            <div className="flex items-center gap-3 px-4 py-3.5 border-b border-parchment/10 shrink-0">
+              <Search size={18} className="text-parchment/40 shrink-0" />
+              <input
+                ref={inputRef}
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search tees, verses, collections…"
+                className="flex-1 min-w-0 bg-transparent text-parchment placeholder:text-parchment/35 focus:outline-none"
+              />
+              <button
+                onClick={onClose}
+                aria-label="Close search"
+                className="text-parchment/40 hover:text-rust transition-colors shrink-0"
+              >
+                <X size={18} />
+              </button>
             </div>
+
+            {query.trim() && (
+              <div className="flex-1 min-h-0 overflow-y-auto px-3 py-3 flex flex-col gap-1">
+                {results.length === 0 ? (
+                  <p className="text-parchment/50 text-sm py-8 text-center">No products match "{query}".</p>
+                ) : (
+                  results.map((p) => (
+                    <Link
+                      key={p.id}
+                      to={`/product/${p.id}`}
+                      onClick={onClose}
+                      className="flex items-center gap-3.5 p-2.5 rounded-lg hover:bg-ink transition-colors"
+                    >
+                      <div className="w-11 h-14 rounded-md overflow-hidden shrink-0 bg-ink">
+                        <ProductImage src={p.image} alt={p.name} />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-parchment truncate text-sm">{p.name}</p>
+                        {(p.verse || p.tagline) && (
+                          <p className="text-xs text-parchment/50 truncate">{p.verse || p.tagline}</p>
+                        )}
+                      </div>
+                      <span className="text-sm font-medium text-gold shrink-0">{formatINR(p.price)}</span>
+                    </Link>
+                  ))
+                )}
+              </div>
+            )}
           </motion.div>
         </>
       )}
