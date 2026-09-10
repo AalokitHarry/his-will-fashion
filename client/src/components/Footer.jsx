@@ -69,8 +69,12 @@ export default function Footer() {
         </div>
 
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 text-xs text-parchment/40">
-          <p>&copy; {new Date().getFullYear()} His Will Fashion. All rights reserved.</p>
-          <p>Made with faith &middot; Pan India Shipping</p>
+          <p>&copy; {new Date().getFullYear()} His Will Fashion. All rights reserved. &middot; Made with faith</p>
+          <div className="flex items-center gap-4">
+            <Link to="/privacy-policy" className="hover:text-gold transition-colors">Privacy Policy</Link>
+            <Link to="/refund-policy" className="hover:text-gold transition-colors">Returns & Refunds</Link>
+            <Link to="/terms" className="hover:text-gold transition-colors">Terms</Link>
+          </div>
         </div>
       </div>
     </footer>
