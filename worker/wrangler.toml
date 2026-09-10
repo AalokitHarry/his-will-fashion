@@ -8,7 +8,7 @@ database_name = "his-will-fashion-orders"
 database_id = "73f32d92-20a9-4c5f-9c0c-d08803b3c573"
 
 [vars]
-CLIENT_ORIGIN = "http://localhost:5173,https://his-will-fashion.aalokitharry1995.workers.dev"
+CLIENT_ORIGIN = "http://localhost:5173,https://his-will-fashion.aalokitharry1995.workers.dev,https://hiswillfashion.com,https://www.hiswillfashion.com"
 FROM_EMAIL = "His Will Fashion <orders@hiswillfashion.in>"
 
 [dev]
