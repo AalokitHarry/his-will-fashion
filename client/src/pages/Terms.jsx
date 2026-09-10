@@ -52,7 +52,7 @@ export default function Terms() {
       <LegalSection title="Contact Us">
         <p>
           Questions about these terms? Email{" "}
-          <a href="mailto:hello@hiswillfashion.in" className="text-gold hover:underline">hello@hiswillfashion.in</a>.
+          <a href="mailto:hello@hiswillfashion.com" className="text-gold hover:underline">hello@hiswillfashion.com</a>.
         </p>
       </LegalSection>
     </LegalPage>

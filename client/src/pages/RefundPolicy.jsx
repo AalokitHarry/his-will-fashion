@@ -16,7 +16,7 @@ export default function RefundPolicy() {
 
       <LegalSection title="How to Start a Return">
         <p>
-          Email <a href="mailto:hello@hiswillfashion.in" className="text-gold hover:underline">hello@hiswillfashion.in</a> with your order reference and the reason for the return. We'll confirm the details and next steps with you directly.
+          Email <a href="mailto:hello@hiswillfashion.com" className="text-gold hover:underline">hello@hiswillfashion.com</a> with your order reference and the reason for the return. We'll confirm the details and next steps with you directly.
         </p>
       </LegalSection>
 
@@ -38,14 +38,14 @@ export default function RefundPolicy() {
       <LegalSection title="Cancelling an Order">
         <p>
           You can cancel an order any time before it ships by emailing{" "}
-          <a href="mailto:hello@hiswillfashion.in" className="text-gold hover:underline">hello@hiswillfashion.in</a> with your order reference. Since orders are Cash on Delivery, no payment has been taken yet, so cancelling before shipping needs nothing further from you.
+          <a href="mailto:hello@hiswillfashion.com" className="text-gold hover:underline">hello@hiswillfashion.com</a> with your order reference. Since orders are Cash on Delivery, no payment has been taken yet, so cancelling before shipping needs nothing further from you.
         </p>
       </LegalSection>
 
       <LegalSection title="Questions">
         <p>
           Reach out anytime at{" "}
-          <a href="mailto:hello@hiswillfashion.in" className="text-gold hover:underline">hello@hiswillfashion.in</a> — we'll sort it out.
+          <a href="mailto:hello@hiswillfashion.com" className="text-gold hover:underline">hello@hiswillfashion.com</a> — we'll sort it out.
         </p>
       </LegalSection>
     </LegalPage>

@@ -5,6 +5,8 @@ import VerseMark from "./VerseMark";
 import { formatINR } from "../utils/format";
 
 export default function ProductCard({ product, index = 0 }) {
+  const outOfStock = product.stock !== null && product.stock !== undefined && product.stock <= 0;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 28 }}
@@ -17,9 +19,14 @@ export default function ProductCard({ product, index = 0 }) {
           <ProductImage
             src={product.image}
             alt={product.name}
-            className="transition-transform duration-700 ease-out group-hover:scale-105"
+            className={`transition-transform duration-700 ease-out group-hover:scale-105 ${outOfStock ? "opacity-50 grayscale" : ""}`}
           />
-          {product.tag && (
+          {outOfStock && (
+            <span className="absolute top-3 left-3 bg-ink/85 text-parchment text-[10px] font-condensed tracking-[0.12em] px-2.5 py-1 rounded-md">
+              SOLD OUT
+            </span>
+          )}
+          {!outOfStock && product.tag && (
             <span className="absolute top-3 left-3 bg-gold text-ink text-[10px] font-condensed tracking-[0.12em] px-2.5 py-1 rounded-md">
               {product.tag.toUpperCase()}
             </span>

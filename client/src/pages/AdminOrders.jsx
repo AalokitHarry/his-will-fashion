@@ -6,6 +6,7 @@ import useSEO from "../hooks/useSEO";
 import AddProductForm from "../components/AddProductForm";
 import ProductList from "../components/ProductList";
 import NewsletterList from "../components/NewsletterList";
+import CouponList from "../components/CouponList";
 
 const TOKEN_KEY = "hwf_admin_token";
 
@@ -149,6 +150,7 @@ export default function AdminOrders() {
           {[
             { key: "orders", label: "Orders" },
             { key: "products", label: "Add Product" },
+            { key: "coupons", label: "Coupons" },
             { key: "subscribers", label: "Subscribers" },
           ].map((t) => (
             <button
@@ -170,6 +172,8 @@ export default function AdminOrders() {
             <AddProductForm />
             <ProductList />
           </>
+        ) : tab === "coupons" ? (
+          <CouponList />
         ) : tab === "subscribers" ? (
           <NewsletterList />
         ) : (
@@ -249,7 +253,13 @@ export default function AdminOrders() {
                       ))}
                     </div>
 
-                    <div className="flex justify-between font-display text-lg pt-3 border-t border-parchment/10">
+                    {order.discount > 0 && (
+                      <div className="flex justify-between text-sm text-gold mb-2 pt-3 border-t border-parchment/10">
+                        <span>Discount{order.couponCode ? ` (${order.couponCode})` : ""}</span>
+                        <span>&minus;{formatINR(order.discount)}</span>
+                      </div>
+                    )}
+                    <div className={`flex justify-between font-display text-lg ${order.discount > 0 ? "" : "pt-3 border-t border-parchment/10"}`}>
                       <span>Total ({order.paymentMethod.toUpperCase()})</span>
                       <span>{formatINR(order.total)}</span>
                     </div>

@@ -12,6 +12,8 @@ function EditRow({ product, onDone, onCancel }) {
   const { updateProductLocal } = useProducts();
   const [name, setName] = useState(product.name);
   const [price, setPrice] = useState(String(product.price));
+  const [stock, setStock] = useState(product.stock === null || product.stock === undefined ? "" : String(product.stock));
+  const [verse, setVerse] = useState(product.verse || "");
   const [description, setDescription] = useState(product.description || "");
   const [replacingPhotos, setReplacingPhotos] = useState(false);
   const [photos, setPhotos] = useState({ photo1: null, photo2: null, photo3: null });
@@ -25,6 +27,9 @@ function EditRow({ product, onDone, onCancel }) {
     setError("");
     if (!name.trim()) return setError("Enter a product name.");
     if (!price || Number(price) <= 0) return setError("Enter a valid price.");
+    if (stock !== "" && (!Number.isInteger(Number(stock)) || Number(stock) < 0)) {
+      return setError("Stock must be a whole number (0 or more), or left blank for unlimited.");
+    }
     if (replacingPhotos) {
       if (!photos.photo1 || !photos.photo2 || !photos.photo3) {
         return setError("Upload all 3 photos, or turn off photo replacement to keep the existing ones.");
@@ -41,6 +46,8 @@ function EditRow({ product, onDone, onCancel }) {
       const formData = new FormData();
       formData.append("name", name.trim());
       formData.append("price", price);
+      formData.append("stock", stock);
+      formData.append("verse", verse.trim());
       formData.append("description", description.trim());
       if (replacingPhotos) {
         formData.append("photo1", photos.photo1);
@@ -75,6 +82,30 @@ function EditRow({ product, onDone, onCancel }) {
             min="1"
             value={price}
             onChange={(e) => setPrice(e.target.value)}
+            className="border border-parchment/20 rounded-md px-3 py-2 text-sm bg-parchment text-ink focus:outline-none focus:border-gold"
+          />
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <label className="font-condensed tracking-[0.08em] text-xs text-parchment/60">
+            STOCK <span className="text-parchment/35 normal-case tracking-normal">— blank = unlimited</span>
+          </label>
+          <input
+            type="number"
+            min="0"
+            value={stock}
+            onChange={(e) => setStock(e.target.value)}
+            placeholder="Unlimited"
+            className="border border-parchment/20 rounded-md px-3 py-2 text-sm bg-parchment text-ink focus:outline-none focus:border-gold"
+          />
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <label className="font-condensed tracking-[0.08em] text-xs text-parchment/60">
+            VERSE <span className="text-parchment/35 normal-case tracking-normal">— optional</span>
+          </label>
+          <input
+            value={verse}
+            onChange={(e) => setVerse(e.target.value)}
+            placeholder="e.g. Revelation 5:5"
             className="border border-parchment/20 rounded-md px-3 py-2 text-sm bg-parchment text-ink focus:outline-none focus:border-gold"
           />
         </div>
@@ -212,7 +243,17 @@ export default function ProductList() {
                   <Link to={`/product/${p.id}`} target="_blank" rel="noreferrer" className="font-medium hover:text-gold transition-colors truncate block">
                     {p.name}
                   </Link>
-                  <p className="text-sm text-parchment/60">{formatINR(p.price)}</p>
+                  <p className="text-sm text-parchment/60">
+                    {formatINR(p.price)}
+                    {" · "}
+                    {p.stock === null || p.stock === undefined ? (
+                      "Unlimited stock"
+                    ) : p.stock <= 0 ? (
+                      <span className="text-rust">Sold out</span>
+                    ) : (
+                      `${p.stock} in stock`
+                    )}
+                  </p>
                 </div>
 
                 {savedId === p.id && (

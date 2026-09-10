@@ -44,7 +44,7 @@ async function sendEmail(env, { to, subject, html }) {
   }
 }
 
-export async function sendOrderConfirmationEmail(env, { orderId, customer, lines, subtotal, shipping, total }) {
+export async function sendOrderConfirmationEmail(env, { orderId, customer, lines, subtotal, shipping, discount, couponCode, total }) {
   const itemRows = lines
     .map(
       (line) => `
@@ -82,6 +82,7 @@ export async function sendOrderConfirmationEmail(env, { orderId, customer, lines
 
       <table style="width:100%;border-collapse:collapse;font-size:14px;margin-top:14px;">
         <tr><td style="padding:4px 0;color:#777;">Subtotal</td><td style="padding:4px 0;text-align:right;">${formatINR(subtotal)}</td></tr>
+        ${discount > 0 ? `<tr><td style="padding:4px 0;color:#777;">Discount${couponCode ? ` (${couponCode})` : ""}</td><td style="padding:4px 0;text-align:right;color:#c22a2c;">&minus;${formatINR(discount)}</td></tr>` : ""}
         <tr><td style="padding:4px 0;color:#777;">Shipping</td><td style="padding:4px 0;text-align:right;">${shipping === 0 ? "Free" : formatINR(shipping)}</td></tr>
         <tr><td style="padding:8px 0;font-weight:bold;border-top:1px solid #eee;">Total (Cash on Delivery)</td><td style="padding:8px 0;text-align:right;font-weight:bold;border-top:1px solid #eee;">${formatINR(total)}</td></tr>
       </table>

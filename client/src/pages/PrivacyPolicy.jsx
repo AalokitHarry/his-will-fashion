@@ -42,7 +42,7 @@ export default function PrivacyPolicy() {
 
       <LegalSection title="Your Rights">
         <p>You can ask us to access, correct, or delete the personal information we hold about you at any time by emailing{" "}
-          <a href="mailto:hello@hiswillfashion.in" className="text-gold hover:underline">hello@hiswillfashion.in</a>.
+          <a href="mailto:hello@hiswillfashion.com" className="text-gold hover:underline">hello@hiswillfashion.com</a>.
         </p>
       </LegalSection>
 
@@ -53,7 +53,7 @@ export default function PrivacyPolicy() {
       <LegalSection title="Contact Us">
         <p>
           Questions about this policy? Email{" "}
-          <a href="mailto:hello@hiswillfashion.in" className="text-gold hover:underline">hello@hiswillfashion.in</a> or see our{" "}
+          <a href="mailto:hello@hiswillfashion.com" className="text-gold hover:underline">hello@hiswillfashion.com</a> or see our{" "}
           <Link to="/contact" className="text-gold hover:underline">Contact page</Link>.
         </p>
       </LegalSection>

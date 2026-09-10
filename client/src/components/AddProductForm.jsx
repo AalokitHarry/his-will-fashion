@@ -8,7 +8,7 @@ import PhotoInput, { MAX_PHOTO_BYTES } from "./PhotoInput";
 
 const PHOTO_SLOTS = [
   { key: "photo1", label: "Photo 1 — On model", hint: "Shown first on the site" },
-  { key: "photo2", label: "Photo 2", hint: "Under 1MB each" },
+  { key: "photo2", label: "Photo 2", hint: "Compressed automatically" },
   { key: "photo3", label: "Photo 3", hint: "" },
 ];
 
@@ -16,6 +16,8 @@ export default function AddProductForm() {
   const { addProductLocal } = useProducts();
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
+  const [stock, setStock] = useState("");
+  const [verse, setVerse] = useState("");
   const [description, setDescription] = useState("");
   const [photos, setPhotos] = useState({ photo1: null, photo2: null, photo3: null });
   const [submitting, setSubmitting] = useState(false);
@@ -31,6 +33,9 @@ export default function AddProductForm() {
 
     if (!name.trim()) return setError("Enter a product name.");
     if (!price || Number(price) <= 0) return setError("Enter a valid price.");
+    if (stock !== "" && (!Number.isInteger(Number(stock)) || Number(stock) < 0)) {
+      return setError("Stock must be a whole number (0 or more), or left blank for unlimited.");
+    }
     if (!photos.photo1 || !photos.photo2 || !photos.photo3) return setError("All 3 photos are required.");
     const tooBig = Object.values(photos).find((f) => f.size > MAX_PHOTO_BYTES);
     if (tooBig) {
@@ -43,6 +48,8 @@ export default function AddProductForm() {
       const formData = new FormData();
       formData.append("name", name.trim());
       formData.append("price", price);
+      formData.append("stock", stock);
+      formData.append("verse", verse.trim());
       formData.append("description", description.trim());
       formData.append("photo1", photos.photo1);
       formData.append("photo2", photos.photo2);
@@ -53,6 +60,8 @@ export default function AddProductForm() {
       setCreated(product);
       setName("");
       setPrice("");
+      setStock("");
+      setVerse("");
       setDescription("");
       setPhotos({ photo1: null, photo2: null, photo3: null });
     } catch (err) {
@@ -101,6 +110,33 @@ export default function AddProductForm() {
               value={price}
               onChange={(e) => setPrice(e.target.value)}
               placeholder="1299"
+              className="border border-parchment/20 rounded-lg px-3.5 py-3 bg-parchment text-ink focus:outline-none focus:border-gold"
+            />
+          </div>
+        </div>
+
+        <div className="grid sm:grid-cols-2 gap-4">
+          <div className="flex flex-col gap-1.5">
+            <label className="font-condensed tracking-[0.08em] text-xs text-parchment/60">
+              STOCK <span className="text-parchment/35 normal-case tracking-normal">— optional, blank = unlimited</span>
+            </label>
+            <input
+              type="number"
+              min="0"
+              value={stock}
+              onChange={(e) => setStock(e.target.value)}
+              placeholder="e.g. 25"
+              className="border border-parchment/20 rounded-lg px-3.5 py-3 bg-parchment text-ink focus:outline-none focus:border-gold"
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label className="font-condensed tracking-[0.08em] text-xs text-parchment/60">
+              VERSE REFERENCE <span className="text-parchment/35 normal-case tracking-normal">— optional</span>
+            </label>
+            <input
+              value={verse}
+              onChange={(e) => setVerse(e.target.value)}
+              placeholder="e.g. Revelation 5:5"
               className="border border-parchment/20 rounded-lg px-3.5 py-3 bg-parchment text-ink focus:outline-none focus:border-gold"
             />
           </div>

@@ -48,7 +48,7 @@ export default function Contact() {
     e.preventDefault();
     const subject = encodeURIComponent(`Website enquiry from ${form.name}`);
     const body = encodeURIComponent(`${form.message}\n\n— ${form.name} (${form.email})`);
-    window.location.href = `mailto:hello@hiswillfashion.in?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:hello@hiswillfashion.com?subject=${subject}&body=${body}`;
     setSent(true);
   };
 
@@ -71,8 +71,8 @@ export default function Contact() {
             </span>
             <div>
               <h3 className="font-condensed tracking-[0.1em] text-sm mb-1">EMAIL US</h3>
-              <a href="mailto:hello@hiswillfashion.in" className="text-parchment/70 hover:text-gold transition-colors">
-                hello@hiswillfashion.in
+              <a href="mailto:hello@hiswillfashion.com" className="text-parchment/70 hover:text-gold transition-colors">
+                hello@hiswillfashion.com
               </a>
             </div>
           </div>
@@ -119,7 +119,7 @@ export default function Contact() {
             <div className="flex flex-col items-center justify-center text-center gap-3 bg-charcoal border border-gold/15 text-parchment rounded-lg p-10 h-full">
               <CheckCircle2 className="text-gold" size={32} />
               <p className="font-editorial text-xl">Your email app should be opening now.</p>
-              <p className="text-parchment/60 text-sm">If it didn't, write to us directly at hello@hiswillfashion.in</p>
+              <p className="text-parchment/60 text-sm">If it didn't, write to us directly at hello@hiswillfashion.com</p>
             </div>
           ) : (
             <>

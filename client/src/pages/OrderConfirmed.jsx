@@ -37,6 +37,12 @@ export default function OrderConfirmed() {
               <span className="text-parchment/60">Order Reference</span>
               <span className="font-condensed tracking-wide">{state.orderId}</span>
             </div>
+            {state?.discount > 0 && (
+              <div className="flex justify-between text-sm">
+                <span className="text-parchment/60">Discount Applied</span>
+                <span className="font-condensed tracking-wide text-gold">&minus;{formatINR(state.discount)}</span>
+              </div>
+            )}
             {state?.total != null && (
               <div className="flex justify-between text-sm">
                 <span className="text-parchment/60">Amount Due (Cash on Delivery)</span>

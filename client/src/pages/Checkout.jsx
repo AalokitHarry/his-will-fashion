@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { AlertCircle, PackageCheck, ShoppingBag } from "lucide-react";
+import { AlertCircle, CheckCircle2, PackageCheck, ShoppingBag, X } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { formatINR } from "../utils/format";
 import { INDIAN_STATES } from "../data/indianStates";
-import { placeOrder } from "../api/orders";
+import { placeOrder, validateCoupon } from "../api/orders";
 import ProductImage from "../components/ProductImage";
 import useSEO from "../hooks/useSEO";
 
@@ -30,14 +30,42 @@ export default function Checkout() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const [couponInput, setCouponInput] = useState("");
+  const [coupon, setCoupon] = useState(null); // { code, discount }
+  const [couponChecking, setCouponChecking] = useState(false);
+  const [couponError, setCouponError] = useState("");
+
   useSEO({ title: "Checkout", path: "/checkout", noindex: true });
 
   const shipping = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_FEE;
-  const total = subtotal + shipping;
+  const discount = coupon?.discount || 0;
+  const total = subtotal - discount + shipping;
 
   const onChange = (e) => {
     const { name, value } = e.target;
     setForm((f) => ({ ...f, [name]: value }));
+  };
+
+  const handleApplyCoupon = async (e) => {
+    e.preventDefault();
+    if (!couponInput.trim()) return;
+    setCouponChecking(true);
+    setCouponError("");
+    try {
+      const result = await validateCoupon(couponInput.trim(), subtotal);
+      setCoupon({ code: result.code, discount: result.discount });
+    } catch (err) {
+      setCoupon(null);
+      setCouponError(err.message || "Invalid or expired coupon code.");
+    } finally {
+      setCouponChecking(false);
+    }
+  };
+
+  const removeCoupon = () => {
+    setCoupon(null);
+    setCouponInput("");
+    setCouponError("");
   };
 
   const handlePlaceOrder = async (e) => {
@@ -46,12 +74,13 @@ export default function Checkout() {
     setLoading(true);
 
     try {
-      const { orderId, total: confirmedTotal } = await placeOrder({
+      const { orderId, total: confirmedTotal, discount: confirmedDiscount } = await placeOrder({
         items: items.map((i) => ({ id: i.id, size: i.size, color: i.color, qty: i.qty })),
         customer: form,
+        couponCode: coupon?.code,
       });
       clearCart();
-      navigate("/order-confirmed", { state: { orderId, total: confirmedTotal } });
+      navigate("/order-confirmed", { state: { orderId, total: confirmedTotal, discount: confirmedDiscount } });
     } catch (err) {
       setError(
         err.message ||
@@ -164,11 +193,54 @@ export default function Checkout() {
                 </div>
               ))}
             </div>
+            <div className="mb-5">
+              {coupon ? (
+                <div className="flex items-center justify-between bg-gold/10 border border-gold/30 rounded-lg px-3.5 py-2.5 text-sm">
+                  <span className="flex items-center gap-1.5 text-gold">
+                    <CheckCircle2 size={15} /> "{coupon.code}" applied
+                  </span>
+                  <button type="button" onClick={removeCoupon} aria-label="Remove coupon" className="text-parchment/50 hover:text-rust transition-colors">
+                    <X size={15} />
+                  </button>
+                </div>
+              ) : (
+                <div>
+                  <div className="flex gap-2">
+                    <input
+                      value={couponInput}
+                      onChange={(e) => setCouponInput(e.target.value)}
+                      placeholder="Coupon code"
+                      className="flex-1 min-w-0 border border-parchment/20 rounded-lg px-3.5 py-2.5 text-sm bg-parchment text-ink focus:outline-none focus:border-gold uppercase placeholder:normal-case"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleApplyCoupon}
+                      disabled={couponChecking || !couponInput.trim()}
+                      className="shrink-0 text-xs font-condensed tracking-wide border border-parchment/30 px-4 rounded-lg hover:border-gold hover:text-gold transition-colors disabled:opacity-50"
+                    >
+                      {couponChecking ? "CHECKING…" : "APPLY"}
+                    </button>
+                  </div>
+                  {couponError && (
+                    <p className="flex items-center gap-1.5 text-rust text-xs mt-2">
+                      <AlertCircle size={13} className="shrink-0" /> {couponError}
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+
             <div className="flex flex-col gap-2.5 text-sm border-t border-parchment/15 pt-5">
               <div className="flex justify-between text-parchment/70">
                 <span>Subtotal</span>
                 <span>{formatINR(subtotal)}</span>
               </div>
+              {discount > 0 && (
+                <div className="flex justify-between text-gold">
+                  <span>Discount</span>
+                  <span>&minus;{formatINR(discount)}</span>
+                </div>
+              )}
               <div className="flex justify-between text-parchment/70">
                 <span>Shipping</span>
                 <span>{shipping === 0 ? "Free" : formatINR(shipping)}</span>

@@ -5,6 +5,8 @@ CREATE TABLE IF NOT EXISTS orders (
   items TEXT NOT NULL,
   subtotal INTEGER NOT NULL,
   shipping INTEGER NOT NULL,
+  coupon_code TEXT,
+  discount INTEGER NOT NULL DEFAULT 0,
   total INTEGER NOT NULL,
   payment_method TEXT NOT NULL,
   status TEXT NOT NULL,
@@ -24,6 +26,21 @@ CREATE TABLE IF NOT EXISTS products (
   tag TEXT,
   description TEXT,
   images TEXT NOT NULL,
+  -- NULL = unlimited/untracked (default, preserves prior behavior for
+  -- existing products). A real number is enforced at checkout and
+  -- decremented per order.
+  stock INTEGER,
+  created_at TEXT NOT NULL
+);
+
+-- code is stored uppercase. type is 'percent' (value = % off, 1-100) or
+-- 'flat' (value = flat rupee amount off). Deactivate a code by flipping
+-- `active` rather than deleting it, so past orders keep their reference.
+CREATE TABLE IF NOT EXISTS coupons (
+  code TEXT PRIMARY KEY,
+  type TEXT NOT NULL,
+  value INTEGER NOT NULL,
+  active INTEGER NOT NULL DEFAULT 1,
   created_at TEXT NOT NULL
 );
 

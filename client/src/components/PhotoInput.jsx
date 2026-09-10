@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { Upload } from "lucide-react";
+import { compressImage } from "../utils/compressImage";
 
 export const MAX_PHOTO_BYTES = 1_000_000;
 
 export default function PhotoInput({ label, hint, file, onChange, existingSrc }) {
   const [preview, setPreview] = useState(null);
+  const [compressing, setCompressing] = useState(false);
 
   useEffect(() => {
     if (!file) {
@@ -16,6 +18,16 @@ export default function PhotoInput({ label, hint, file, onChange, existingSrc })
     return () => URL.revokeObjectURL(url);
   }, [file]);
 
+  const handleFile = async (raw) => {
+    if (!raw) return onChange(null);
+    setCompressing(true);
+    try {
+      onChange(await compressImage(raw));
+    } finally {
+      setCompressing(false);
+    }
+  };
+
   const shown = preview || existingSrc;
 
   return (
@@ -25,7 +37,9 @@ export default function PhotoInput({ label, hint, file, onChange, existingSrc })
         {hint && <span className="text-parchment/35 normal-case tracking-normal"> — {hint}</span>}
       </span>
       <div className="relative aspect-[4/5] rounded-lg border border-dashed border-parchment/25 bg-charcoal overflow-hidden flex items-center justify-center hover:border-gold transition-colors">
-        {shown ? (
+        {compressing ? (
+          <span className="text-[11px] font-condensed tracking-wide text-parchment/40">COMPRESSING…</span>
+        ) : shown ? (
           <img src={shown} alt="" className="w-full h-full object-cover" />
         ) : (
           <Upload size={22} className="text-parchment/30" />
@@ -35,7 +49,7 @@ export default function PhotoInput({ label, hint, file, onChange, existingSrc })
         type="file"
         accept="image/jpeg,image/png,image/webp"
         className="hidden"
-        onChange={(e) => onChange(e.target.files?.[0] || null)}
+        onChange={(e) => handleFile(e.target.files?.[0] || null)}
       />
     </label>
   );

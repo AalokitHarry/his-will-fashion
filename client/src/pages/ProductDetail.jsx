@@ -25,6 +25,10 @@ export default function ProductDetail() {
   const [qty, setQty] = useState(1);
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
 
+  const tracked = product?.stock !== null && product?.stock !== undefined;
+  const outOfStock = tracked && product.stock <= 0;
+  const lowStock = tracked && product.stock > 0 && product.stock <= 5;
+
   useSEO(
     product
       ? {
@@ -45,7 +49,10 @@ export default function ProductDetail() {
               url: `https://hiswillfashion.com/product/${product.id}`,
               priceCurrency: "INR",
               price: product.price,
-              availability: "https://schema.org/InStock",
+              availability:
+                product.stock !== null && product.stock !== undefined && product.stock <= 0
+                  ? "https://schema.org/OutOfStock"
+                  : "https://schema.org/InStock",
               itemCondition: "https://schema.org/NewCondition",
             },
           },
@@ -97,6 +104,16 @@ export default function ProductDetail() {
             {product.compareAt && (
               <span className="text-xs font-condensed tracking-wide bg-rust text-parchment px-2 py-1 rounded-md">
                 SAVE {Math.round(100 - (product.price / product.compareAt) * 100)}%
+              </span>
+            )}
+            {outOfStock && (
+              <span className="text-xs font-condensed tracking-wide bg-rust/15 text-rust border border-rust/30 px-2 py-1 rounded-md">
+                SOLD OUT
+              </span>
+            )}
+            {lowStock && (
+              <span className="text-xs font-condensed tracking-wide bg-gold/15 text-gold border border-gold/30 px-2 py-1 rounded-md">
+                ONLY {product.stock} LEFT
               </span>
             )}
           </div>
@@ -157,19 +174,30 @@ export default function ProductDetail() {
 
           <div className="flex items-center gap-4 mb-8">
             <div className="flex items-center border border-parchment/20 rounded-lg">
-              <button onClick={() => setQty((q) => Math.max(1, q - 1))} className="p-3 hover:text-gold" aria-label="Decrease quantity">
+              <button
+                onClick={() => setQty((q) => Math.max(1, q - 1))}
+                disabled={outOfStock}
+                className="p-3 hover:text-gold disabled:opacity-40 disabled:hover:text-parchment"
+                aria-label="Decrease quantity"
+              >
                 <Minus size={15} />
               </button>
               <span className="w-8 text-center font-medium">{qty}</span>
-              <button onClick={() => setQty((q) => q + 1)} className="p-3 hover:text-gold" aria-label="Increase quantity">
+              <button
+                onClick={() => setQty((q) => (tracked ? Math.min(product.stock, q + 1) : q + 1))}
+                disabled={outOfStock || (tracked && qty >= product.stock)}
+                className="p-3 hover:text-gold disabled:opacity-40 disabled:hover:text-parchment"
+                aria-label="Increase quantity"
+              >
                 <Plus size={15} />
               </button>
             </div>
             <button
               onClick={() => addItem(product, { size, color, qty })}
-              className="flex-1 bg-gold text-ink font-condensed tracking-[0.14em] py-3.5 rounded-lg border border-gold hover:bg-rust hover:border-rust hover:text-parchment transition-colors duration-200"
+              disabled={outOfStock}
+              className="flex-1 bg-gold text-ink font-condensed tracking-[0.14em] py-3.5 rounded-lg border border-gold hover:bg-rust hover:border-rust hover:text-parchment transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gold disabled:hover:border-gold disabled:hover:text-ink"
             >
-              ADD TO BAG — {formatINR(product.price * qty)}
+              {outOfStock ? "SOLD OUT" : `ADD TO BAG — ${formatINR(product.price * qty)}`}
             </button>
           </div>
 

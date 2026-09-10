@@ -12,10 +12,17 @@ async function request(path, options) {
   return data;
 }
 
-export function placeOrder({ items, customer }) {
+export function placeOrder({ items, customer, couponCode }) {
   return request("/api/orders/place", {
     method: "POST",
-    body: JSON.stringify({ items, customer }),
+    body: JSON.stringify({ items, customer, couponCode }),
+  });
+}
+
+export function validateCoupon(code, subtotal) {
+  return request("/api/coupons/validate", {
+    method: "POST",
+    body: JSON.stringify({ code, subtotal }),
   });
 }
 
