@@ -43,6 +43,12 @@ export default function OrderConfirmed() {
                 <span className="font-condensed tracking-wide">{formatINR(state.total)}</span>
               </div>
             )}
+            <Link
+              to={`/track-order?orderId=${encodeURIComponent(state.orderId)}`}
+              className="text-xs font-condensed tracking-[0.1em] text-gold hover:underline mt-1"
+            >
+              TRACK THIS ORDER
+            </Link>
           </div>
         )}
 

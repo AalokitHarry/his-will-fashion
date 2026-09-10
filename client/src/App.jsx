@@ -5,6 +5,7 @@ import Shop from "./pages/Shop";
 import ProductDetail from "./pages/ProductDetail";
 import Checkout from "./pages/Checkout";
 import OrderConfirmed from "./pages/OrderConfirmed";
+import TrackOrder from "./pages/TrackOrder";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
@@ -23,6 +24,7 @@ export default function App() {
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/order-confirmed" element={<OrderConfirmed />} />
+        <Route path="/track-order" element={<TrackOrder />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />

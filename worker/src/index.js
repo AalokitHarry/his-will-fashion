@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { priceCart } from "./products.js";
-import { sendOrderConfirmationEmail } from "./email.js";
+import { sendOrderConfirmationEmail, sendOrderStatusUpdateEmail } from "./email.js";
 
 const app = new Hono();
 
@@ -312,7 +312,56 @@ app.patch("/api/orders/:orderId/status", async (c) => {
     return c.json({ error: "Order not found" }, 404);
   }
 
+  const row = await c.env.DB.prepare("SELECT customer FROM orders WHERE order_id = ?").bind(orderId).first();
+  if (row) {
+    c.executionCtx.waitUntil(
+      sendOrderStatusUpdateEmail(c.env, { orderId, customer: JSON.parse(row.customer), status })
+    );
+  }
+
   return c.json({ orderId, status });
+});
+
+// Public: track an order by id + phone (the phone acts as a shared secret
+// so order ids — only mildly obfuscated — can't be enumerated to read a
+// stranger's order/address).
+app.get("/api/orders/:orderId/track", async (c) => {
+  const { orderId } = c.req.param();
+  const phone = (c.req.query("phone") || "").replace(/\D/g, "");
+
+  if (!phone) {
+    return c.json({ error: "Enter the phone number used for this order." }, 400);
+  }
+
+  const row = await c.env.DB.prepare(
+    "SELECT order_id, customer, items, subtotal, shipping, total, payment_method, status, created_at FROM orders WHERE order_id = ?"
+  )
+    .bind(orderId)
+    .first();
+
+  if (!row) {
+    return c.json({ error: "We couldn't find an order with that reference." }, 404);
+  }
+
+  const customer = JSON.parse(row.customer);
+  const orderPhone = String(customer.phone || "").replace(/\D/g, "");
+  if (!orderPhone || !orderPhone.endsWith(phone.slice(-10))) {
+    return c.json({ error: "That phone number doesn't match this order." }, 403);
+  }
+
+  return c.json({
+    order: {
+      orderId: row.order_id,
+      customer,
+      items: JSON.parse(row.items),
+      subtotal: row.subtotal,
+      shipping: row.shipping,
+      total: row.total,
+      paymentMethod: row.payment_method,
+      status: row.status,
+      createdAt: row.created_at,
+    },
+  });
 });
 
 // Admin order list — password-protected via ADMIN_TOKEN.

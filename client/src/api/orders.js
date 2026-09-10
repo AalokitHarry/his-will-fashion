@@ -25,6 +25,11 @@ export function fetchOrders(token) {
   });
 }
 
+export async function trackOrder(orderId, phone) {
+  const { order } = await request(`/api/orders/${encodeURIComponent(orderId)}/track?phone=${encodeURIComponent(phone)}`);
+  return order;
+}
+
 export function updateOrderStatus(token, orderId, status) {
   return request(`/api/orders/${orderId}/status`, {
     method: "PATCH",
