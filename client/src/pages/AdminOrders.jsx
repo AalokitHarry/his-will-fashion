@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AlertCircle, LogOut, RefreshCw } from "lucide-react";
 import { fetchOrders, updateOrderStatus } from "../api/orders";
 import { formatINR } from "../utils/format";
@@ -7,6 +7,7 @@ import AddProductForm from "../components/AddProductForm";
 import ProductList from "../components/ProductList";
 import NewsletterList from "../components/NewsletterList";
 import CouponList from "../components/CouponList";
+import ReviewModeration from "../components/ReviewModeration";
 
 const TOKEN_KEY = "hwf_admin_token";
 
@@ -104,6 +105,36 @@ export default function AdminOrders() {
     setPasswordInput("");
   };
 
+  const stats = useMemo(() => {
+    if (!orders) return null;
+    const monthStart = new Date();
+    monthStart.setDate(1);
+    monthStart.setHours(0, 0, 0, 0);
+
+    let monthRevenue = 0;
+    let monthOrders = 0;
+    let pending = 0;
+    const unitsSold = {};
+
+    for (const order of orders) {
+      if (order.status === "pending_confirmation") pending += 1;
+      if (order.status === "cancelled") continue;
+
+      if (new Date(order.createdAt) >= monthStart) {
+        monthRevenue += order.total;
+        monthOrders += 1;
+      }
+      for (const item of order.items) {
+        unitsSold[item.name] = (unitsSold[item.name] || 0) + item.qty;
+      }
+    }
+
+    const [bestSellerName, bestSellerUnits] =
+      Object.entries(unitsSold).sort((a, b) => b[1] - a[1])[0] || [null, 0];
+
+    return { monthRevenue, monthOrders, pending, bestSellerName, bestSellerUnits };
+  }, [orders]);
+
   if (!token || !orders) {
     return (
       <div className="min-h-[80vh] flex items-center justify-center px-5">
@@ -162,11 +193,39 @@ export default function AdminOrders() {
           </div>
         </div>
 
+        {tab === "orders" && stats && (
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-10">
+            <div className="bg-charcoal border border-gold/15 rounded-lg p-4">
+              <p className="font-condensed tracking-[0.08em] text-[10px] text-parchment/50 mb-1.5">REVENUE THIS MONTH</p>
+              <p className="font-display text-xl text-gold">{formatINR(stats.monthRevenue)}</p>
+            </div>
+            <div className="bg-charcoal border border-gold/15 rounded-lg p-4">
+              <p className="font-condensed tracking-[0.08em] text-[10px] text-parchment/50 mb-1.5">ORDERS THIS MONTH</p>
+              <p className="font-display text-xl">{stats.monthOrders}</p>
+            </div>
+            <div className="bg-charcoal border border-gold/15 rounded-lg p-4">
+              <p className="font-condensed tracking-[0.08em] text-[10px] text-parchment/50 mb-1.5">NEEDS CONFIRMATION</p>
+              <p className={`font-display text-xl ${stats.pending > 0 ? "text-rust" : ""}`}>{stats.pending}</p>
+            </div>
+            <div className="bg-charcoal border border-gold/15 rounded-lg p-4">
+              <p className="font-condensed tracking-[0.08em] text-[10px] text-parchment/50 mb-1.5">BEST SELLER</p>
+              {stats.bestSellerName ? (
+                <p className="font-display text-base leading-tight truncate" title={stats.bestSellerName}>
+                  {stats.bestSellerName} <span className="text-parchment/50 text-sm">&times;{stats.bestSellerUnits}</span>
+                </p>
+              ) : (
+                <p className="text-parchment/40 text-sm">—</p>
+              )}
+            </div>
+          </div>
+        )}
+
         <div className="flex gap-2.5 mb-10 pb-8 border-b border-parchment/10">
           {[
             { key: "orders", label: "Orders" },
             { key: "products", label: "Add Product" },
             { key: "coupons", label: "Coupons" },
+            { key: "reviews", label: "Reviews" },
             { key: "subscribers", label: "Subscribers" },
           ].map((t) => (
             <button
@@ -190,6 +249,8 @@ export default function AdminOrders() {
           </>
         ) : tab === "coupons" ? (
           <CouponList />
+        ) : tab === "reviews" ? (
+          <ReviewModeration />
         ) : tab === "subscribers" ? (
           <NewsletterList />
         ) : (

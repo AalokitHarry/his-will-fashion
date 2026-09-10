@@ -58,3 +58,19 @@ CREATE TABLE IF NOT EXISTS newsletter_subscribers (
   email TEXT PRIMARY KEY,
   created_at TEXT NOT NULL
 );
+
+-- Reviews start unapproved (approved = 0) and only appear on the product
+-- page once an admin approves them — never shown live on submission.
+-- verified_purchase is set server-side by matching the submitted email
+-- against a real order containing this product; never trust a client claim.
+CREATE TABLE IF NOT EXISTS reviews (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  product_id TEXT NOT NULL,
+  customer_name TEXT NOT NULL,
+  email TEXT,
+  rating INTEGER NOT NULL,
+  comment TEXT NOT NULL,
+  verified_purchase INTEGER NOT NULL DEFAULT 0,
+  approved INTEGER NOT NULL DEFAULT 0,
+  created_at TEXT NOT NULL
+);

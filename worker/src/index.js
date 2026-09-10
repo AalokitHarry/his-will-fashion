@@ -356,6 +356,135 @@ app.delete("/api/admin/products/:id", async (c) => {
   return c.json({ id });
 });
 
+// Checks real orders for one containing this product, placed with this
+// email — never trust a client-supplied "verified" claim.
+async function checkVerifiedPurchase(db, productId, email) {
+  if (!email) return false;
+  const normalized = email.trim().toLowerCase();
+  const { results } = await db.prepare("SELECT customer, items FROM orders").all();
+  return results.some((row) => {
+    const customer = JSON.parse(row.customer);
+    if (String(customer.email || "").trim().toLowerCase() !== normalized) return false;
+    const items = JSON.parse(row.items);
+    return items.some((item) => item.id === productId);
+  });
+}
+
+function rowToReview(row) {
+  return {
+    id: row.id,
+    productId: row.product_id,
+    customerName: row.customer_name,
+    rating: row.rating,
+    comment: row.comment,
+    verifiedPurchase: !!row.verified_purchase,
+    createdAt: row.created_at,
+  };
+}
+
+// Public: submit a review — always starts unapproved (never shown live);
+// an admin has to approve it before it appears on the product page.
+app.post("/api/products/:id/reviews", async (c) => {
+  const { id } = c.req.param();
+  const body = await c.req.json().catch(() => ({}));
+  const customerName = String(body.customerName || "").trim();
+  const email = body.email ? String(body.email).trim() : "";
+  const rating = Number(body.rating);
+  const comment = String(body.comment || "").trim();
+
+  if (!customerName) return c.json({ error: "Enter your name." }, 400);
+  if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+    return c.json({ error: "Rating must be between 1 and 5." }, 400);
+  }
+  if (!comment || comment.length < 10) {
+    return c.json({ error: "Say a bit more — at least 10 characters." }, 400);
+  }
+  if (email && !EMAIL_RE.test(email)) {
+    return c.json({ error: "Enter a valid email address, or leave it blank." }, 400);
+  }
+
+  const product = await c.env.DB.prepare("SELECT id FROM products WHERE id = ?").bind(id).first();
+  if (!product) return c.json({ error: "Product not found." }, 404);
+
+  const verifiedPurchase = await checkVerifiedPurchase(c.env.DB, id, email);
+
+  await c.env.DB.prepare(
+    `INSERT INTO reviews (product_id, customer_name, email, rating, comment, verified_purchase, approved, created_at)
+     VALUES (?, ?, ?, ?, ?, ?, 0, ?)`
+  )
+    .bind(id, customerName, email || null, rating, comment, verifiedPurchase ? 1 : 0, new Date().toISOString())
+    .run();
+
+  return c.json({ submitted: true }, 201);
+});
+
+// Public: approved reviews for one product.
+app.get("/api/products/:id/reviews", async (c) => {
+  const { id } = c.req.param();
+  const { results } = await c.env.DB.prepare(
+    "SELECT id, product_id, customer_name, rating, comment, verified_purchase, created_at FROM reviews WHERE product_id = ? AND approved = 1 ORDER BY created_at DESC"
+  )
+    .bind(id)
+    .all();
+  return c.json({ reviews: results.map(rowToReview) });
+});
+
+// Admin: every review (pending + approved) — password-protected via ADMIN_TOKEN.
+app.get("/api/admin/reviews", async (c) => {
+  const auth = c.req.header("Authorization") || "";
+  const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
+  if (!c.env.ADMIN_TOKEN || token !== c.env.ADMIN_TOKEN) {
+    return c.json({ error: "Unauthorized" }, 401);
+  }
+
+  const { results } = await c.env.DB.prepare(
+    `SELECT reviews.*, products.name AS product_name FROM reviews
+     LEFT JOIN products ON products.id = reviews.product_id
+     ORDER BY reviews.created_at DESC`
+  ).all();
+
+  return c.json({
+    reviews: results.map((row) => ({
+      ...rowToReview(row),
+      productName: row.product_name || row.product_id,
+      email: row.email,
+      approved: !!row.approved,
+    })),
+  });
+});
+
+// Admin: approve/unapprove a review — password-protected via ADMIN_TOKEN.
+app.patch("/api/admin/reviews/:id", async (c) => {
+  const auth = c.req.header("Authorization") || "";
+  const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
+  if (!c.env.ADMIN_TOKEN || token !== c.env.ADMIN_TOKEN) {
+    return c.json({ error: "Unauthorized" }, 401);
+  }
+
+  const { id } = c.req.param();
+  const body = await c.req.json().catch(() => ({}));
+  const result = await c.env.DB.prepare("UPDATE reviews SET approved = ? WHERE id = ?")
+    .bind(body.approved ? 1 : 0, id)
+    .run();
+
+  if (!result.meta.changes) return c.json({ error: "Review not found" }, 404);
+  return c.json({ id: Number(id), approved: !!body.approved });
+});
+
+// Admin: delete a review — password-protected via ADMIN_TOKEN.
+app.delete("/api/admin/reviews/:id", async (c) => {
+  const auth = c.req.header("Authorization") || "";
+  const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
+  if (!c.env.ADMIN_TOKEN || token !== c.env.ADMIN_TOKEN) {
+    return c.json({ error: "Unauthorized" }, 401);
+  }
+
+  const { id } = c.req.param();
+  const result = await c.env.DB.prepare("DELETE FROM reviews WHERE id = ?").bind(id).run();
+  if (!result.meta.changes) return c.json({ error: "Review not found" }, 404);
+  return c.json({ id: Number(id) });
+});
+
 const ORDER_STATUSES = ["pending_confirmation", "confirmed", "shipped", "delivered", "cancelled"];
 
 // Admin: update an order's status — password-protected via ADMIN_TOKEN.

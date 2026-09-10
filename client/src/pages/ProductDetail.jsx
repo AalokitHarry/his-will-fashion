@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Minus, Plus, RotateCcw, ShieldCheck, Truck } from "lucide-react";
 import { useProducts } from "../context/ProductsContext";
 import { useCart } from "../context/CartContext";
 import { formatINR } from "../utils/format";
+import { fetchProductReviews } from "../api/reviews";
 import ProductCarousel from "../components/ProductCarousel";
 import ProductCard from "../components/ProductCard";
+import ProductReviews from "../components/ProductReviews";
 import VerseMark from "../components/VerseMark";
 import SizeGuideModal from "../components/SizeGuideModal";
 import useSEO from "../hooks/useSEO";
@@ -28,6 +30,16 @@ export default function ProductDetail() {
   const tracked = product?.stock !== null && product?.stock !== undefined;
   const outOfStock = tracked && product.stock <= 0;
   const lowStock = tracked && product.stock > 0 && product.stock <= 5;
+
+  const [reviews, setReviews] = useState(null);
+  useEffect(() => {
+    if (!product) return;
+    fetchProductReviews(product.id)
+      .then(setReviews)
+      .catch(() => setReviews([]));
+  }, [product?.id]);
+
+  const reviewAverage = reviews?.length ? reviews.reduce((s, r) => s + r.rating, 0) / reviews.length : 0;
 
   useSEO(
     product
@@ -55,6 +67,15 @@ export default function ProductDetail() {
                   : "https://schema.org/InStock",
               itemCondition: "https://schema.org/NewCondition",
             },
+            ...(reviews?.length > 0
+              ? {
+                  aggregateRating: {
+                    "@type": "AggregateRating",
+                    ratingValue: reviewAverage.toFixed(1),
+                    reviewCount: reviews.length,
+                  },
+                }
+              : {}),
           },
         }
       : loading
@@ -217,6 +238,8 @@ export default function ProductDetail() {
           </div>
         </motion.div>
       </div>
+
+      <ProductReviews productId={product.id} reviews={reviews} />
 
       {related.length > 0 && (
         <div className="mx-auto max-w-7xl px-5 md:px-8 py-20 border-t border-parchment/10 mt-10">
