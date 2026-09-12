@@ -491,13 +491,25 @@ export default function AdminOrders() {
     </div>
 
     {printOrder && (
-      <div className="hidden print:block p-10 text-black bg-white">
-        <h1 className="text-2xl font-bold mb-1">His Will Fashion</h1>
-        <p className="text-sm mb-6">Packing Slip</p>
-        <div className="flex justify-between mb-6 text-sm">
+      <div className="hidden print:block p-10 text-black bg-white font-sans">
+        <div className="flex items-center justify-between pb-5 mb-7 border-b-2 border-gold">
+          <div className="flex items-center gap-3">
+            <span className="w-9 h-9 rounded bg-ink text-parchment flex items-center justify-center font-bold text-lg shrink-0">H</span>
+            <div>
+              <p className="text-lg font-bold leading-tight">His Will Fashion</p>
+              <p className="text-xs text-gray-500 leading-tight">hiswillfashion.com</p>
+            </div>
+          </div>
+          <div className="text-right">
+            <p className="text-xs tracking-[0.15em] text-gray-500 font-semibold">PACKING SLIP</p>
+            <p className="text-sm font-semibold mt-1">{printOrder.orderId}</p>
+          </div>
+        </div>
+
+        <div className="flex justify-between mb-8 text-sm gap-8">
           <div>
-            <p className="font-semibold mb-1">Ship To</p>
-            <p>{printOrder.customer.fullName}</p>
+            <p className="text-xs tracking-[0.15em] text-gray-500 font-semibold mb-2">SHIP TO</p>
+            <p className="font-semibold">{printOrder.customer.fullName}</p>
             <p>
               {printOrder.customer.addressLine1}
               {printOrder.customer.addressLine2 ? `, ${printOrder.customer.addressLine2}` : ""}
@@ -505,20 +517,18 @@ export default function AdminOrders() {
             <p>
               {printOrder.customer.city}, {printOrder.customer.state} {printOrder.customer.pincode}
             </p>
-            <p>{printOrder.customer.phone}</p>
+            <p className="mt-1">{printOrder.customer.phone}</p>
           </div>
-          <div className="text-right">
-            <p><span className="font-semibold">Order:</span> {printOrder.orderId}</p>
-            <p>
-              <span className="font-semibold">Date:</span>{" "}
-              {new Date(printOrder.createdAt).toLocaleDateString("en-IN", { dateStyle: "medium" })}
-            </p>
-            <p><span className="font-semibold">Payment:</span> {printOrder.paymentMethod.toUpperCase()}</p>
+          <div className="text-right shrink-0">
+            <p className="text-xs tracking-[0.15em] text-gray-500 font-semibold mb-2">ORDER DETAILS</p>
+            <p><span className="text-gray-500">Date</span>&nbsp;&nbsp;{new Date(printOrder.createdAt).toLocaleDateString("en-IN", { dateStyle: "medium" })}</p>
+            <p><span className="text-gray-500">Payment</span>&nbsp;&nbsp;{printOrder.paymentMethod === "cod" ? "Cash on Delivery" : printOrder.paymentMethod.toUpperCase()}</p>
           </div>
         </div>
+
         <table className="w-full text-sm border-collapse">
           <thead>
-            <tr className="border-b-2 border-black">
+            <tr className="border-b-2 border-ink">
               <th className="text-left py-2">Item</th>
               <th className="text-center py-2">Qty</th>
               <th className="text-right py-2">Price</th>
@@ -526,21 +536,55 @@ export default function AdminOrders() {
           </thead>
           <tbody>
             {printOrder.items.map((item, i) => (
-              <tr key={i} className="border-b border-gray-300">
-                <td className="py-2">
+              <tr key={i} className="border-b border-gray-200">
+                <td className="py-2.5">
                   {item.name}
-                  {item.size || item.color ? ` (${[item.color, item.size].filter(Boolean).join("/")})` : ""}
+                  {item.size || item.color ? (
+                    <span className="text-gray-500"> ({[item.color, item.size].filter(Boolean).join(" / ")})</span>
+                  ) : (
+                    ""
+                  )}
                 </td>
-                <td className="text-center py-2">{item.qty}</td>
-                <td className="text-right py-2">{formatINR(item.lineTotal)}</td>
+                <td className="text-center py-2.5">{item.qty}</td>
+                <td className="text-right py-2.5">{formatINR(item.lineTotal)}</td>
               </tr>
             ))}
           </tbody>
         </table>
-        <div className="text-right mt-4 font-bold">
-          Total: {formatINR(printOrder.total)} ({printOrder.paymentMethod.toUpperCase()})
+
+        <div className="flex justify-end mt-4">
+          <div className="w-64 text-sm flex flex-col gap-1.5">
+            <div className="flex justify-between">
+              <span className="text-gray-500">Subtotal</span>
+              <span>{formatINR(printOrder.subtotal)}</span>
+            </div>
+            {printOrder.discount > 0 && (
+              <div className="flex justify-between">
+                <span className="text-gray-500">Discount{printOrder.couponCode ? ` (${printOrder.couponCode})` : ""}</span>
+                <span>&minus;{formatINR(printOrder.discount)}</span>
+              </div>
+            )}
+            <div className="flex justify-between">
+              <span className="text-gray-500">Shipping</span>
+              <span>{printOrder.shipping === 0 ? "Free" : formatINR(printOrder.shipping)}</span>
+            </div>
+            <div className="flex justify-between pt-2 mt-1 font-bold text-base border-t-2 border-ink">
+              <span>Total ({printOrder.paymentMethod.toUpperCase()})</span>
+              <span>{formatINR(printOrder.total)}</span>
+            </div>
+          </div>
         </div>
-        {printOrder.customer.notes && <p className="mt-4 text-sm">Note: {printOrder.customer.notes}</p>}
+
+        {printOrder.customer.notes && (
+          <p className="mt-6 text-sm">
+            <span className="text-gray-500">Note:</span> {printOrder.customer.notes}
+          </p>
+        )}
+
+        <div className="mt-10 pt-4 border-t border-gray-200 text-xs text-gray-500 flex justify-between items-center gap-4">
+          <span>Thank you for wearing your faith with us.</span>
+          <span className="shrink-0">hello@hiswillfashion.com &middot; @his_wll_fashion_club</span>
+        </div>
       </div>
     )}
     </>
