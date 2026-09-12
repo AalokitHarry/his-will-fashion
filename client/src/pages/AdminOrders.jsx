@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { AlertCircle, Download, LogOut, Printer, RefreshCw, Search } from "lucide-react";
+import { AlertCircle, Download, LogOut, Printer, RefreshCw, Search, ShieldOff } from "lucide-react";
 import { fetchOrders, updateOrderStatus } from "../api/orders";
+import { adminLogin, adminLogout, adminLogoutAll } from "../api/adminAuth";
 import { formatINR } from "../utils/format";
 import { useProducts } from "../context/ProductsContext";
 import useSEO from "../hooks/useSEO";
@@ -105,16 +106,18 @@ export default function AdminOrders() {
   const [printOrder, setPrintOrder] = useState(null);
   const { products } = useProducts();
 
-  const load = async (t) => {
+  // Loads orders using an existing session token — used on page load (with
+  // whatever's saved in localStorage) and after a fresh login.
+  const loadOrders = async (sessionToken) => {
     setLoading(true);
     setError("");
     try {
-      const { orders } = await fetchOrders(t);
+      const { orders } = await fetchOrders(sessionToken);
       setOrders(orders);
-      localStorage.setItem(TOKEN_KEY, t);
-      setToken(t);
+      localStorage.setItem(TOKEN_KEY, sessionToken);
+      setToken(sessionToken);
     } catch {
-      setError("Incorrect password.");
+      setError("Your session has expired — please log in again.");
       localStorage.removeItem(TOKEN_KEY);
       setToken("");
       setOrders(null);
@@ -124,13 +127,23 @@ export default function AdminOrders() {
   };
 
   useEffect(() => {
-    if (token) load(token);
+    if (token) loadOrders(token);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleSubmit = (e) => {
+  // Exchanges the typed password for a session token — the password itself
+  // is never stored or sent again after this.
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    load(passwordInput);
+    setLoading(true);
+    setError("");
+    try {
+      const sessionToken = await adminLogin(passwordInput);
+      await loadOrders(sessionToken);
+    } catch (err) {
+      setError(err.message || "Incorrect password.");
+      setLoading(false);
+    }
   };
 
   const handleStatusChange = async (orderId, newStatus) => {
@@ -148,7 +161,22 @@ export default function AdminOrders() {
     }
   };
 
-  const logOut = () => {
+  const logOut = async () => {
+    await adminLogout(token);
+    localStorage.removeItem(TOKEN_KEY);
+    setToken("");
+    setOrders(null);
+    setPasswordInput("");
+  };
+
+  const logOutEverywhere = async () => {
+    if (!window.confirm("Log out every device signed into this admin account?")) return;
+    try {
+      await adminLogoutAll(token);
+    } catch (err) {
+      setStatusError(err.message || "Unable to log out all devices.");
+      return;
+    }
     localStorage.removeItem(TOKEN_KEY);
     setToken("");
     setOrders(null);
@@ -261,7 +289,7 @@ export default function AdminOrders() {
                   <Download size={14} /> Export CSV
                 </button>
                 <button
-                  onClick={() => load(token)}
+                  onClick={() => loadOrders(token)}
                   disabled={loading}
                   className="flex items-center gap-1.5 text-sm border border-parchment/30 px-4 py-2 hover:border-gold transition-colors"
                 >
@@ -269,6 +297,13 @@ export default function AdminOrders() {
                 </button>
               </>
             )}
+            <button
+              onClick={logOutEverywhere}
+              title="Log out every device signed into this admin account"
+              className="flex items-center gap-1.5 text-sm border border-parchment/30 px-4 py-2 hover:border-rust hover:text-rust transition-colors"
+            >
+              <ShieldOff size={14} /> Log out everywhere
+            </button>
             <button
               onClick={logOut}
               className="flex items-center gap-1.5 text-sm border border-parchment/30 px-4 py-2 hover:border-rust hover:text-rust transition-colors"

@@ -18,6 +18,66 @@ app.get("/api/health", (c) => c.json({ ok: true }));
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+const SESSION_DURATION_MS = 30 * 24 * 60 * 60 * 1000; // 30 days, refreshed on every authenticated request
+
+// Checks the bearer token against a real, revocable, expiring session --
+// never the raw admin password itself. Sliding expiry: every valid request
+// pushes the session's expiry another 30 days out, so an admin who checks
+// in at least monthly never has to re-enter the password; anyone idle
+// longer, or logged out, does.
+async function requireAdminSession(c) {
+  const auth = c.req.header("Authorization") || "";
+  const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
+  if (!token) return false;
+
+  const session = await c.env.DB.prepare("SELECT expires_at FROM admin_sessions WHERE token = ?").bind(token).first();
+  if (!session || new Date(session.expires_at) < new Date()) return false;
+
+  const newExpiry = new Date(Date.now() + SESSION_DURATION_MS).toISOString();
+  await c.env.DB.prepare("UPDATE admin_sessions SET expires_at = ? WHERE token = ?").bind(newExpiry, token).run();
+  return true;
+}
+
+// Admin: exchange the real password for a session token. This is the only
+// place the raw password is ever checked or transmitted after the first
+// login -- every other admin request uses the session token instead.
+app.post("/api/admin/login", async (c) => {
+  const body = await c.req.json().catch(() => ({}));
+  const password = String(body.password || "");
+
+  if (!c.env.ADMIN_TOKEN || password !== c.env.ADMIN_TOKEN) {
+    return c.json({ error: "Incorrect password." }, 401);
+  }
+
+  const token = crypto.randomUUID() + crypto.randomUUID();
+  const now = new Date().toISOString();
+  const expiresAt = new Date(Date.now() + SESSION_DURATION_MS).toISOString();
+
+  await c.env.DB.prepare("INSERT INTO admin_sessions (token, created_at, expires_at) VALUES (?, ?, ?)")
+    .bind(token, now, expiresAt)
+    .run();
+
+  return c.json({ token });
+});
+
+// Admin: log out this device only -- deletes just this session's token.
+app.post("/api/admin/logout", async (c) => {
+  const auth = c.req.header("Authorization") || "";
+  const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
+  if (token) await c.env.DB.prepare("DELETE FROM admin_sessions WHERE token = ?").bind(token).run();
+  return c.json({ ok: true });
+});
+
+// Admin: log out every device at once -- e.g. if a session token may have
+// leaked. Requires a currently-valid session to call.
+app.post("/api/admin/logout-all", async (c) => {
+  if (!(await requireAdminSession(c))) {
+    return c.json({ error: "Unauthorized" }, 401);
+  }
+  await c.env.DB.prepare("DELETE FROM admin_sessions").run();
+  return c.json({ ok: true });
+});
+
 // Public: newsletter signup. Idempotent — resubscribing an existing address
 // is a no-op, not an error.
 app.post("/api/newsletter/subscribe", async (c) => {
@@ -43,9 +103,7 @@ app.post("/api/newsletter/subscribe", async (c) => {
 
 // Admin: list newsletter subscribers — password-protected via ADMIN_TOKEN.
 app.get("/api/admin/newsletter", async (c) => {
-  const auth = c.req.header("Authorization") || "";
-  const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
-  if (!c.env.ADMIN_TOKEN || token !== c.env.ADMIN_TOKEN) {
+  if (!(await requireAdminSession(c))) {
     return c.json({ error: "Unauthorized" }, 401);
   }
 
@@ -208,9 +266,7 @@ app.get("/api/products/image/:id/:slot", async (c) => {
 // (`photo1` = the on-model shot shown first, `photo2`/`photo3` = the rest).
 // Photos are stored as blobs in D1 — no object-storage account required.
 app.post("/api/admin/products", async (c) => {
-  const auth = c.req.header("Authorization") || "";
-  const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
-  if (!c.env.ADMIN_TOKEN || token !== c.env.ADMIN_TOKEN) {
+  if (!(await requireAdminSession(c))) {
     return c.json({ error: "Unauthorized" }, 401);
   }
 
@@ -272,9 +328,7 @@ app.post("/api/admin/products", async (c) => {
 // multipart/form-data with `name` and/or `price`. Photos are only replaced
 // when all 3 are re-uploaded together; omit them to keep the existing ones.
 app.patch("/api/admin/products/:id", async (c) => {
-  const auth = c.req.header("Authorization") || "";
-  const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
-  if (!c.env.ADMIN_TOKEN || token !== c.env.ADMIN_TOKEN) {
+  if (!(await requireAdminSession(c))) {
     return c.json({ error: "Unauthorized" }, 401);
   }
 
@@ -341,9 +395,7 @@ app.patch("/api/admin/products/:id", async (c) => {
 // Admin: delete a product — password-protected via ADMIN_TOKEN. Removes the
 // product row and its stored photos.
 app.delete("/api/admin/products/:id", async (c) => {
-  const auth = c.req.header("Authorization") || "";
-  const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
-  if (!c.env.ADMIN_TOKEN || token !== c.env.ADMIN_TOKEN) {
+  if (!(await requireAdminSession(c))) {
     return c.json({ error: "Unauthorized" }, 401);
   }
 
@@ -432,9 +484,7 @@ app.get("/api/products/:id/reviews", async (c) => {
 
 // Admin: every review (pending + approved) — password-protected via ADMIN_TOKEN.
 app.get("/api/admin/reviews", async (c) => {
-  const auth = c.req.header("Authorization") || "";
-  const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
-  if (!c.env.ADMIN_TOKEN || token !== c.env.ADMIN_TOKEN) {
+  if (!(await requireAdminSession(c))) {
     return c.json({ error: "Unauthorized" }, 401);
   }
 
@@ -456,9 +506,7 @@ app.get("/api/admin/reviews", async (c) => {
 
 // Admin: approve/unapprove a review — password-protected via ADMIN_TOKEN.
 app.patch("/api/admin/reviews/:id", async (c) => {
-  const auth = c.req.header("Authorization") || "";
-  const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
-  if (!c.env.ADMIN_TOKEN || token !== c.env.ADMIN_TOKEN) {
+  if (!(await requireAdminSession(c))) {
     return c.json({ error: "Unauthorized" }, 401);
   }
 
@@ -474,9 +522,7 @@ app.patch("/api/admin/reviews/:id", async (c) => {
 
 // Admin: delete a review — password-protected via ADMIN_TOKEN.
 app.delete("/api/admin/reviews/:id", async (c) => {
-  const auth = c.req.header("Authorization") || "";
-  const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
-  if (!c.env.ADMIN_TOKEN || token !== c.env.ADMIN_TOKEN) {
+  if (!(await requireAdminSession(c))) {
     return c.json({ error: "Unauthorized" }, 401);
   }
 
@@ -490,10 +536,7 @@ const ORDER_STATUSES = ["pending_confirmation", "confirmed", "shipped", "deliver
 
 // Admin: update an order's status — password-protected via ADMIN_TOKEN.
 app.patch("/api/orders/:orderId/status", async (c) => {
-  const auth = c.req.header("Authorization") || "";
-  const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
-
-  if (!c.env.ADMIN_TOKEN || token !== c.env.ADMIN_TOKEN) {
+  if (!(await requireAdminSession(c))) {
     return c.json({ error: "Unauthorized" }, 401);
   }
 
@@ -577,10 +620,7 @@ app.get("/api/orders/:orderId/track", async (c) => {
 
 // Admin order list — password-protected via ADMIN_TOKEN.
 app.get("/api/orders", async (c) => {
-  const auth = c.req.header("Authorization") || "";
-  const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
-
-  if (!c.env.ADMIN_TOKEN || token !== c.env.ADMIN_TOKEN) {
+  if (!(await requireAdminSession(c))) {
     return c.json({ error: "Unauthorized" }, 401);
   }
 
@@ -625,9 +665,7 @@ app.post("/api/coupons/validate", async (c) => {
 
 // Admin: list coupons — password-protected via ADMIN_TOKEN.
 app.get("/api/admin/coupons", async (c) => {
-  const auth = c.req.header("Authorization") || "";
-  const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
-  if (!c.env.ADMIN_TOKEN || token !== c.env.ADMIN_TOKEN) {
+  if (!(await requireAdminSession(c))) {
     return c.json({ error: "Unauthorized" }, 401);
   }
 
@@ -655,9 +693,7 @@ app.get("/api/admin/coupons", async (c) => {
 
 // Admin: create a coupon — password-protected via ADMIN_TOKEN.
 app.post("/api/admin/coupons", async (c) => {
-  const auth = c.req.header("Authorization") || "";
-  const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
-  if (!c.env.ADMIN_TOKEN || token !== c.env.ADMIN_TOKEN) {
+  if (!(await requireAdminSession(c))) {
     return c.json({ error: "Unauthorized" }, 401);
   }
 
@@ -686,9 +722,7 @@ app.post("/api/admin/coupons", async (c) => {
 
 // Admin: toggle a coupon active/inactive — password-protected via ADMIN_TOKEN.
 app.patch("/api/admin/coupons/:code", async (c) => {
-  const auth = c.req.header("Authorization") || "";
-  const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
-  if (!c.env.ADMIN_TOKEN || token !== c.env.ADMIN_TOKEN) {
+  if (!(await requireAdminSession(c))) {
     return c.json({ error: "Unauthorized" }, 401);
   }
 
@@ -705,9 +739,7 @@ app.patch("/api/admin/coupons/:code", async (c) => {
 
 // Admin: delete a coupon — password-protected via ADMIN_TOKEN.
 app.delete("/api/admin/coupons/:code", async (c) => {
-  const auth = c.req.header("Authorization") || "";
-  const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
-  if (!c.env.ADMIN_TOKEN || token !== c.env.ADMIN_TOKEN) {
+  if (!(await requireAdminSession(c))) {
     return c.json({ error: "Unauthorized" }, 401);
   }
 

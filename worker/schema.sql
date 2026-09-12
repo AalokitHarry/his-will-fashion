@@ -1,3 +1,14 @@
+-- Server-issued session tokens replace using the raw admin password as the
+-- bearer token forever. A login exchanges the password for one of these,
+-- valid for 30 days and refreshed on every use (sliding window) -- deleting
+-- a row (or all rows, via "log out everywhere") forces a real re-login,
+-- which a stored password never allowed.
+CREATE TABLE IF NOT EXISTS admin_sessions (
+  token TEXT PRIMARY KEY,
+  created_at TEXT NOT NULL,
+  expires_at TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS orders (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   order_id TEXT UNIQUE NOT NULL,
