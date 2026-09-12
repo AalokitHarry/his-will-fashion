@@ -491,7 +491,24 @@ export default function AdminOrders() {
     </div>
 
     {printOrder && (
-      <div className="hidden print:block p-10 text-black bg-white font-sans">
+      <div className="hidden print:block relative p-10 text-black bg-white font-sans" style={{ minHeight: "250mm" }}>
+        <span
+          aria-hidden="true"
+          className="absolute font-display font-bold text-gold pointer-events-none select-none"
+          style={{
+            fontSize: "300px",
+            lineHeight: 0.8,
+            opacity: 0.07,
+            left: "50%",
+            transform: "translateX(-50%)",
+            bottom: "60px",
+            zIndex: 0,
+          }}
+        >
+          H
+        </span>
+
+        <div className="relative z-10">
         <div className="flex items-center justify-between pb-5 mb-7 border-b-2 border-gold">
           <div className="flex items-center gap-3">
             <span className="w-9 h-9 rounded bg-ink text-parchment flex items-center justify-center font-bold text-lg shrink-0">H</span>
@@ -581,9 +598,13 @@ export default function AdminOrders() {
           </p>
         )}
 
-        <div className="mt-10 pt-4 border-t border-gray-200 text-xs text-gray-500 flex justify-between items-center gap-4">
-          <span>Thank you for wearing your faith with us.</span>
-          <span className="shrink-0">hello@hiswillfashion.com &middot; @his_wll_fashion_club</span>
+        <div className="mt-10 pt-4 border-t border-gold/30 text-xs text-gray-500">
+          <div className="flex justify-between items-center gap-4">
+            <span>Thank you for wearing your faith with us.</span>
+            <span className="shrink-0">hello@hiswillfashion.com &middot; @his_wll_fashion_club</span>
+          </div>
+          <p className="mt-4 text-center italic text-gray-400 tracking-wide">"Wear your faith. Live His will."</p>
+        </div>
         </div>
       </div>
     )}
